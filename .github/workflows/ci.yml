@@ -1,0 +1,9 @@
+on: push
+
+jobs:
+  checking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
