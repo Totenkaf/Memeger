@@ -21,7 +21,6 @@ void User::set_active_status(int active_status) {
 }
 
 
-
 std::string TextMessage::get_message_id() const {
     return message_id_;
 }
