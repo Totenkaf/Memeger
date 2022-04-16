@@ -197,73 +197,26 @@ int Postgre_DB::drop_tables() {
 
 
 
-int Postgre_DB::add_user(const User& user) {
-}
+int Postgre_DB::add_user(const User& user);
+User Postgre_DB::get_user_by_login(std::string login) const;
+bool Postgre_DB::find_user_by_login(std::string login) const;
+int Postgre_DB::delete_user(User& user);
+int Postgre_DB::save_user(USERS_INFO user_info);
 
-User Postgre_DB::get_user_by_login(std::string login) const {
-}
-
-bool Postgre_DB::find_user_by_login(std::string login) const {
-}
-
-int Postgre_DB::delete_user(User& user) {
-}
-
-int Postgre_DB::save_user(USERS_INFO user_info) {
-}
-
-int Postgre_DB::change_user_login(User& user, string new_login) {
-}
-
-int Postgre_DB::change_user_password(User& user, string new_password) {
-}
+int Postgre_DB::change_user_login(User& user, string new_login);
+int Postgre_DB::change_user_password(User& user, string new_password);
 
 
+int Postgre_DB::add_message(TextMessage& message);
+int Postgre_DB::save_message(TextMessage& message);
+std::vector<std::string> Postgre_DB::get_last_N_messages(TextMessage& message) const;
+int Postgre_DB::delete_message(TextMessage& message);
 
 
+int Postgre_DB::add_chat(Chat& chat);
+int Postgre_DB::save_chat(Chat& chat);
+int Postgre_DB::delete_chat(Chat& chat);
 
-int Postgre_DB::add_message(TextMessage& message) {
-
-}
-
-int Postgre_DB::save_message(TextMessage& message) {
-    
-}
-
-std::vector<std::string> Postgre_DB::get_last_N_messages(TextMessage& message) const {
-    
-}
-
-
-int Postgre_DB::delete_message(TextMessage& message) {
-    
-}
-
-
-
-
-
-int Postgre_DB::add_chat(Chat& chat) {
-
-}
-
-int Postgre_DB::save_chat(Chat& chat) {
-
-}
-
-
-int Postgre_DB::delete_chat(Chat& chat) {
-
-}
-
-std::string Postgre_DB::find_chat_by_participants(Chat& chat) {
-
-}
-
-std::vector<std::string> Postgre_DB::get_participants_from_chat(const Chat& chat) const {
-
-}
-
-std::vector<Chat> Postgre_DB::get_all_chats_by_login(std::string login) const {
-
-}
+std::string Postgre_DB::find_chat_by_participants(Chat& chat);
+std::vector<std::string> Postgre_DB::get_participants_from_chat(const Chat& chat) const;
+std::vector<Chat> Postgre_DB::get_all_chats_by_login(std::string login) const;
