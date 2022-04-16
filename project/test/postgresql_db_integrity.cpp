@@ -4,11 +4,10 @@
 #include "gmock/gmock.h"
 
 #include <string>
-#include <locale>
 #include <codecvt>
 
 // using ::testing::Return;
-// class MockDb : public IMainDb {
+// class MockDb : public IDataBase {
 // public:
 //     MOCK_METHOD(User*, searchUserLogin, (std::string login, std::string password), (override));
 //     MOCK_METHOD(void, writeUser, (User& user), (override));
@@ -48,3 +47,8 @@
 //     EXPECT_CALL(mock, updateUser(user)).WillOnce(Return(0));
 //     EXPECT_EQ(mock.updateUser(user), 0);
 // }
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

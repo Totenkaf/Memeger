@@ -107,11 +107,3 @@ private:
     time_t date_creation;
 };
 
-
-struct ComparatorChat {
-    bool operator()(const Chat &lhs, const Chat &rhs) {
-        return lhs.get_last_message().get_time_sent() > rhs.get_last_message().get_time_sent();
-    }
-};
-
-typedef std::multiset<Chat, ComparatorChat> chat_list;
