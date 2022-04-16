@@ -35,18 +35,21 @@ public:
     void set_password(const std::string &user_password);
     void set_token(const std::string &user_token);
     void set_active_status(int active_status);
+
+    bool operator==(const User &user) const;
+    bool operator!=(const User &user) const;
 };
 
 
 class TextMessage : public IMessage {
 public:
     TextMessage() = default;
-    TextMessage(std::string message_id, std::string parent_chat_id, std::string sender_id,
+
+    TextMessage(std::string& message_id, std::string& parent_chat_id, std::string& sender_id,
                 std::string text_message, time_t time_sent, bool is_read) :
                 message_id_(message_id), parent_chat_id_(parent_chat_id), sender_id_(sender_id),
                 text_message_(std::move(text_message)), 
-                time_sent_(time_sent), is_read_(is_read) {
-    }
+                time_sent_(time_sent), is_read_(is_read) {}
     ~TextMessage() = default;
 
     std::string get_message_id() const override;
@@ -70,7 +73,7 @@ private:
     std::string sender_id_;
     std::string text_message_;
     time_t time_sent_;
-    bool is_read_;
+    bool is_read_; 
 };
 
 
@@ -194,6 +197,7 @@ public:
     ~Chat() = default;
 
     IMessage& get_last_message() const;
+    int set_chat_id(std::string chat_id);
     time_t get_chat_time_creation() const;
     std::string get_chat_id() const;
 
@@ -201,13 +205,17 @@ public:
     std::vector<IMessage&> get_messages() const;
 
 
-    int push_new_message(const IMessage& new_message);
+    int push_new_message(IMessage& new_message);
     int add_new_participant(std::string& new_participant_id);
 
     bool is_empty() const;
     bool is_dialogue() const;
     bool is_monologue() const;
     bool is_polilogue() const;
+
+    bool operator!=(const Chat &chat) const;
+    bool operator==(const Chat &chat) const;
+
 
 private:
     std::string chat_id_;
