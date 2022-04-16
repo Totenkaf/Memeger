@@ -28,12 +28,6 @@
 //     EXPECT_EQ(mock.searchUserLogin(std::string("log"), std::string("pas")), nullptr);
 // }
 
-// TEST(getCodeFromMessage, CorrectData) {
-//     MockDb mock;
-//     EXPECT_CALL(mock, getCodeFromMessage(23)).WillOnce(Return(""));
-//     EXPECT_EQ(mock.getCodeFromMessage(23), "");
-// }
-
 // TEST(writeUser, CorrectData) {
 //     MockDb mock;
 //     User user;

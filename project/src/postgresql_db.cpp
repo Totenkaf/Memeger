@@ -99,7 +99,15 @@ int Postgre_DB::save(const std::string & table, std::vector <std::string> values
     try {
         if ((where != "") and (check.begin() != check.end())) {
             check.clear();
-            return update(table, values, where);
+            return update(table, values, where);TEST(POSTGRE_DB, test_make_recommendation) {
+  Postgre_DB pg("127.0.0.1", "5432", "test_db", "tester", "test_password");
+  User user;
+  user.user_id = pg.user_register("new.ru", "ertewrdvs");
+  user.name = "new";
+  pg.save_user(user);
+  std::vector <string> rec = pg.user_rec("new.ru");
+  EXPECT_EQ(rec[0], "mail.ru");;
+}
         } 
         else {
             check.clear();
@@ -193,9 +201,6 @@ int Postgre_DB::drop_tables() {
     N2.commit();
     return 0;
 }
-
-
-
 
 int Postgre_DB::add_user(const User& user);
 User Postgre_DB::get_user_by_login(std::string login) const;

@@ -2,7 +2,6 @@
 
 #include "models.h"
 
-
 std::string User::get_login() const { return user_login_; }
 std::string User::get_password() const { return user_password_; }
 std::string User::get_token() const { return user_token_; }
@@ -48,9 +47,6 @@ bool TextMessage::is_read() const {
 std::vector<TextMessage> Chat::get_messages() const{
     return messages_;
 }
-
-
-
 
 
 TextMessage Chat::get_last_message() const {
