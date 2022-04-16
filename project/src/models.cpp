@@ -1,6 +1,7 @@
 //Copyright 2022 by Artem Ustsov
 
 #include "models.h"
+#include "imessage.h"
 
 std::string User::get_login() const { return user_login_; }
 std::string User::get_password() const { return user_password_; }
@@ -18,6 +19,7 @@ void User::set_token(const std::string &user_token) {
 void User::set_active_status(int active_status) {
     active_status_ = active_status;
 }
+
 
 
 std::string TextMessage::get_message_id() const {
@@ -44,12 +46,19 @@ bool TextMessage::is_read() const {
     return is_read_;
 }
 
-std::vector<TextMessage> Chat::get_messages() const{
+
+
+
+
+
+
+
+std::vector<IMessage&> Chat::get_messages() const{
     return messages_;
 }
 
 
-TextMessage Chat::get_last_message() const {
+IMessage& Chat::get_last_message() const {
     return *messages_.begin();
 }
 
@@ -61,11 +70,11 @@ std::string Chat::get_chat_id() const {
     return chat_id_;
 }
 
-void Chat::push_new_message(const TextMessage &new_message) {
+int Chat::push_new_message(const IMessage& new_message) {
     messages_.insert(messages_.begin(), new_message);
 }
 
-void Chat::add_new_participant(std::string new_participant_id) {
+int Chat::add_new_participant(std::string& new_participant_id) {
     participants_.push_back(new_participant_id);
 }
 
