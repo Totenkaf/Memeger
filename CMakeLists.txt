@@ -8,7 +8,7 @@ set(project_name database)
 project(${project_name})
 
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werror")
 
@@ -22,6 +22,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werro
 
 set(INCLUDES ${PROJECT_SOURCE_DIR}/project/include)
 include(ExternalProject)
+
+# find_package(libpqxx REQUIRED)
+# message(STATUS ${PostgreSQL_INCLUDE_DIRS})
+
 include_directories(${INCLUDES})
 message("INCLUDES_DIR = ${INCLUDES}")
 
@@ -44,7 +48,8 @@ add_library(database_lib STATIC ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
 # ------------------------------------------------------------------------------
 # 2 | Executable Main
 # ------------------------------------------------------------------------------
-
+add_executable(${PROJECT_NAME} ${SOURCES}/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE database_lib -lpqxx -lpq)
 
 # ==============================================================================
 # IV | Tests
