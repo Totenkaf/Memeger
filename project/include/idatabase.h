@@ -1,4 +1,5 @@
 //Copyright 2022 by Artem Ustsov
+
 #pragma once
 #include <iostream>
 #include <string>

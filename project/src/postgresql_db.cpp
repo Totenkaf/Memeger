@@ -1,14 +1,16 @@
 //Copyright 2022 by Artem Ustsov
-#include "postgresql_db.h"
+
 #include "models.h"
+#include "postgresql_db.h"
 
-Postgre_DB::Postgre_DB(std::string host = "127.0.0.1", std::string port = "5432", std::string db_name = "postgres", std::string user = "postgres", std::string password = "postgres") {
-    
-    std::string request = "dbname = " + db_name + " user = " + user + " password = " + password + " hostaddr = " + host + " port = " + port;
-    
 
+Postgre_DB::Postgre_DB() 
+: db_host_("127.0.0.1"), db_port_("5432"), db_name_("postgres"), db_user_("postgres"), db_password_("postgres")
+{
+    std::string request = "dbname = " + db_name_ + " user = " + db_user_ + " password = " + db_password_ + " hostaddr = " + db_host_ + " port = " + db_port_;
     try {
         PG_conn = std::make_shared <pqxx::connection>(request);
+
         if (!PG_conn->is_open()) {
             std::cerr << "Can't open database" << std::endl;        
         } else {
@@ -18,8 +20,27 @@ Postgre_DB::Postgre_DB(std::string host = "127.0.0.1", std::string port = "5432"
     catch (const std::exception &e) {
       std::cerr << e.what() << std::endl;
     }
+    init_tables();
 }
 
+Postgre_DB::Postgre_DB(std::string db_host, std::string db_port, std::string db_name, 
+                       std::string db_user, std::string db_password) {
+
+    std::string request = "dbname = " + db_name + " user = " + db_user + " password = " + db_password + " hostaddr = " + db_host + " port = " + db_port;
+    try {
+        PG_conn = std::make_shared <pqxx::connection>(request);
+        
+        if (!PG_conn->is_open()) {
+            std::cerr << "Can't open database" << std::endl;        
+        } else {
+            std::cout << "Database has been successfully opened" << std::endl;
+        }
+    }
+    catch (const std::exception &e) {
+      std::cerr << e.what() << std::endl;
+    }
+    init_tables();
+}
 
 Postgre_DB::~Postgre_DB() {
     if (PG_conn->is_open()) {
@@ -27,16 +48,16 @@ Postgre_DB::~Postgre_DB() {
     }
 }
 
-
 int Postgre_DB::init_tables() {
-    std::string create_table = "CREATE TABLE ";
-    std::string users = create_table + "USERS (id VARCHAR(50) NOT NULL PRIMARY KEY, login VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL,\
+    std::string create_table = "CREATE TABLE IF NOT EXISTS ";
+    std::string users = create_table + "USERS (id UUID NOT NULL PRIMARY KEY, login VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL,\
                                                active_status VARCHAR(8) NOT NULL);";
 
-    std::string messages = create_table + "MESSAGES (id VARCHAR(50) NOT NULL PRIMARY KEY, user_from VARCHAR(50) NOT NULL, user_to VARCHAR(50) NOT NULL,\
-                                                    chat_id VARCHAR(50) NOT NULL, content VARCHAR(150), is_read BOOLEAN NOT NULL);";
+    std::string messages = create_table + "MESSAGES (id UUID NOT NULL PRIMARY KEY, user_from VARCHAR(50) NOT NULL, user_to VARCHAR(50) NOT NULL,\
+                                                    chat_id VARCHAR(50) NOT NULL, content VARCHAR(150), time_creation TIMESTAMP NOT NULL,\
+                                                    time_sent TIMESTAMP NOT NULL, is_read BOOLEAN NOT NULL);";
 
-    std::string chats = create_table + "CHATS (id VARCHAR(50) NOT NULL PRIMARY KEY, chat_name VARCHAR(50) NOT NULL);";
+    std::string chats = create_table + "CHATS (id UUID NOT NULL PRIMARY KEY, chat_name VARCHAR(50) NOT NULL, time_creation TIMESTAMP NOT NULL);";
 
     std::string users_chats_link = create_table + "USERS_CHATS_LINK (user_id VARCHAR(50), chat_id VARCHAR(50));";
 
@@ -143,13 +164,15 @@ int Postgre_DB::insert(const std::string& table, std::vector<std::string> values
     pqxx::work N(*PG_conn);
     std::string request;
     try {
-        request = "INSERT INTO " + table + " VALUES('";
+        request = "INSERT INTO " + table + " VALUES(uuid_generate_v4(), '";
         for (size_t i = 0; i < values.size(); ++i) {
             request += remove_danger_characters(values[i]) + "', '";
         } 
         request = request.substr(0, request.size() - 3);
         request += ");";
         N.exec(request);
+        // pqxx::result::const_iterator c = res.begin();
+        // std::cout << c[0].as<std::string>() << std::endl;
         N.commit();
     }
     catch (const std::exception &e) {
@@ -263,10 +286,12 @@ int Postgre_DB::delete_(const std::string& table, std::string where = "") {
     return 0;
 }
 
-int Postgre_DB::add_user(const User& user) {
+int Postgre_DB::add_user(User& user) {
     std::vector <std::string> data;
 
-    data.push_back(user.get_id());
+    if (user.get_id() != "") {
+        data.push_back(user.get_id());
+    }
     data.push_back(user.get_login());
     data.push_back(user.get_password());
     data.push_back(user.get_active_status());
@@ -372,7 +397,9 @@ int Postgre_DB::delete_user(User& user) {
 int Postgre_DB::add_chat(const Chat& chat) {
     std::vector <std::string> data;
 
-    data.push_back(chat.get_chat_id());
+    if(chat.get_chat_id() != "") {
+        data.push_back(chat.get_chat_id());
+    }
     data.push_back(chat.get_chat_name());
 
     try {

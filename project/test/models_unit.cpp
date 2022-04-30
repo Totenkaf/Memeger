@@ -2,13 +2,11 @@
 
 #include <gtest/gtest.h>
 #include "models.h"
-#include "postgresql_db.h"
-
 
 /* добавить фикстуру */
 
 
-TEST(POSTGRE_DB, add_test_user) {
+TEST(MODELS, add_test_user) {
   Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
 
   User test_user("Ivan", "Qwerty1235", "active");
@@ -24,7 +22,7 @@ TEST(POSTGRE_DB, add_test_user) {
   test_db.drop_tables();
 }
 
-TEST(POSTGRE_DB, change_test_user_login) {
+TEST(MODELS, change_test_user_login) {
   Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
   User test_user("Ivan", "Qwerty1235", "active");
 
@@ -33,7 +31,7 @@ TEST(POSTGRE_DB, change_test_user_login) {
   test_db.drop_tables();
 }
 
-TEST(POSTGRE_DB, change_test_user_password) {
+TEST(MODELS, change_test_user_password) {
   Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
   User test_user("Ivan", "Qwerty1235", "active");
 
@@ -42,17 +40,7 @@ TEST(POSTGRE_DB, change_test_user_password) {
   test_db.drop_tables();
 }
 
-TEST(POSTGRE_DB, find_test_user_by_login) {
-  Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
-  User test_user("Ivan", "Qwerty1235", "active");
-
-  /*CODE HERE*/
-
-  test_db.drop_tables();
-}
-
-
-TEST(POSTGRE_DB, delete_user) {
+TEST(MODELS, find_test_user_by_login) {
   Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
   User test_user("Ivan", "Qwerty1235", "active");
 
@@ -62,7 +50,17 @@ TEST(POSTGRE_DB, delete_user) {
 }
 
 
-TEST(POSTGRE_DB, add_chat) {
+TEST(MODELS, delete_user) {
+  Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
+  User test_user("Ivan", "Qwerty1235", "active");
+
+  /*CODE HERE*/
+
+  test_db.drop_tables();
+}
+
+
+TEST(MODELS, add_chat) {
   Postgre_DB test_db("127.0.0.1", "5432", "test_db", "postgres", "postgres");
   User test_user("Ivan", "Qwerty1235", "active");
   std::vector<std::string> participants = {test_user.get_login()};
@@ -79,8 +77,6 @@ TEST(POSTGRE_DB, add_chat) {
 
   test_db.drop_tables();
 }
-
-
 
 
 int main(int argc, char **argv) {

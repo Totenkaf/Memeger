@@ -18,16 +18,23 @@ class Postgre_DB : public IDataBase {
         virtual int delete_(const std::string& table, std::string where) override;
         virtual pqxx::result select(const std::string& table, std::string where, std::vector <std::string> what) override;
 
-        
+        int init_tables();
         std::string remove_danger_characters(const std::string& row_column);
 
+        std::string db_host_;
+        std::string db_port_;
+        std::string db_name_;
+        std::string db_user_;
+        std::string db_password_;
+
     public:
-        Postgre_DB(std::string host, std::string port, std::string db_name, std::string user, std::string password);
+        Postgre_DB();
+        Postgre_DB(std::string db_host, std::string db_port, std::string db_name, std::string db_user, std::string db_password);
         ~Postgre_DB();
-        int init_tables();
+        
         int drop_tables();
 
-        int add_user(const User& user);
+        int add_user(User& user);
         User get_user_by_login(const std::string& login);
         bool find_user_by_login(const std::string& login);
         int change_user_login(User& user, const std::string& new_login);

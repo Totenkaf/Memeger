@@ -1,4 +1,5 @@
 //Copyright 2022 by Artem Ustsov
+
 #pragma once
 #include <string>
 #include <set>
@@ -14,14 +15,24 @@ private:
 
 public:
     User()
-    : user_login_(""), user_password_(""), user_id_(""), active_status_("") {}
-    ~User() = default;
+    : user_login_(std::string()), user_password_(std::string()), 
+      user_id_(std::string()), active_status_(std::string()) 
+    {}
 
     User(std::string user_id, std::string user_login, 
-        std::string user_password, std::string active_status) :
-        user_login_(std::move(user_login)), user_password_(std::move(user_password)),
-        user_id_(std::move(user_id)), active_status_(active_status) {
-    }
+    std::string user_password, std::string active_status) 
+    : user_login_(std::move(user_login)), user_password_(std::move(user_password)),
+      user_id_(std::move(user_id)), active_status_(active_status) 
+    {}
+
+
+    User(std::string user_login, 
+    std::string user_password, std::string active_status) 
+    : user_login_(std::move(user_login)), user_password_(std::move(user_password)),
+      user_id_(std::string()), active_status_(active_status) 
+    {}
+
+    ~User() = default;
 
     std::string get_id() const;
     std::string get_login() const;
@@ -204,6 +215,15 @@ public:
             chat_name_(chat_name),
             participants_(participants),
             messages_(messages)
+    {}
+
+    Chat(std::string chat_name,
+        std::vector<std::string>& participants)
+        :
+        chat_id_(std::string()),
+        chat_name_(chat_name),
+        participants_(participants),
+        messages_(std::vector<TextMessage>())
     {}
 
     Chat(std::string chat_id, std::string chat_name,
