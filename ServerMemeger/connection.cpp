@@ -48,12 +48,14 @@ namespace server3 {
 
             if (!e)
             {
+                 
                 http::response<http::string_body> res{http::status::bad_request, request_.version()};
                 std::string request_str = request_.target().to_string();
                 std::string response_body;
-                Postgre_DB database("127.0.0.1", "5432", "postgres", "postgres", "postgres");
+                Postgre_DB database;
+                 //database.drop_tables();
                 //database.init_tables();
-
+                
                 
                 std::cout << "request:\n" << request_ << std::endl << std::endl;
 
@@ -70,7 +72,17 @@ namespace server3 {
                          
                         j_response["check_login"] = check;
 
-
+                        if(!check)
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                        }
+                        
+                        else
+                        {
                         res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                         res.version(10);
                         res.set(http::field::location, "/user/" + std::to_string(check));
@@ -80,6 +92,8 @@ namespace server3 {
                         response_body = j_response.dump();
                         res.body() = response_body;
                         res.set(http::field::content_length, std::to_string(response_body.length()));
+                        }
+                         
                     }
                    else if(request_str.find("/get_user/") != std::string::npos)
                     {
@@ -131,7 +145,7 @@ namespace server3 {
                 if (request_.target().find("/registration/") != std::string::npos)
                 {
                     json j_req = json::parse(request_.body());
-                    User user(j_req["id"],j_req["login"],j_req["password"],j_req["status"]);
+                    User user(j_req["login"],j_req["password"]);
                     
                     int result = database.add_user(user);
 
@@ -208,7 +222,8 @@ namespace server3 {
                else if (request_.target().find("/delete/") != std::string::npos)
                 {
                     json j_req = json::parse(request_.body());
-                    User user(j_req["id"],j_req["login"],j_req["password"],j_req["status"]);
+                    User user  = database.get_user_by_login(j_req["login"]);
+                     
                     
                     int result = database.delete_user(user);
 
@@ -229,6 +244,70 @@ namespace server3 {
                     response_body = j_response.dump();
                     res.body() = response_body;
                     res.set(http::field::content_length, std::to_string(response_body.length()));
+                }
+                else if (request_.target().find("/add_chat/") != std::string::npos)
+                {
+                    json j_req = json::parse(request_.body());
+                    std::vector<std::string> participants={j_req["participant_1"],j_req["participant_2"]};
+                    
+                    Chat chat(j_req["chat_name"],participants);
+                    int result=database.add_chat(chat);
+
+
+                    if (result != 0) {
+                        std::cerr<< "New chat for  users went wrong" << std::endl;
+                    }
+                     json j_response;
+                     j_response["status"] = result;
+                     
+                     User user1=database.get_user_by_login(j_req["participant_1"]);
+                     User user2=database.get_user_by_login(j_req["participant_2"]);
+
+                    int res2=database.add_user_chat_link(user1,chat);
+                    int res3=database.add_user_chat_link(user2,chat);
+
+
+                    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                    res.version(10);
+                    res.set(http::field::content_type, "application/json; charset=UTF-8");
+                    res.set(http::field::connection, "Keep-Alive");
+                    res.set(http::field::location, "/chat/" + std::to_string(result)+"/"+std::to_string(res2)+"/"+std::to_string(res3));
+                    res.result(http::status::ok);
+                    response_body = j_response.dump();
+                    res.body() = response_body;
+                    res.set(http::field::content_length, std::to_string(response_body.length()));
+                     
+                }
+
+
+                else if (request_.target().find("/delete_chat/") != std::string::npos)
+                {
+                    json j_req = json::parse(request_.body());
+                    
+                    
+                    Chat chat=database.get_chat_by_chat_name(j_req["chat_name"]);
+                    int result=database.delete_chat(chat);
+
+
+                    if (result != 0) {
+                        std::cerr<< "New chat for  users went wrong" << std::endl;
+                    }
+                     json j_response;
+                     j_response["status"] = result;
+                     
+                 
+
+
+                    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                    res.version(10);
+                    res.set(http::field::content_type, "application/json; charset=UTF-8");
+                    res.set(http::field::connection, "Keep-Alive");
+                    res.set(http::field::location, "/chat/" + std::to_string(result));
+                    res.result(http::status::ok);
+                    response_body = j_response.dump();
+                    res.body() = response_body;
+                    res.set(http::field::content_length, std::to_string(response_body.length()));
+                     
                 }
 
                 }

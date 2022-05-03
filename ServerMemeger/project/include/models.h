@@ -1,4 +1,5 @@
 //Copyright 2022 by Artem Ustsov
+
 #pragma once
 #include <string>
 #include <set>
@@ -14,14 +15,24 @@ private:
 
 public:
     User()
-    : user_login_(""), user_password_(""), user_id_(""), active_status_("") {}
-    ~User() = default;
+    : user_login_(std::string()), user_password_(std::string()), 
+      user_id_(std::string()), active_status_(std::string()) 
+    {}
 
     User(std::string user_id, std::string user_login, 
-        std::string user_password, std::string active_status) :
-        user_login_(std::move(user_login)), user_password_(std::move(user_password)),
-        user_id_(std::move(user_id)), active_status_(active_status) {
-    }
+    std::string user_password, std::string active_status) 
+    : user_login_(std::move(user_login)), user_password_(std::move(user_password)),
+      user_id_(std::move(user_id)), active_status_(active_status) 
+    {}
+
+
+    User(std::string user_login, 
+    std::string user_password) 
+    : user_login_(std::move(user_login)), user_password_(std::move(user_password)),
+      user_id_(std::string()), active_status_(std::string()) 
+    {}
+
+    ~User() = default;
 
     std::string get_id() const;
     std::string get_login() const;
@@ -45,13 +56,13 @@ public:
     sender_id_(std::string()), address_id_(std::string()),
     text_message_(std::string()), is_read_(false) {}
 
-    TextMessage(std::string message_id, std::string parent_chat_id, 
+    TextMessage(std::string parent_chat_id, 
                 std::string sender_id, std::string address_id,
-                std::string text_message, bool is_read) :
-                message_id_(message_id), parent_chat_id_(parent_chat_id), 
+                std::string text_message) :
+                message_id_(std::string()), parent_chat_id_(parent_chat_id), 
                 sender_id_(sender_id), address_id_(address_id),
                 text_message_(std::move(text_message)), 
-                is_read_(is_read) 
+                is_read_(false) 
     {}
 
     ~TextMessage() = default;
@@ -206,6 +217,15 @@ public:
             messages_(messages)
     {}
 
+    Chat(std::string chat_name,
+        std::vector<std::string>& participants)
+        :
+        chat_id_(std::string()),
+        chat_name_(chat_name),
+        participants_(participants),
+        messages_(std::vector<TextMessage>())
+    {}
+
     Chat(std::string chat_id, std::string chat_name,
         std::vector<std::string>& participants)
         :
@@ -230,7 +250,6 @@ public:
     
     std::vector<std::string> get_participants() const;
     std::vector<TextMessage> get_messages() const;
-
 
     int push_new_message(TextMessage new_message);
     int add_new_participant(std::string& new_participant_id);

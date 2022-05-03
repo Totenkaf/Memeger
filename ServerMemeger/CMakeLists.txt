@@ -9,7 +9,7 @@ project(boost.beast)
 
 find_package(Boost)
 include_directories(${Boost_INCLUDE_DIRS})
-
+include_directories(${INCLUDES})
 add_subdirectory(project)
 
 # Async HTTP Client
