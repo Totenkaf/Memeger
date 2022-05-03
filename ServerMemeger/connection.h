@@ -27,7 +27,7 @@ namespace server3 {
         {
         public:
             /// Construct a connection with the given io_context.
-            Connection(tcp::socket&& socket);
+            explicit Connection(tcp::socket&& socket);
 
 
             /// Start the first asynchronous operation for the connection.
@@ -56,7 +56,6 @@ namespace server3 {
 
             http::request<http::string_body> request_;
             std::shared_ptr<void> res_;
-            
         };
 } // namespace server3
 
