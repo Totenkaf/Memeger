@@ -12,13 +12,16 @@ class Postgre_DB : public IDataBase {
     private:
         std::shared_ptr <pqxx::connection> PG_conn;
         
-        virtual int save(const std::string& table, const std::string& table_fiels, std::vector <std::string> values, std::string& output_res, std::string where) override;
-        virtual int update(const std::string& table, const std::string& table_fields, std::vector <std::string> values, std::string where) override;
-        virtual int insert(const std::string& table, const std::string& table_fields, std::vector<std::string> values, std::string& output_res) override;
+        virtual int save(const std::string& table, const std::vector<std::string>& table_fields, const std::vector<std::string>& values, std::vector<std::string>& output_params, std::string where) override;
+        virtual int update(const std::string& table, const std::vector<std::string>& table_fields, const std::vector<std::string>& values, std::string where) override;
+        virtual int insert(const std::string& table, const std::vector<std::string>& table_fields, const std::vector<std::string>& values, std::vector<std::string>& output_params) override;
         virtual int delete_(const std::string& table, std::string where) override;
         virtual pqxx::result select(const std::string& table, std::string where, std::vector <std::string> what) override;
 
         int init_tables();
+        std::string parse_table_fields(const std::vector<std::string>& fields);
+        std::string parse_table_values(const std::vector<std::string>& values);
+        std::string parse_output_params(const std::vector<std::string>& output_params);
         std::string remove_danger_characters(const std::string& row_column);
 
         std::string db_host_;
@@ -36,6 +39,8 @@ class Postgre_DB : public IDataBase {
 
         int add_user(User& user);
         User get_user_by_login(const std::string& login);
+        std::string get_user_id(const std::string& login);
+        std::string get_user_login(const std::string& id);
         bool find_user_by_login(const std::string& login);
         int change_user_login(User& user, const std::string& new_login);
         int change_user_password(User& user, const std::string& new_password);
