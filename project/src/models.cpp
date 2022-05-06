@@ -51,8 +51,13 @@ std::string TextMessage::get_message_text() const {
 //     return time_sent_; 
 // }
 
-bool TextMessage::is_read() const {
+bool TextMessage::get_read_status() const {
     return is_read_; 
+}
+
+int TextMessage::set_read_status(bool is_read) {
+    is_read_ = is_read;
+    return 0;
 }
 
 std::vector<TextMessage> Chat::get_messages() const {

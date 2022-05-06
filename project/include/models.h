@@ -81,7 +81,8 @@ public:
 
     // time_t get_time_sent() const;
     // int set_time_sent(time_t time_sent);
-    bool is_read() const;
+    bool get_read_status() const;
+    int set_read_status(bool is_read);
 
     std::string get_message_text() const;
 
@@ -246,7 +247,7 @@ public:
     int set_chat_id(std::string chat_id);
 
     time_t get_chat_time_creation() const;
-    int set_chat_time_creation(const time_t& date_creation);
+    int set_chat_time_creation(const time_t& time_creation);
     
     std::vector<std::string> get_participants() const;
     std::vector<TextMessage> get_messages() const;
