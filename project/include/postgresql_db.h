@@ -3,11 +3,6 @@
 #include "idatabase.h"
 #include "models.h"
 
-#include "dirent.h"
-#include <fstream>
-#include <memory>
-#include <list>
-
 class Postgre_DB : public IDataBase {
     private:
         std::shared_ptr <pqxx::connection> PG_conn;
@@ -42,6 +37,7 @@ class Postgre_DB : public IDataBase {
         
         int drop_tables();
 
+        /* Проверить константность всех методов */
         int add_user(User& user);
         int change_user_login(User& user, const std::string& new_login);
         int change_user_password(User& user, const std::string& new_password);
@@ -58,7 +54,7 @@ class Postgre_DB : public IDataBase {
         std::vector<std::string> get_last_N_messages_from_chat(const std::string chat_id, int num_of_messages);
 
         int add_chat(Chat& chat);
-        int add_new_participant(const User& user, const Chat& chat); /*TO DO*/
+        int add_new_participant(const User& user, const Chat& chat);
         int change_chat_name(Chat& chat, const std::string& new_chat_name);
         int delete_chat(Chat& chat);
         bool find_chat_by_chat_name(const std::string& chat_name);

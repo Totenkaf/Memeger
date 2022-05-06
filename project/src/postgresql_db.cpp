@@ -4,7 +4,6 @@
 #include "postgresql_db.h"
 #include <algorithm>
 
-
 Postgre_DB::Postgre_DB() 
 : db_host_("127.0.0.1"), db_port_("5432"), db_name_("postgres"), db_user_("postgres"), db_password_("postgres")
 {
@@ -49,6 +48,7 @@ Postgre_DB::~Postgre_DB() {
     }
 }
 
+
 int Postgre_DB::init_tables() {
     std::string create_table = "CREATE TABLE IF NOT EXISTS ";
     
@@ -57,24 +57,30 @@ int Postgre_DB::init_tables() {
                                                CONSTRAINT unique_login_users UNIQUE(login),\
                                                password VARCHAR(50) NOT NULL,\
                                                active_status VARCHAR(8) NOT NULL DEFAULT 'active',\
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
-
-    std::string messages = create_table + "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
-                                                     user_from VARCHAR(50) NOT NULL,\
-                                                     user_to VARCHAR(50) NOT NULL,\
-                                                     time_sent TIMESTAMP NOT NULL DEFAULT NOW(),\
-                                                     chat_id VARCHAR(50) NOT NULL,\
-                                                     content VARCHAR(150),\
-                                                     is_read BOOLEAN NOT NULL DEFAULT false);";
+                                               CONSTRAINT real_active_statuses CHECK(active_status = 'active' OR active_status = 'inactive'),\
+                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW()\
+                                               );";
 
     std::string chats = create_table + "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
                                                chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself',\
                                                CONSTRAINT unique_chat_name UNIQUE (chat_name),\
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
+                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW()\
+                                               );";
+
+
+    std::string messages = create_table + "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
+                                                     user_from UUID NOT NULL REFERENCES USERS(id),\
+                                                     user_to UUID NOT NULL REFERENCES USERS(id),\
+                                                     time_sent TIMESTAMP NOT NULL DEFAULT NOW(),\
+                                                     chat_id UUID NOT NULL REFERENCES CHATS(id),\
+                                                     content VARCHAR(150),\
+                                                     is_read BOOLEAN NOT NULL DEFAULT false\
+                                                     );";
 
     std::string users_chats_link = create_table + "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
-                                                                     user_id VARCHAR(50) NOT NULL,\
-                                                                     chat_id VARCHAR(50) NOT NULL);";
+                                                                     user_id UUID NOT NULL REFERENCES USERS(id),\
+                                                                     chat_id UUID NOT NULL REFERENCES CHATS(id)\
+                                                                     );";
 
     pqxx::work N(*PG_conn);
     try {
@@ -88,20 +94,20 @@ int Postgre_DB::init_tables() {
 
     pqxx::work N1(*PG_conn);
     try {
-        N1.exec(messages);
+        N1.exec(chats);
     }
     catch (const std::exception &e) {
-        std::cerr << "TABLE MESSAGES execution fault" << std::endl;
+        std::cerr << "TABLE CHATS execution fault" << std::endl;
         return 1;
     }
     N1.commit();
 
     pqxx::work N2(*PG_conn);
     try {
-        N2.exec(chats);
+        N2.exec(messages);
     }
     catch (const std::exception &e) {
-        std::cerr << "TABLE CHATS execution fault" << std::endl;
+        std::cerr << "TABLE MESSAGES execution fault" << std::endl;
         return 1;
     }
     N2.commit();
@@ -123,10 +129,10 @@ int Postgre_DB::init_tables() {
 int Postgre_DB::drop_tables() {
     std::string drop_table = "DROP TABLE ";
 
-    std::string users = drop_table + "USERS;";
-    std::string messages = drop_table + "MESSAGES;";
-    std::string chats = drop_table + "CHATS;";
-    std::string users_chats_link = drop_table + "USERS_CHATS_LINK;";
+    std::string users = drop_table + "USERS CASCADE;";
+    std::string messages = drop_table + "MESSAGES CASCADE;";
+    std::string chats = drop_table + "CHATS CASCADE;";
+    std::string users_chats_link = drop_table + "USERS_CHATS_LINK CASCADE;";
 
     pqxx::work N(*PG_conn);
     try {

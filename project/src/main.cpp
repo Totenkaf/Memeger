@@ -2,7 +2,7 @@
 
 int main() {
     Postgre_DB db;
-    // db.drop_tables();
+    db.drop_tables();
 
     // User user_1("Artem", "adfadf");
     // User user_2("Maxim", "Qwerty1233");
