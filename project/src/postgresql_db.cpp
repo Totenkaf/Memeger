@@ -69,17 +69,17 @@ int Postgre_DB::init_tables() {
 
 
     std::string messages = create_table + "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
-                                                     user_from UUID NOT NULL REFERENCES USERS(id),\
-                                                     user_to UUID NOT NULL REFERENCES USERS(id),\
+                                                     user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE,\
+                                                     user_to UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE,\
                                                      time_sent TIMESTAMP NOT NULL DEFAULT NOW(),\
-                                                     chat_id UUID NOT NULL REFERENCES CHATS(id),\
+                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE,\
                                                      content VARCHAR(150),\
                                                      is_read BOOLEAN NOT NULL DEFAULT false\
                                                      );";
 
     std::string users_chats_link = create_table + "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
-                                                                     user_id UUID NOT NULL REFERENCES USERS(id),\
-                                                                     chat_id UUID NOT NULL REFERENCES CHATS(id)\
+                                                                     user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE,\
+                                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE\
                                                                      );";
 
     pqxx::work N(*PG_conn);

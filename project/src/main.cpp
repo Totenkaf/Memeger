@@ -12,6 +12,7 @@ int main() {
     // std::cout << db.add_user(user_1) << std::endl;
     // std::cout << db.add_user(user_2) << std::endl;
     // std::cout << db.add_user(user_3) << std::endl;
+
     // std::cout << db.add_user(user_4) << std::endl;
 
     // std::cout << user_1.get_id() << std::endl;
@@ -96,8 +97,6 @@ int main() {
     //     std::cout << participant << std::endl;
     // }
 
-
-
     // std::vector<Chat> chats = db.get_all_chats_by_user_login(user_3.get_login());
     // std::cout << "Вернули вектор chats" << std::endl;
     // for (auto chat : chats)
@@ -118,6 +117,7 @@ int main() {
     // Chat chat_1 = db.get_chat_by_chat_name("Memeger");
     // db.change_chat_name(chat_1, "BigBrainTeam");
     // db.add_new_participant(user_4, chat_1);
+    // std::cout << db.delete_user(user_1) << std::endl;
 
     return 0;
 }
