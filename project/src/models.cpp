@@ -72,6 +72,11 @@ std::vector<std::string> Chat::get_participants() const {
     return participants_;
 }
 
+int Chat::set_participants(std::vector<std::string>& participants) {
+    participants_ = std::move(participants);
+    return 1;
+}
+
 std::string Chat::get_chat_id() const {
     return chat_id_;
 }

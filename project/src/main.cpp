@@ -2,7 +2,7 @@
 
 int main() {
     Postgre_DB db;
-    db.drop_tables();
+    // db.drop_tables();
 
     // User user_1("Artem", "adfadf");
     // User user_2("Maxim", "Qwerty1233");
@@ -58,8 +58,20 @@ int main() {
     // std::cout << db.add_chat(chat_1) << std::endl;
 
 
-    // Chat chat_1;
-    // chat_1 = db.get_chat_by_chat_name("Memeger");
+    Chat chat_1;
+    chat_1 = db.get_chat_by_chat_name("Memeger");
+
+    std::vector<std::string> chat_1_participants = chat_1.get_participants();
+    std::cerr << "Вернули вектор participants" << std::endl;
+    for (auto participant : chat_1_participants)
+    {
+        std::cout << participant << std::endl;
+    }
+
+
+    // db.add_new_participant(user_1, chat_1);
+    // db.add_new_participant(user_4, chat_1);
+
 
 
     // TextMessage message(chat.get_chat_id(), user_1.get_id(), user_2.get_id(), "Hello, Maxim");
@@ -117,6 +129,7 @@ int main() {
     // Chat chat_1 = db.get_chat_by_chat_name("Memeger");
     // db.change_chat_name(chat_1, "BigBrainTeam");
     // db.add_new_participant(user_4, chat_1);
+
     // std::cout << db.delete_user(user_1) << std::endl;
 
     return 0;

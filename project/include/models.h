@@ -253,6 +253,7 @@ public:
     time_t get_chat_time_creation() const;
     int set_chat_time_creation(const time_t& time_creation);
     
+    int set_participants(std::vector<std::string>& participants);
     std::vector<std::string> get_participants() const;
     std::vector<TextMessage> get_messages() const;
 

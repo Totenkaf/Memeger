@@ -609,12 +609,16 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
             pqxx::result::const_iterator c = res.begin();
             chat.set_chat_id( c.at(0).as<std::string>() );
             chat.set_chat_name( c.at(1).as<std::string>() );
+
         }
         res.clear();
     }
     catch (const std::exception &e) {
-        std::cerr << "WRONG PARTICIPANTS" << std::endl;
+        std::cerr << "WRONG CHAT_NAME" << std::endl;
     }
+
+    std::vector<std::string> participants = get_participants_from_chat(chat);
+    chat.set_participants(participants);
     return chat;
 }
 
