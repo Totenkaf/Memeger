@@ -1,0 +1,21 @@
+/home/maxim/Загрузки/CLion-2021.3.3/clion-2021.3.3/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/maxim/Загрузки/CLion-2021.3.3/clion-2021.3.3/bin/ninja/linux/ninja -G Ninja "/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger"
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Boost: /usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake (found version "1.71.0")  
+INCLUDES_DIR = /home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include
+PROJECT_SOURCE_DIR = /home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project
+MODELS_LIB_FILES = /home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/src/models.cpp
+DATABASE_LIB_FILES = /home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/src/postgresql_db.cpp
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/cmake-build-debug

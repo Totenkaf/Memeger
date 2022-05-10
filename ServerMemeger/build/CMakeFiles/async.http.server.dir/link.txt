@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/async.http.server.dir/async.http.server.cpp.o CMakeFiles/async.http.server.dir/connection.cpp.o  -o async.http.server  -Wl,-rpath,"/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/build/project" project/libdatabase_lib.so -lpthread -lpqxx -lpq 

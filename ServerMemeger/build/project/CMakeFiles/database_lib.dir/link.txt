@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -pthread -Wall -Wextra -Wpedantic -Werror  -shared -Wl,-soname,libdatabase_lib.so -o libdatabase_lib.so CMakeFiles/database_lib.dir/src/models.cpp.o CMakeFiles/database_lib.dir/src/postgresql_db.cpp.o 

@@ -1,0 +1,86 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/connection.cpp
+connection.h
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/connection.h
+project/include/models.h
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/models.h
+project/include/postgresql_db.h
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/postgresql_db.h
+vector
+-
+boost/bind/bind.hpp
+-
+boost/beast/http/write.hpp
+-
+boost/lexical_cast.hpp
+-
+iostream
+-
+string
+-
+sstream
+-
+nlohmann/json.hpp
+-
+
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/connection.h
+boost/beast/core.hpp
+-
+boost/beast/http.hpp
+-
+boost/beast/version.hpp
+-
+boost/asio/dispatch.hpp
+-
+boost/asio/strand.hpp
+-
+boost/config.hpp
+-
+algorithm
+-
+cstdlib
+-
+functional
+-
+iostream
+-
+memory
+-
+string
+-
+thread
+-
+vector
+-
+
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/idatabase.h
+iostream
+-
+string
+-
+pqxx/pqxx
+-
+
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/models.h
+string
+-
+set
+-
+utility
+-
+vector
+-
+
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/postgresql_db.h
+idatabase.h
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/idatabase.h
+models.h
+/home/maxim/Рабочий стол/Memeger/Memeger/ServerMemeger/project/include/models.h
+

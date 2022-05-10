@@ -1,0 +1,9 @@
+# ninja log v5
+3	1408	1652197784995439928	project/CMakeFiles/database_lib.dir/src/models.cpp.o	ce77c0fdfdc324b2
+16	2983	1652197786483354933	project/CMakeFiles/database_lib.dir/src/postgresql_db.cpp.o	5cef37d619228c1
+2983	3313	1652197786919330017	project/libdatabase_lib.so	325d59c9d93a4f8b
+0	6987	1652197790587120239	CMakeFiles/async.http.server.dir/async.http.server.cpp.o	4fd20d5e0be17051
+1	16102	1652197799690598302	CMakeFiles/async.http.server.dir/connection.cpp.o	28ad841de301be0d
+16102	16757	1652197800358559935	async.http.server	300d05b9e542b122
+12	13514	1652197949175829098	CMakeFiles/async.http.server.dir/connection.cpp.o	28ad841de301be0d
+13515	14436	1652197950115832767	async.http.server	300d05b9e542b122
