@@ -6,12 +6,15 @@
 #include <utility>
 #include <vector>
 
+
+/* Добавить работу со временем создания пользователя */
 class User {
 private:
     std::string user_login_;
     std::string user_password_;
     std::string user_id_;
     std::string active_status_;
+    // time_t time_creation;
 
 public:
     User()
@@ -48,7 +51,7 @@ public:
     bool operator!=(const User &user) const;
 };
 
-
+/* Добавить работу со временем отправки сообщения */
 class TextMessage {
 public:
     TextMessage()
@@ -81,7 +84,8 @@ public:
 
     // time_t get_time_sent() const;
     // int set_time_sent(time_t time_sent);
-    bool is_read() const;
+    bool get_read_status() const;
+    int set_read_status(bool is_read);
 
     std::string get_message_text() const;
 
@@ -203,6 +207,7 @@ private:
 // };
 
 
+/* Добавить работу со временем создания чата */
 class Chat {
 public:
     Chat() = default;
@@ -246,8 +251,9 @@ public:
     int set_chat_id(std::string chat_id);
 
     time_t get_chat_time_creation() const;
-    int set_chat_time_creation(const time_t& date_creation);
+    int set_chat_time_creation(const time_t& time_creation);
     
+    int set_participants(std::vector<std::string>& participants);
     std::vector<std::string> get_participants() const;
     std::vector<TextMessage> get_messages() const;
 
@@ -267,5 +273,5 @@ private:
     std::string chat_name_;
     std::vector<std::string> participants_;
     std::vector<TextMessage> messages_;
-    // time_t date_creation_;
+    // time_t time_creation_;
 };

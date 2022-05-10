@@ -51,8 +51,13 @@ std::string TextMessage::get_message_text() const {
 //     return time_sent_; 
 // }
 
-bool TextMessage::is_read() const {
+bool TextMessage::get_read_status() const {
     return is_read_; 
+}
+
+int TextMessage::set_read_status(bool is_read) {
+    is_read_ = is_read;
+    return 0;
 }
 
 std::vector<TextMessage> Chat::get_messages() const {
@@ -65,6 +70,11 @@ TextMessage Chat::get_last_message() const {
 
 std::vector<std::string> Chat::get_participants() const {
     return participants_;
+}
+
+int Chat::set_participants(std::vector<std::string>& participants) {
+    participants_ = std::move(participants);
+    return 1;
 }
 
 std::string Chat::get_chat_id() const {

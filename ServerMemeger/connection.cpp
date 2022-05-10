@@ -44,16 +44,17 @@ namespace server3 {
                                      std::size_t bytes_transferred)
         {
             if( e == http::error::end_of_stream)
+                
                 return do_close();
-
+                
             if (!e)
             {
                  
                 http::response<http::string_body> res{http::status::bad_request, request_.version()};
                 std::string request_str = request_.target().to_string();
                 std::string response_body;
-                Postgre_DB database;
-                 //database.drop_tables();
+                 Postgre_DB database;
+                // database.drop_tables();
                 //database.init_tables();
                 
                 
@@ -131,6 +132,128 @@ namespace server3 {
                         }
                         
                     }
+
+                    else if(request_str.find("/get_chat_by_name/") != std::string::npos)
+                    {
+                        
+                        json j_req = json::parse(request_.body());
+                        
+                        Chat chat = database.get_chat_by_chat_name(j_req["chat_name"]);
+                        
+                        json j_response;
+                        
+                        j_response["chat_id_"] = chat.get_chat_id();
+                        j_response["chat_name"] = chat.get_chat_name();
+                        // j_response["password"] = chat.;
+                        // j_response["status"] = usr.get_active_status();
+                        bool check = database.find_chat_by_chat_name(j_req["chat_name"]) ;
+                        if( !database.find_chat_by_chat_name(j_req["chat_name"])   || chat.get_chat_name()== std::string()  )
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                        }
+                        
+                        else
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.version(10);
+                        res.set(http::field::location, "/chat/" + std::to_string(check));
+                        res.set(http::field::content_type, "application/json; charset=UTF-8");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::ok);
+                        response_body = j_response.dump();
+                        res.body() = response_body;
+                        res.set(http::field::content_length, std::to_string(response_body.length()));
+                        }
+                        
+                    }
+                     else if(request_str.find("/participants_from_chat/") != std::string::npos)
+                    {
+                        
+                        json j_req = json::parse(request_.body());
+                        
+                        Chat chat = database.get_chat_by_chat_name(j_req["chat_name"]);
+                        std::vector<std::string> participants=chat.get_participants();
+                        json j_response;
+                        int size =participants.size();
+                        if(size==0)
+                        {
+                            res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }"; 
+                        }
+                        std::string name="paticipant #";
+                        for(int i=0;i<size;++i)
+                        {
+                            std::string name2= name+ std::to_string(i+1);
+                            j_response[name2]=participants[i];
+                            
+                        }
+                       
+                        bool check = database.find_chat_by_chat_name(j_req["chat_name"]) ;
+                        if( !database.find_chat_by_chat_name(j_req["chat_name"])   || chat.get_chat_name()== std::string()  )
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                        }
+                        
+                        else
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.version(10);
+                        res.set(http::field::location, "/participants/" + std::to_string(check));
+                        res.set(http::field::content_type, "application/json; charset=UTF-8");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::ok);
+                        response_body = j_response.dump();
+                        res.body() = response_body;
+                        res.set(http::field::content_length, std::to_string(response_body.length()));
+                        }
+                        
+                    }
+
+                   else  if(request_str.find("/find_chat/") != std::string::npos)
+                    {
+                        
+                        json j_req = json::parse(request_.body());
+                        bool check  =database.find_chat_by_chat_name(j_req["chat_name"]);
+                        //bool check = database.find_user_by_login(j_req["chat_name"]);
+ 
+                        json j_response;
+                         
+                        j_response["check_chat"] = check;
+
+                        if(!check)
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                        }
+                        
+                        else
+                        {
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.version(10);
+                        res.set(http::field::location, "/chat/" + std::to_string(check));
+                        res.set(http::field::content_type, "application/json; charset=UTF-8");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::ok);
+                        response_body = j_response.dump();
+                        res.body() = response_body;
+                        res.set(http::field::content_length, std::to_string(response_body.length()));
+                        }
+                         
+                    }
                     else
                     {
                         res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
@@ -170,13 +293,18 @@ namespace server3 {
                 else if (request_.target().find("/change_login/") != std::string::npos)
                 {
                     json j_req = json::parse(request_.body());
-                    User user(j_req["id"],j_req["login"],j_req["password"],j_req["status"]);
+                    User user=database.get_user_by_login(j_req["login"]);
                      
                     
                     int result = database.change_user_login(user,j_req["new_log"]);
 
                     if (result != 0) {
-                        std::cerr<< "New login for  user went wrong" << std::endl;
+                        //std::cerr<< "New login for  user went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
                     }
                      json j_response;
                      j_response["status"] = result;
@@ -196,13 +324,18 @@ namespace server3 {
                 else if (request_.target().find("/change_password/") != std::string::npos)
                 {
                     json j_req = json::parse(request_.body());
-                    User user(j_req["id"],j_req["login"],j_req["password"],j_req["status"]);
-                     
+                    //User user(j_req["login"],j_req["password"]);
+                     User user=database.get_user_by_login(j_req["login"]);
                     
                     int result = database.change_user_password(user,j_req["new_pass"]);
 
                     if (result != 0) {
-                        std::cerr<< "New password for  user went wrong" << std::endl;
+                        //std::cerr<< "New password for  user went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
                     }
                      json j_response;
                      j_response["status"] = result;
@@ -219,16 +352,52 @@ namespace server3 {
                     res.body() = response_body;
                     res.set(http::field::content_length, std::to_string(response_body.length()));
                 }
-               else if (request_.target().find("/delete/") != std::string::npos)
+                else if (request_.target().find("/change_user_status/") != std::string::npos)
+                {
+                    json j_req = json::parse(request_.body());
+                    User user=database.get_user_by_login(j_req["login"]);
+                     
+                    
+                    int result = database.change_user_status(user,j_req["status"]);
+
+                    if (result != 0) {
+                        //std::cerr<< "New login for  user went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                    }
+                     json j_response;
+                     j_response["status"] = result;
+
+
+
+                    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                    res.version(10);
+                    res.set(http::field::content_type, "application/json; charset=UTF-8");
+                    res.set(http::field::connection, "Keep-Alive");
+                    res.set(http::field::location, "/user/" + std::to_string(result));
+                    res.result(http::status::ok);
+                    response_body = j_response.dump();
+                    res.body() = response_body;
+                    res.set(http::field::content_length, std::to_string(response_body.length()));
+                }
+               else if (request_.target().find("/delete_user/") != std::string::npos)
                 {
                     json j_req = json::parse(request_.body());
                     User user  = database.get_user_by_login(j_req["login"]);
-                     
-                    
+                     std::cout<<user.get_id()<<std::endl;
+                    std::cout<<user.get_login()<<std::endl;
                     int result = database.delete_user(user);
-
+                    
                     if (result != 0) {
-                        std::cerr<< "Delete user went wrong" << std::endl;
+                        //std::cerr<< "Delete user went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
                     }
                      json j_response;
                      j_response["status"] = result;
@@ -255,29 +424,108 @@ namespace server3 {
 
 
                     if (result != 0) {
-                        std::cerr<< "New chat for  users went wrong" << std::endl;
+                        //std::cerr<< "New chat for  users went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
                     }
                      json j_response;
                      j_response["status"] = result;
                      
-                     User user1=database.get_user_by_login(j_req["participant_1"]);
-                     User user2=database.get_user_by_login(j_req["participant_2"]);
+                     
 
-                    int res2=database.add_user_chat_link(user1,chat);
-                    int res3=database.add_user_chat_link(user2,chat);
+                   
 
 
                     res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
                     res.version(10);
                     res.set(http::field::content_type, "application/json; charset=UTF-8");
                     res.set(http::field::connection, "Keep-Alive");
-                    res.set(http::field::location, "/chat/" + std::to_string(result)+"/"+std::to_string(res2)+"/"+std::to_string(res3));
+                    res.set(http::field::location, "/chat/" + std::to_string(result));
                     res.result(http::status::ok);
                     response_body = j_response.dump();
                     res.body() = response_body;
                     res.set(http::field::content_length, std::to_string(response_body.length()));
                      
                 }
+
+                else if (request_.target().find("/add_new_participant/") != std::string::npos)
+                {
+                    json j_req = json::parse(request_.body());
+                  
+                    Chat chat=database.get_chat_by_chat_name(j_req["chat_name"]);
+                    User user= database.get_user_by_login( j_req["participant"]);
+                    int result=database.add_new_participant(user,chat);
+
+
+                    if (result != 0) {
+                        //std::cerr<< "New chat for  users went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                    }
+                     json j_response;
+                     j_response["status"] = result;
+                     
+                     
+
+                   
+
+
+                    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                    res.version(10);
+                    res.set(http::field::content_type, "application/json; charset=UTF-8");
+                    res.set(http::field::connection, "Keep-Alive");
+                    res.set(http::field::location, "/chat/" + std::to_string(result));
+                    res.result(http::status::ok);
+                    response_body = j_response.dump();
+                    res.body() = response_body;
+                    res.set(http::field::content_length, std::to_string(response_body.length()));
+                     
+                }
+
+
+                else if (request_.target().find("/change_chat_name/") != std::string::npos)
+                {
+                    json j_req = json::parse(request_.body());
+                  
+                    Chat chat=database.get_chat_by_chat_name(j_req["chat_name"]);
+                   
+                    int result=database.change_chat_name(chat,j_req["new_chat_name"]);
+
+
+                    if (result != 0) {
+                        //std::cerr<< "New chat for  users went wrong" << std::endl;
+                        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                        res.set(http::field::content_type, "application/json");
+                        res.set(http::field::connection, "Keep-Alive");
+                        res.result(http::status::not_found);
+                        res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+                    }
+                     json j_response;
+                     j_response["status"] = result;
+                     
+                     
+
+                   
+
+
+                    res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+                    res.version(10);
+                    res.set(http::field::content_type, "application/json; charset=UTF-8");
+                    res.set(http::field::connection, "Keep-Alive");
+                    res.set(http::field::location, "/chat/" + std::to_string(result));
+                    res.result(http::status::ok);
+                    response_body = j_response.dump();
+                    res.body() = response_body;
+                    res.set(http::field::content_length, std::to_string(response_body.length()));
+                     
+                }
+
 
 
                 else if (request_.target().find("/delete_chat/") != std::string::npos)
