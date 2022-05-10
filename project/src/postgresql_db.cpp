@@ -514,7 +514,6 @@ int Postgre_DB::change_user_password(User& user, const std::string& new_password
     }
 }
 
-/* добавить удаление из таблиц USERS_CHATS_LINK*/
 int Postgre_DB::delete_user(User& user) {
     if (user.get_id() == "") {
         return 1;
@@ -598,8 +597,8 @@ int Postgre_DB::add_chat(Chat& chat) {
 }
 
 
-
 Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
+    // static const size_t NUM_OF_LAST_MESSAGES = 25;
     std::string where = "chat_name = '" + remove_danger_characters(chat_name) + "'"; 
     pqxx::result res = select("CHATS", where);
     Chat chat;
@@ -618,12 +617,12 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
     }
 
     std::vector<std::string> participants = get_participants_from_chat(chat);
+    // std::vector<TextMessage> messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES); /*FIX IT*/
     chat.set_participants(participants);
     return chat;
 }
 
 
-/* добавить удаление из таблиц USERS_CHATS_LINK*/
 int Postgre_DB::delete_chat(Chat& chat) {
     if (chat.get_chat_id() == "") {
         return 1;
@@ -671,6 +670,7 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(const Chat& chat
 
 
 Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
+    static const size_t NUM_OF_LAST_MESSAGES = 3;
     std::cerr << "Зашли в  get_chat_by_id" << std::endl;
     std::string where = "id = '" + remove_danger_characters(chat_id) + "'"; 
     std::cerr << "Запрос where " << where << std::endl;
@@ -690,6 +690,10 @@ Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
     catch (const std::exception &e) {
         std::cerr << "WRONG CHAT" << std::endl;
     }
+    std::vector<std::string> participants = get_participants_from_chat(chat);
+    chat.set_participants(participants);
+    std::vector<TextMessage> messages = get_last_N_messages_from_chat(chat.get_chat_id(), NUM_OF_LAST_MESSAGES); /* перевести с id на объект типа*/
+    chat.set_chat_messages(messages); /*to prettify*/
     return chat;
 }
 
@@ -718,19 +722,37 @@ std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(const std::string& log
     return chats;
 }
 
-std::vector<std::string> Postgre_DB::get_last_N_messages_from_chat(const std::string chat_id, int num_of_messages = -1) {
-    std::vector<std::string> messages;
+std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(const std::string chat_id, int num_of_messages = -1) {
+    std::vector<TextMessage> messages;
     std::string where = "chat_id = '" + remove_danger_characters(chat_id) + "'";
-    std::vector<std::string> what = {"content"};
+    std::vector<std::string> what = {"id", "user_from", "user_to", "chat_id", "content", "is_read"};
     pqxx::result res = select("MESSAGES", where, what, num_of_messages);
 
     try {
         for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
-            std::string message = c.at(0).as<std::string>();
+            TextMessage message;
+            message.set_message_id( c.at(0).as<std::string>());
+            std::cout << message.get_message_id() << std::endl;
+
+            message.set_sender_id( c.at(1).as<std::string>());
+            std::cout << message.get_sender_id() << std::endl;
+
+            message.set_address_id( c.at(2).as<std::string>());
+            std::cout << message.get_address_id() << std::endl;
+
+            message.set_parent_chat_id( c.at(3).as<std::string>());
+            std::cout << message.get_parent_chat_id() << std::endl;
+
+            message.set_message_text( c.at(4).as<std::string>());
+            std::cout << message.get_message_text() << std::endl;
+
+            message.set_read_status(false); /*to do dynamic*/
+            std::cout << message.get_read_status() << std::endl;
+
             messages.push_back(message);
         }
         if(num_of_messages > 0) {
-            std::reverse(messages.begin(), messages.end());
+            std::reverse(messages.begin(), messages.end()); /* добавить сортировку по времени через лямбду*/
         }
         res.clear();
     }

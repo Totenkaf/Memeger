@@ -39,13 +39,30 @@ std::string TextMessage::get_sender_id() const {
     return sender_id_; 
 }
 
+int TextMessage::set_sender_id(const std::string& sender_id) {
+    sender_id_ = sender_id;
+    return 0; 
+}
+
 std::string TextMessage::get_address_id() const { 
     return address_id_; 
+}
+
+int TextMessage::set_address_id(const std::string& address_id) {
+    address_id_ = address_id;
+    return 0; 
 }
 
 std::string TextMessage::get_message_text() const { 
     return text_message_; 
 }
+
+
+int TextMessage::set_message_text(const std::string& text_message) {
+    text_message_ = text_message;
+    return 0; 
+}
+
 
 // time_t TextMessage::get_time_sent() const { 
 //     return time_sent_; 
@@ -103,6 +120,12 @@ int Chat::set_chat_name(const std::string& chat_name) {
 //     date_creation_ = date_creation;
 //     return 0;
 // }
+
+
+int Chat::set_chat_messages(const std::vector<TextMessage>& messages) {
+    messages_ = messages;
+    return 0;
+}
 
 int Chat::push_new_message(TextMessage new_message) {
     messages_.push_back(new_message);

@@ -54,6 +54,7 @@ public:
 /* Добавить работу со временем отправки сообщения */
 class TextMessage {
 public:
+
     TextMessage()
     : message_id_(std::string()), parent_chat_id_(std::string()),
     sender_id_(std::string()), address_id_(std::string()),
@@ -88,6 +89,7 @@ public:
     int set_read_status(bool is_read);
 
     std::string get_message_text() const;
+    int set_message_text(const std::string& text_message); /* TO CHECK */
 
 private:
     std::string message_id_;
@@ -255,9 +257,13 @@ public:
     
     int set_participants(std::vector<std::string>& participants);
     std::vector<std::string> get_participants() const;
+
+    int set_messages(const std::vector<TextMessage>& messages);
     std::vector<TextMessage> get_messages() const;
 
     int push_new_message(TextMessage new_message);
+    int set_chat_messages(const std::vector<TextMessage>& messages); /* TO CHECK */
+
     int add_new_participant(std::string& new_participant_id);
 
     bool is_empty() const;

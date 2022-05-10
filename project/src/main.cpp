@@ -61,12 +61,12 @@ int main() {
     Chat chat_1;
     chat_1 = db.get_chat_by_chat_name("Memeger");
 
-    std::vector<std::string> chat_1_participants = chat_1.get_participants();
-    std::cerr << "Вернули вектор participants" << std::endl;
-    for (auto participant : chat_1_participants)
-    {
-        std::cout << participant << std::endl;
-    }
+    // std::vector<std::string> chat_1_participants = chat_1.get_participants();
+    // std::cerr << "Вернули вектор participants" << std::endl;
+    // for (auto participant : chat_1_participants)
+    // {
+    //     std::cout << participant << std::endl;
+    // }
 
 
     // db.add_new_participant(user_1, chat_1);
@@ -116,13 +116,15 @@ int main() {
     //     std::cout << chat.get_chat_name() << std::endl;
     // }
 
-    // size_t num_of_message = 1;
-    // std::vector<std::string> messages = db.get_last_N_messages_from_chat(chat_1.get_chat_id(), num_of_message);
-    // std::cout << "Вернули вектор messages" << std::endl;
-    // for (auto message : messages)
-    // {
-    //     std::cout << message << std::endl;
-    // }
+
+    Chat chat_2 = db.get_chat_by_id(chat_1.get_chat_id());
+
+    std::vector<TextMessage> messages = chat_2.get_messages();
+    std::cout << "Вернули вектор messages" << std::endl;
+    for (auto message : messages)
+    {
+        std::cout << message.get_message_text() << std::endl;
+    }
 
     // std::cout << db.change_chat_name(chat_1, "Maxim/Artem") << std::endl;
 

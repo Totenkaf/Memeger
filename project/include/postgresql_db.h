@@ -51,7 +51,7 @@ class Postgre_DB : public IDataBase {
         int add_message(TextMessage& message);
         int delete_message(TextMessage& message);
         int change_read_status(TextMessage& message, bool new_status); /*is it need, how to process read status to message*/
-        std::vector<std::string> get_last_N_messages_from_chat(const std::string chat_id, int num_of_messages);
+        std::vector<TextMessage> get_last_N_messages_from_chat(const std::string chat_id, int num_of_messages);
 
         int add_chat(Chat& chat);
         int add_new_participant(const User& user, const Chat& chat);
