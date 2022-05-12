@@ -20,6 +20,8 @@ jobs:
           sudo apt-get install -y postgresql postgresql-contrib
           sudo apt-get install -y libpqxx-dev
           sudo pg_ctlcluster 12 main start
+          sudo -u postgres psql
+          exit
 
       - name: INSTALL GCC
         run: |
