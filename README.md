@@ -14,13 +14,12 @@ BMSTU_VK_Project | Углубленное программирование на 
 
 ## __1) Установка PostgreSQL на Ubuntu:__
 ```
-- sudo apt update
-- sudo apt install postgresql postgresql-contrib
+- sudo apt-get update -y
+- sudo apt-get install postgresql postgresql-contrib
 ```
 
 ## __2) Установка <pqxx/pqxx> -> libpqxx.so__
 ```
-- sudo apt-get update -y
 - sudo apt-get install -y libpqxx-dev
 ```
 

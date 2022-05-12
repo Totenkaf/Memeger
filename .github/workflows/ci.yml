@@ -9,6 +9,14 @@ jobs:
       - name: WORKING DIRECTORY
         run: pwd
 
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y postgresql postgresql-contrib
+          sudo apt-get install -y libpqxx-dev
+          sudo -u postgres psql -c “ALTER USER postgres PASSWORD ‘postgres’;”
+          sudo -u postgres psql -c “CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';”
+
       - name: INSTALL GCC
         run: |
           sudo apt-get update && sudo apt-get install -y gcc g++
