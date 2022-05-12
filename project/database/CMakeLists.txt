@@ -38,7 +38,7 @@ message("MODELS_LIB_FILES = ${MODELS_LIB_FILES}")
 set(DATABASE_LIB_FILES ${${project_name}_lib_sources}/postgresql_db.cpp)
 message("DATABASE_LIB_FILES = ${DATABASE_LIB_FILES}")
 
-add_library(database_lib STATIC ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
+add_library(database_lib SHARED ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
 target_include_directories(database_lib PUBLIC ${${project_name}_lib_includes})
 target_link_libraries(database_lib PUBLIC -lpqxx -lpq)
 
@@ -155,7 +155,7 @@ target_link_libraries(database_lib PUBLIC -lpqxx -lpq)
 # endif()
 
 # # ------------------------------------------------------------------------------
-# # 6 | CppCheck
+# # 6 | CppCheckadd_user
 # # ------------------------------------------------------------------------------
 # option(ENABLE_CPPCHECK "Build all tests." OFF) # Makes boolean 'test' available.
 # if(ENABLE_CPPCHECK)

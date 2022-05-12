@@ -323,6 +323,9 @@ int Postgre_DB::add_user(User& user) {
     std::vector<std::string> output_params = {"id", "active_status"};
     try {
         save("USERS", table_fields, data, output_params);
+        if(output_params[0] == "id" || output_params[1] == "active_status") {
+            return 1;
+        }
         user.set_id(output_params[0]);
         user.set_active_status(output_params[1]);
     }
@@ -405,6 +408,10 @@ bool Postgre_DB::find_user_by_login(const std::string& login) {
 }
 
 int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
+    if(!find_user_by_login(user.get_login())) {
+        return 1;
+    }
+
     std::string where = "login = '" + remove_danger_characters(user.get_login()) + "'";
     std::vector<std::string> values = {new_login};
     std::vector<std::string> table_fields = {"login"};
@@ -421,11 +428,10 @@ int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
 }
 
 int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
-    if(find_user_by_login(user.get_login())) {
+    if(!find_user_by_login(user.get_login())) {
         return 1;
     }
     std::string where = "login = '" + remove_danger_characters(user.get_login()) + "'";
-
     std::vector<std::string> values = {new_status};
     std::vector<std::string> table_fields = {"active_status"};
     try {
@@ -441,7 +447,7 @@ int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
 }
 
 int Postgre_DB::change_user_password(User& user, const std::string& new_password) {
-    if(find_user_by_login(user.get_login())) {
+    if(!find_user_by_login(user.get_login())) {
         return 1;
     }
     std::string where = "login = '" + remove_danger_characters(user.get_login()) + "'";
@@ -514,6 +520,9 @@ int Postgre_DB::add_chat(Chat& chat) {
     std::vector<std::string> output_params = {"id"};
     try {
         save("CHATS", table_fields, data, output_params);
+        if(output_params[0] == "id") {
+            return 1;
+        }
         chat.set_chat_id(output_params[0]);
         std::vector<std::string> participants = chat.get_participants();
         for (auto participant : participants) {
@@ -528,7 +537,7 @@ int Postgre_DB::add_chat(Chat& chat) {
 
 Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
     static const size_t NUM_OF_LAST_MESSAGES = 25;
-    std::string where = "chat_name = '" + remove_danger_characters(chat_name) + "'"; 
+    std::string where = "chat_name = '" + remove_danger_characters(chat_name) + "'";
     pqxx::result res = select("CHATS", where);
     Chat chat;
     try {
@@ -583,11 +592,13 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(const Chat& chat
     pqxx::result res = select("USERS_CHATS_LINK", where, what);
     std::vector<std::string> participants;
     try {
-        for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
-            std::string user_login = get_user_login(c.at(0).as<std::string>());
+        if(res.begin() != res.end()) {
+            for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
+                std::string user_login = get_user_login(c.at(0).as<std::string>());
             participants.push_back(user_login);
         }
         res.clear();
+        }
     }
     catch (const std::exception &e) {
         std::cerr << "WRONG PARTICIPANTS" << std::endl;
@@ -644,17 +655,19 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(const Chat& c
     pqxx::result res = select("MESSAGES", where, what, num_of_messages);
 
     try {
-        for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
-            TextMessage message;
-            message.set_message_id( c.at(0).as<std::string>());
-            message.set_sender_id( c.at(1).as<std::string>());
-            message.set_parent_chat_id( c.at(2).as<std::string>());
-            message.set_message_text( c.at(3).as<std::string>());
-            message.set_read_status(false); /*TO DO DYNAMIC*/
-            messages.push_back(message);
-        }
-        if(num_of_messages > 0) {
-            std::reverse(messages.begin(), messages.end());
+        if(res.begin() != res.end()) {
+            for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
+                TextMessage message;
+                message.set_message_id( c.at(0).as<std::string>());
+                message.set_sender_id( c.at(1).as<std::string>());
+                message.set_parent_chat_id( c.at(2).as<std::string>());
+                message.set_message_text( c.at(3).as<std::string>());
+                message.set_read_status(false); 
+                messages.push_back(message);
+            }
+            if(num_of_messages > 0) {
+                std::reverse(messages.begin(), messages.end());
+            }
         }
         res.clear();
     }
