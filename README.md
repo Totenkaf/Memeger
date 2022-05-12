@@ -25,8 +25,6 @@ BMSTU_VK_Project | Углубленное программирование на 
 
 ## __3) Добавление пароля и расширения для генерации UUID внутри БД:__
 ```
-- sudo -u postgres psql 
-- ALTER USER postgres PASSWORD ‘postgres’;
-- CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';
-- \q
+- sudo -h 127.0.0.1 -U postgres psql -с "ALTER USER postgres PASSWORD ‘postgres’;"
+- sudo -h 127.0.0.1 -U postgres psql -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
 ```
