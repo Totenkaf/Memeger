@@ -19,8 +19,8 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libpqxx-dev
           sudo apt-get install postgresql
-          pg_ctlcluster 12 main start
-          psql -h 127.0.0.1 -U postgres -c "ALTER USER postgres PASSWORD ‘postgres’;"
+          sudo su - postgres
+          psql -h 127.0.0.1 -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
           sudo service postgresql start
 
       - name: INSTALL GCC
