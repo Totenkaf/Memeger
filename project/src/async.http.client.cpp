@@ -29,9 +29,9 @@ public:
 
         //add_message 
 
-    //  std::string user_login="Jack";
+    //  std::string user_login="TOM";
     // std::string chat_name="Monolog";
-    //  std::string content="1123dede";
+    //  std::string content="Privet";
      
 	// std::string body = "{\"login\":\"" + user_login + "\"," + "\"chat_name\":\"" + chat_name + "\"," + "\"content\":\"" +content+"\"}";
     // request_.version(10);
@@ -47,11 +47,11 @@ public:
 //delete message 
 
 
-    // std::string user_login="Jack";
+    // std::string user_login="TOM";
     // std::string chat_name="Monolog";
-    // std::string content="Hello my friends! How are u ";
+    // std::string content="Privet";
      
-	// std::string body = "{\"login\":\"" + user_login + "\"," + "\"chat_name\":\"" + chat_name + "\"}";
+	// std::string body = "{\"login\":\"" + user_login + "\"," + "\"chat_name\":\"" + chat_name + "\"," + "\"content\":\"" +content+ "\"}";
     // request_.version(10);
 	// request_.method(http::verb::post);
 	// request_.target(path);
@@ -82,8 +82,8 @@ public:
 
         //add_user
 
-    // std::string user_login="Tom";
-    // std::string user_password="qwerty";
+    // std::string user_login="Jerry";
+    // std::string user_password="rwfewe";
     
      
 	// std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
@@ -127,10 +127,10 @@ public:
 
     //change user login
 
-    // std::string user_login="Kolyan";
+    // std::string user_login="Tom";
      
      
-    // std::string new_user_login="Dima";
+    // std::string new_user_login="TOM";
 
     //  std::string status="active";
 	// std::string body = "{\"login\":\"" + user_login + "\","  +"\"new_log\":\"" +new_user_login+"\"}";
@@ -146,10 +146,10 @@ public:
 
     //change user password
 
-    // std::string user_login="Kolyan";
-    // std::string user_password="1rweffewfew";
+    // std::string user_login="Jack";
+    // std::string user_password="321";
     
-    // std::string new_user_pass="12342281337";
+    // std::string new_user_pass="123";
     
 	// std::string body = "{\"login\":\"" + user_login + "\","  +"\"new_pass\":\"" +new_user_pass+"\"}";
     // request_.version(10);
@@ -166,7 +166,7 @@ public:
 
     // change user status 
 
-    // std::string user_login="Dima";
+    // std::string user_login="Jack";
     // std::string status="inactive";
 	// std::string body = "{\"login\":\"" + user_login + "\","  +"\"status\":\"" +status+"\"}";
     // request_.version(10);
@@ -181,7 +181,7 @@ public:
     
 
     //delete user
-    // std::string user_login="Nick";
+    // std::string user_login="Jerry";
     
     // std::string body = "{\"login\":\"" + user_login +"\"}";    
     // request_.version(10);
@@ -198,11 +198,13 @@ public:
     //add chat 
 
    
-    // std::string chat_name="Monolog";
-    // std::vector<std::string> participants={"Tom","Jack"};
-      
+    // std::string chat_name="ULTRA";
+    // std::vector<std::string> participants(2);//укажите количество динамически
+    // participants[0]="TOM";
+    //  participants[1]="Jack"; 
+    //  int size=participants.size();
     
-    // std::string body = "{\"chat_name\":\"" + chat_name+ "\"," + "\"participant_1\":\"" + participants[0] + "\"," + "\"participant_2\":\"" + participants[1] +  "\"}";
+    // std::string body = "{\"chat_name\":\"" + chat_name+ "\"," + "\"participant_1\":\"" + participants[0] + "\"," + "\"participant_2\":\"" + participants[1] + "\"," + "\"size\":\"" + std::to_string(size) + "\"}";
     // request_.version(10);
 	// request_.method(http::verb::post);
 	// request_.target(path);
@@ -216,8 +218,8 @@ public:
 
     //add participant in chat
 
-//     std::string chat_name="Chat# 2";
-//    std::string  participant={"Tom"};
+//     std::string chat_name="Monolog";
+//    std::string  participant={"Jerry"};
       
     
 //     std::string body = "{\"chat_name\":\"" + chat_name+ "\"," + "\"participant\":\"" + participant+   "\"}";
@@ -235,7 +237,7 @@ public:
 //get_participants_from_chat
 
 
-    // std::string chat_name="Chat# 2";
+    // std::string chat_name="Monolog";
    
       
     
@@ -270,8 +272,8 @@ public:
         //change chat name
 
 
-//     std::string chat_name="Chat# 1";
-//    std::string  new_chat_name={"NE chat 1"};
+//     std::string chat_name="ULTRA";
+//    std::string  new_chat_name={"Ultra"};
       
     
 //     std::string body = "{\"chat_name\":\"" + chat_name+ "\"," + "\"new_chat_name\":\"" + new_chat_name+   "\"}";
@@ -288,7 +290,7 @@ public:
 
     //del chat
 
-    // std::string chat_name="Chat# 1";
+    // std::string chat_name="Ultra";
    
       
     
@@ -304,24 +306,12 @@ public:
 	// request_.body() = body;
 
 
-    // find chat by name
+    
 
-    // std::string chat_name="Chat# ";
-    // std::string body = "{\"chat_name\":\"" + chat_name+  "\"}";
-    // request_.version(10);
-	// request_.method(http::verb::get);
-	// request_.target(path);
-	// request_.set(http::field::content_length, std::to_string(body.length()));
-	// request_.set(http::field::host, "localhost");
-	// request_.set(http::field::accept, "application/json");
-	// request_.set(http::field::connection, "Keep-Alive");
-	// request_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-	// request_.body() = body;
-
-    //get chat by name
+    //get chat by name and find_chat
 
 
-    // std::string chat_name="Chat# 1";
+    // std::string chat_name="Monolog";
     // std::string body = "{\"chat_name\":\"" + chat_name+  "\"}";
     // request_.version(10);
 	// request_.method(http::verb::get);

@@ -15,32 +15,31 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include"request.h"
+#include"response.h"
 
-namespace beast = boost::beast;         // from <boost/beast.hpp>
-namespace http = beast::http;           // from <boost/beast/http.hpp>
-namespace net = boost::asio;            // from <boost/asio.hpp>
-using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+ 
 
 namespace server3 {
 
-        class Connection: public std::enable_shared_from_this<Connection>
+        class Connection: public std::enable_shared_from_this<Connection>,Request,Response
         {
         public:
-            /// Construct a connection with the given io_context.
+            /// Создаём соединение с заданным io_context.
             explicit Connection(tcp::socket&& socket);
 
 
-            /// Start the first asynchronous operation for the connection.
+            /// Запуск первой асинхронной операции для подключения.
             void start();
 
         private:
             void do_read();
 
-            /// Handle completion of a read operation.
+            /// Обработка завершения операции чтения.
             void handle_read(beast::error_code e,
                              std::size_t bytes_transferred);
 
-            /// Handle completion of a write operation.
+            /// Обработка завершения операции записи.
             void handle_write(bool close,
                               beast::error_code e,
                               std::size_t bytes_transferred);
@@ -48,14 +47,14 @@ namespace server3 {
             void do_close();
 
         private:
-            /// The handler used to process the incoming request.
+            /// Обработчик, используемый для обработки входящего запроса.
             //Router<Response(*)(const Request &request)> &requestRouter_;
 
             beast::tcp_stream stream_;
             beast::flat_buffer buffer_;
 
-            http::request<http::string_body> request_;
-            std::shared_ptr<void> res_;
+            //http::request<http::string_body> request_;
+            // std::shared_ptr<void> res_;
         };
 } // namespace server3
 

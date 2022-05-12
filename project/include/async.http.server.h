@@ -32,31 +32,31 @@ namespace server3 {
             explicit server(const std::string& address, const std::string& port,
                             std::size_t thread_pool_size);
 
-            /// Run the server's io_context loop.
+            /// Запуск цикла io_context сервера.
             void run();
 
         private:
-            /// Initiate an asynchronous accept operation.
+            /// Инициация асинхронной операции приема.
             void start_accept();
 
-            /// Handle completion of an asynchronous accept operation.
+            /// Обработка завершения асинхронной операции приема.
             void handle_accept(beast::error_code e, tcp::socket socket);
 
-            /// Handle a request to stop the server.
+            /// Обработка запроса на остановку сервера.
             void handle_stop();
 
         private:
 
-            /// The next connection to be accepted.
+            /// Следующее соединение, которое должно быть принято.
            // boost::shared_ptr<Connection> new_connection_;
 
-            /// The handler for all incoming requests.
+            /// Обработчик для всех входящих запросов.
             //Router<Response(*)(const Request &request)> request_router;
 
             net::io_context io_context_;
             tcp::acceptor acceptor_;
 
-            /// The number of threads that will call io_context::run().
+            /// Количество потоков, которые будут вызывать io_context::run().
             std::size_t thread_pool_size_;
 
             /// The signal_set is used to register for process termination notifications.

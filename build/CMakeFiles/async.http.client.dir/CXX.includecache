@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/maxim/Рабочий стол/DB+SERVER/project/src/async.http.client.cpp
+iostream
+-
+string
+-
+boost/bind/bind.hpp
+-
+boost/beast/core.hpp
+-
+boost/beast/http.hpp
+-
+boost/beast/version.hpp
+-
+boost/asio/strand.hpp
+-
+

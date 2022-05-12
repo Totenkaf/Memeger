@@ -1,0 +1,126 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../project/include/request.h
+boost/beast/core.hpp
+-
+boost/beast/http.hpp
+-
+boost/beast/version.hpp
+-
+boost/asio/dispatch.hpp
+-
+boost/asio/strand.hpp
+-
+boost/config.hpp
+-
+algorithm
+-
+cstdlib
+-
+functional
+-
+iostream
+-
+memory
+-
+string
+-
+thread
+-
+vector
+-
+nlohmann/json.hpp
+-
+
+../project/include/response.h
+boost/beast/core.hpp
+-
+boost/beast/http.hpp
+-
+boost/beast/version.hpp
+-
+boost/asio/dispatch.hpp
+-
+boost/asio/strand.hpp
+-
+boost/config.hpp
+-
+algorithm
+-
+cstdlib
+-
+functional
+-
+iostream
+-
+memory
+-
+string
+-
+thread
+-
+vector
+-
+nlohmann/json.hpp
+-
+request.h
+../project/include/request.h
+../DB/include/models.h
+../project/DB/include/models.h
+../DB/include/postgresql_db.h
+../project/DB/include/postgresql_db.h
+
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/idatabase.h
+iostream
+-
+string
+-
+pqxx/pqxx
+-
+
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/models.h
+string
+-
+set
+-
+utility
+-
+vector
+-
+
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/postgresql_db.h
+idatabase.h
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/idatabase.h
+models.h
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/models.h
+
+/home/maxim/Рабочий стол/DB+SERVER/project/src/response.cpp
+vector
+-
+boost/bind/bind.hpp
+-
+boost/beast/http/write.hpp
+-
+boost/lexical_cast.hpp
+-
+iostream
+-
+response.h
+/home/maxim/Рабочий стол/DB+SERVER/project/src/response.h
+string
+-
+sstream
+-
+request.h
+/home/maxim/Рабочий стол/DB+SERVER/project/src/request.h
+../DB/include/models.h
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/models.h
+../DB/include/postgresql_db.h
+/home/maxim/Рабочий стол/DB+SERVER/project/DB/include/postgresql_db.h
+

@@ -19,7 +19,7 @@ namespace server3 {
                   acceptor_(net::make_strand(io_context_))
         {
 
-            // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
+            // Откройте акцептор с возможностью повторного использования адреса(i.e. SO_REUSEADDR).
             boost::asio::ip::tcp::resolver resolver(io_context_);
             boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(address, port).begin();
             acceptor_.open(endpoint.protocol());
@@ -32,7 +32,7 @@ namespace server3 {
         {
             start_accept();
 
-            // Create a pool of threads to run all of the io_contexts.
+            // Создайте пул потоков для запуска всех io_contexts.
             std::vector<boost::shared_ptr<std::thread> > threads;
             for (std::size_t i = 0; i < thread_pool_size_; ++i)
             {
@@ -41,7 +41,7 @@ namespace server3 {
                 threads.push_back(thread);
             }
 
-            // Wait for all threads in the pool to exit.
+            // Дождитесь завершения работы всех потоков в пуле.
             for (std::size_t i = 0; i < threads.size(); ++i)
                 threads[i]->join();
         }
@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        // Check command line arguments.
+        // Проверка аргументов командной строки.
         if (argc != 4)
         {
             std::cerr << "Usage: http_server <address> <port> <threads>\n";
@@ -95,11 +95,11 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        // Initialise the server.
+        // Инициализация сервера.
         std::size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
         auto s = std::make_shared<server3::server>(argv[1], argv[2], num_threads);
 
-        // Run the server until stopped.
+        // Запуск  сервера до тех пор, пока он не остановится.
         s->run();
     }
     catch (std::exception& e)
