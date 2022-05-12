@@ -90,9 +90,9 @@ if(ENABLE_CLANG_FORMAT)
 
 endif()
 
-# # ------------------------------------------------------------------------------
-# # 3 | Facebook Infer
-# # ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# 3 | Facebook Infer
+# ------------------------------------------------------------------------------
 if(ENABLE_INFER)
   add_custom_target(
     infer
@@ -124,10 +124,16 @@ if(ENABLE_CPPLINT)
 endif()
 
 # ------------------------------------------------------------------------------
-# 5 | CodeCoverage        ${PROJECT_SOURCE_DIR}/lib/*.c
-        ${PROJECT_SOURCE_DIR}/unit_test/*.cpp
-        ${PROJECT_SOURCE_DIR}/stress_test/*.c
-        ${PROJECT_SOURCE_DIR}/stress_test/*.h
+# 5 | CodeCoverage
+# ------------------------------------------------------------------------------
+if(ENABLE_COVERAGE)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov --coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -lgcov")
+endif()
+
+
+# ------------------------------------------------------------------------------
+# 6 | CppCheck        
 # ------------------------------------------------------------------------------
 option(ENABLE_CPPCHECK "Build all tests." OFF) # Makes boolean 'test' available.
 if(ENABLE_CPPCHECK)
