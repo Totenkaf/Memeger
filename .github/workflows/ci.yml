@@ -19,9 +19,11 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y postgresql postgresql-contrib
           sudo apt-get install -y libpqxx-dev
-          sudo pg_ctlcluster 12 main start
-          sudo -u postgres psql
+          sudo su - postgres
+          initdb --locale en_US.UTF-8 -D /var/lib/postgres/data
           exit
+          sudo systemctl start postgresql
+          sudo systemctl status postgresql
 
       - name: INSTALL GCC
         run: |
