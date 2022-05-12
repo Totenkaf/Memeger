@@ -20,7 +20,7 @@ jobs:
           sudo apt-get install -y postgresql postgresql-contrib
           sudo apt-get install -y libpqxx-dev
           sudo su - postgres
-          initdb --locale en_US.UTF-8 -D /var/lib/postgres/data
+          psql
           exit
           sudo systemctl start postgresql
           sudo systemctl status postgresql
