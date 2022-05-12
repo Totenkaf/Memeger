@@ -1,5 +1,7 @@
 TODO:
 - понять как компилить gtk (желательно gtk4)
+- привязать libcurl (отправка хттп запросов)
+- cmake
 
 # install dependencies
 - sudo apt install libgtk-3-dev
