@@ -1,7 +1,14 @@
 # Memeger
-BMSTU_VK_Project | C/CPP Advanced Cource
+BMSTU_VK_Project | Углебленное программирование на C/С++
+Клиент серверное приложение для обмена файлами между пользователями
 
 # DataBase Part
+Реляционная база данных PostgreSql для хранения данных пользователей, чатов, сообщений
+Локальный хост: 127.0.0.1
+Локальный порт: 3452
+Имя пользователя по умолчанию: postgres
+Имя базы данных по умолчанию: postgres
+Пароль по умолчанию: не устанавливается
 
 ## __1) Установка PostgreSQL на Ubuntu:__
 ```
@@ -13,11 +20,10 @@ BMSTU_VK_Project | C/CPP Advanced Cource
 ```
 - sudo apt-get update -y
 - sudo apt-get install -y libpqxx-dev
-- sudo -u postgres psql -c “ALTER USER postgres PASSWORD ‘postgres’;”
 ```
 
-## __3) Добавление расширения для генерации UUID внутри БД:__
+## __3) Добавление пароля и расширения для генерации UUID внутри БД:__
 ```
-- sudo -u postgres psql
-- CREATE EXTENSION IF NOT EXISTS “uuid-ossp”
+- sudo -u postgres psql -c “ALTER USER postgres PASSWORD ‘postgres’;”
+- sudo -u postgres psql -c “CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';”
 ```
