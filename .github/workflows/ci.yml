@@ -14,8 +14,10 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y postgresql postgresql-contrib
           sudo apt-get install -y libpqxx-dev
-          sudo -u postgres psql -c “ALTER USER postgres PASSWORD ‘postgres’;”
-          sudo -u postgres psql -c “CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';”
+          sudo -u postgres psql
+          ALTER USER postgres PASSWORD ‘postgres’;
+          CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';
+          \q
 
       - name: INSTALL GCC
         run: |
