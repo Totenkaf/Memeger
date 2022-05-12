@@ -1,7 +1,7 @@
 [![.github/workflows/ci.yml](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml/badge.svg)](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml)
 
 # Memeger
-BMSTU_VK_Project | Углебленное программирование на C/С++
+BMSTU_VK_Project | Углубленное программирование на C/С++
 Клиент серверное приложение для обмена файлами между пользователями
 
 # DataBase Part
