@@ -1,8 +1,9 @@
 #include <iostream>
 #include <stdio.h>
 #include <gtk/gtk.h>
+#include "./store.h"
 
-GtkWidget *window;
+// GtkWidget *window;
 GtkWidget* nick_name_box;
 GtkWidget* password_box;
 GtkWidget* submit_button;
@@ -15,29 +16,12 @@ GtkWidget* signup_nickname_box;
 GtkWidget* signup_password_box;
 GtkWidget* signup_submit_button;
 
-void submit(GtkWidget* widget, GdkEvent  *event, gpointer data)
-{
-  const char* nick = gtk_entry_get_text(GTK_ENTRY(nick_name_box));
-  const char* password = gtk_entry_get_text(GTK_ENTRY(password_box));
+void createLoginBox();
+void createSignupBox();
 
-  if (strlen(nick) == 0)
-  {
-    std::cout << "enter nick\n" << std::endl;
-    return;
-  }
-
-  // message must not be empty
-  if (strlen(password) == 0)
-  {
-      std::cout << "enter password" << std::endl;
-      return;
-  }
-
-  std::cout << "nick " << nick << std::endl;
-  std::cout << "password " << password << std::endl;
-
-  gtk_container_remove(GTK_CONTAINER(window), login_box);
-  gtk_container_add(GTK_CONTAINER(window), signup_box);
+void switchBoxes(GtkWidget* box_to_remove, GtkWidget*  box_to_display) {
+  gtk_container_remove(GTK_CONTAINER(window), box_to_remove);
+  gtk_container_add(GTK_CONTAINER(window), box_to_display);
   gtk_widget_show_all (window);
 }
 
@@ -61,24 +45,17 @@ void signup_submit(GtkWidget* widget, GdkEvent  *event, gpointer data) {
   std::cout << "nick " << nick << std::endl;
   std::cout << "password " << password << std::endl;
 
-  gtk_container_remove(GTK_CONTAINER(window), signup_box);
-  gtk_container_add(GTK_CONTAINER(window), login_box);
-  gtk_widget_show_all (window);
+  createLoginBox();
+  switchBoxes(signup_box, login_box);
 }
 
 void onCreateAccountButtonClick(GtkWidget* widget, GdkEvent  *event, gpointer data) {
-  gtk_container_remove(GTK_CONTAINER(window), login_box);
-  gtk_container_add(GTK_CONTAINER(window), signup_box);
+  createSignupBox();
+  switchBoxes(login_box, signup_box);
   gtk_widget_show_all (window);
 }
 
-static void activate (GtkApplication *app, gpointer user_data)
-{
-  window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "Chat");
-  gtk_window_set_default_size (GTK_WINDOW (window), 600, 800);
-
-  // signup_box
+void createSignupBox() {
   signup_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
   signup_nickname_box = gtk_entry_new();
@@ -94,8 +71,11 @@ static void activate (GtkApplication *app, gpointer user_data)
   signup_submit_button = gtk_button_new_with_label("signup");
 	gtk_box_pack_start(GTK_BOX(signup_box), signup_submit_button, FALSE, TRUE, 0);
   g_signal_connect(signup_submit_button, "clicked", G_CALLBACK(signup_submit), NULL);
+}
 
-  // login box
+void createLoginBox() {
+  void submit(GtkWidget* widget, GdkEvent  *event, gpointer data);
+
   login_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
   // gtk_box_set_center_widget(GTK_CONTAINER(window), login_box);
 
@@ -116,6 +96,41 @@ static void activate (GtkApplication *app, gpointer user_data)
   create_account_button = gtk_button_new_with_label("create new account");
 	gtk_box_pack_start(GTK_BOX(login_box), create_account_button, FALSE, TRUE, 0);
   g_signal_connect(create_account_button, "clicked", G_CALLBACK(onCreateAccountButtonClick), NULL);
+}
+
+void submit(GtkWidget* widget, GdkEvent  *event, gpointer data)
+{
+  const char* nick = gtk_entry_get_text(GTK_ENTRY(nick_name_box));
+  const char* password = gtk_entry_get_text(GTK_ENTRY(password_box));
+
+  if (strlen(nick) == 0)
+  {
+    std::cout << "enter nick\n" << std::endl;
+    return;
+  }
+
+  // message must not be empty
+  if (strlen(password) == 0)
+  {
+      std::cout << "enter password" << std::endl;
+      return;
+  }
+
+  std::cout << "nick " << nick << std::endl;
+  std::cout << "password " << password << std::endl;
+
+  switchBoxes(login_box, signup_box);
+}
+
+static void activate (GtkApplication *app, gpointer user_data)
+{
+  window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (window), "Chat");
+  gtk_window_set_default_size (GTK_WINDOW (window), 600, 800);
+
+  // signup_box
+  createLoginBox();
+  // login box
 
   gtk_container_add(GTK_CONTAINER(window), login_box);
 
