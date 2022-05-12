@@ -9,85 +9,85 @@ jobs:
       - name: WORKING DIRECTORY
         run: pwd
 
-  #     - name: INSTALL GCC
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y gcc g++
-  #         which gcc
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
 
-  #     - name: INSTALL CMAKE
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y cmake
-  #         which cmake
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
 
-  #     - name: INSTALL CLANG-FORMAT
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y clang-format
-  #         which clang
+      - name: INSTALL CLANG-FORMAT
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-format
+          which clang
 
-  #     - name: CLANG-FORMATTING
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo cmake -DENABLE_CLANG_FORMAT=ON ..
-  #         sudo make
-  #         sudo make clang-format
-  #         cd ../
+      - name: CLANG-FORMATTING
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_FORMAT=ON ..
+          sudo make
+          sudo make clang-format
+          cd ../
 
-  #     - name: INSTALL CLANG-TIDY
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y clang-tidy
-  #         which clang-tidy
+      - name: INSTALL CLANG-TIDY
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-tidy
+          which clang-tidy
 
-  #     - name: CLANG-TIDY CHECK
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo cmake -DENABLE_CLANG_TIDY=ON ..
-  #         sudo make
-  #         sudo make tidy > output.txt
-  #         if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
-  #             echo "You must pass the clang tidy checks before submitting a pull request"
-  #             echo ""
-  #             grep --color -E '^|warning: |error: ' output.txt
-  #             exit -1;
-  #         else
-  #             echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
-  #         fi
-  #         cd ../
+      - name: CLANG-TIDY CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_TIDY=ON ..
+          sudo make
+          sudo make tidy > output.txt
+          if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
+              echo "You must pass the clang tidy checks before submitting a pull request"
+              echo ""
+              grep --color -E '^|warning: |error: ' output.txt
+              exit -1;
+          else
+              echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
+          fi
+          cd ../
 
-  #     - name: INSTALL CPPLINT
-  #       run: |
-  #         sudo apt-get update && sudo pip install cpplint
-  #         which cpplint
+      - name: INSTALL CPPLINT
+        run: |
+          sudo apt-get update && sudo pip install cpplint
+          which cpplint
 
-  #     - name: CPPLINT CHECK
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo cmake -DENABLE_CPPLINT=ON ..
-  #         sudo make
-  #         sudo make cpplint
-  #         cd ../
+      - name: CPPLINT CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CPPLINT=ON ..
+          sudo make
+          sudo make cpplint
+          cd ../
 
-  #     - name: CPP CHECK
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo cmake -DENABLE_CPPCHECK=ON ..
-  #         sudo make
-  #         sudo make check
-  #         cd ../
+      - name: CPP CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CPPCHECK=ON ..
+          sudo make
+          sudo make check
+          cd ../
 
-  #     - name: INSTALL FBINFER
-  #       run: |
-  #         VERSION=1.0.0; \
-  #           curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
-  #           | sudo tar -C /opt -xJ && \
-  #           sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
+      - name: INSTALL FBINFER
+        run: |
+          VERSION=1.0.0; \
+            curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
+            | sudo tar -C /opt -xJ && \
+            sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
 
-  #     - name: FBINFER CHECK
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo apt install libncurses5 -y
-  #         sudo cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_INFER=ON ..
-  #         sudo make infer
-  #         cd ../
+      - name: FBINFER CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo apt install libncurses5 -y
+          sudo cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_INFER=ON ..
+          sudo make infer
+          cd ../
 
   # building:
   #   runs-on: ubuntu-latest
