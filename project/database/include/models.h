@@ -2,10 +2,8 @@
 
 #pragma once
 #include <string>
-#include <set>
 #include <utility>
 #include <vector>
-
 
 /* Добавить работу со временем создания пользователя */
 class User {
@@ -51,20 +49,21 @@ public:
     bool operator!=(const User &user) const;
 };
 
-/* Добавить работу со временем отправки сообщения */
+/* Добавить работу со временем отправки сообщения */ /* Сделать интерфейс, отнаследоваться, везде отрефакторить */
+/* Попробовать реализовать картинку */
 class TextMessage {
 public:
 
     TextMessage()
     : message_id_(std::string()), parent_chat_id_(std::string()),
-    sender_id_(std::string()), address_id_(std::string()),
+    sender_id_(std::string()),
     text_message_(std::string()), is_read_(false) {}
 
     TextMessage(std::string parent_chat_id, 
-                std::string sender_id, std::string address_id,
+                std::string sender_id,
                 std::string text_message) :
                 message_id_(std::string()), parent_chat_id_(parent_chat_id), 
-                sender_id_(sender_id), address_id_(address_id),
+                sender_id_(sender_id),
                 text_message_(std::move(text_message)), 
                 is_read_(false) 
     {}
@@ -89,125 +88,17 @@ public:
     int set_read_status(bool is_read);
 
     std::string get_message_text() const;
-    int set_message_text(const std::string& text_message); /* TO CHECK */
+    int set_message_text(const std::string& text_message);
 
 private:
     std::string message_id_;
     std::string parent_chat_id_;
     std::string sender_id_;
-    std::string address_id_; /* пока непонятно, нужно ли это держать */
+    // std::string address_id_;
     std::string text_message_;
     // time_t time_sent_;
     bool is_read_;
 };
-
-
-// class Picture {
-// private:
-//     int weight_;
-//     int height_;
-//     std::vector<int> R;
-//     std::vector<int> G;
-//     std::vector<int> B;
-// public:
-//     Picture() = default;
-//     ~Picture() = default;
-// };
-
-
-// class MemMessage : public IMessage {
-// public:
-//     MemMessage() = default;
-//     MemMessage(std::string message_id, std::string parent_chat_id, std::string sender_id,
-//                 Picture& mem_picture, time_t time_sent, bool is_read) :
-//                 message_id_(message_id), parent_chat_id_(parent_chat_id), sender_id_(sender_id),
-//                 mem_picture_(std::move(mem_picture)), 
-//                 time_sent_(time_sent), is_read_(is_read) {
-//     }
-//     ~MemMessage() = default;
-
-//     std::string get_message_id() const;
-//     int set_message_id(std::string message_id);
-    
-//     std::string get_parent_chat_id() const;
-//     int set_parent_chat_id(std::string parent_chat_id);
-
-//     std::string get_sender_id() const;
-//     int set_sender_id(std::string sender_id);
-
-//     time_t get_time_sent() const;
-//     int set_time_sent(time_t time_sent);
-//     bool is_read() const;
-
-//     Picture get_message_picture() const;
-
-// private:
-//     std::string message_id_;
-//     std::string parent_chat_id_;
-//     std::string sender_id_;
-//     std::string mem_name_;
-//     Picture mem_picture_;
-//     time_t time_sent_;
-//     bool is_read_;
-// };
-
-
-// class Audio {
-// private:
-//     size_t channels_;
-//     size_t duration_;
-//     size_t sample_rate_;
-//     size_t buffer_size;
-//     std::vector<std::string> buffer;
-
-// public:
-//     Audio() = default;
-//     ~Audio() = default;
-//     void play();
-//     void record();    
-// };
-
-
-// class AudioMessage : public IMessage {
-// public:
-//     AudioMessage() = default;
-//     AudioMessage(std::string message_id, std::string parent_chat_id, std::string sender_id,
-//                 Audio& audio_message, time_t time_sent, bool is_read) :
-//                 message_id_(message_id), parent_chat_id_(parent_chat_id), sender_id_(sender_id),
-//                 audio_message_(std::move(audio_message)), 
-//                 time_sent_(time_sent), is_read_(is_read) {
-//     }
-//     ~AudioMessage() = default;
-
-//     std::string get_message_id() const;
-//     int set_message_id(std::string message_id);
-    
-//     std::string get_parent_chat_id() const;
-//     int set_parent_chat_id(std::string parent_chat_id);
-
-//     std::string get_sender_id() const;
-//     int set_sender_id(std::string sender_id);
-
-//     time_t get_time_sent() const;
-//     int set_time_sent(time_t time_sent);
-//     bool is_read() const;
-
-//     Audio get_message_audio() const;
-
-//     void play_audio(const Audio&);
-//     void stop_audio(const Audio&);
-//     std::string transfer_to_text(const Audio&);
-    
-
-// private:
-//     std::string message_id_;
-//     std::string parent_chat_id_;
-//     std::string sender_id_;
-//     Audio audio_message_;
-//     time_t time_sent_;
-//     bool is_read_;
-// };
-
 
 /* Добавить работу со временем создания чата */
 class Chat {
@@ -262,9 +153,7 @@ public:
     std::vector<TextMessage> get_messages() const;
 
     int push_new_message(TextMessage new_message);
-    int set_chat_messages(const std::vector<TextMessage>& messages); /* TO CHECK */
-
-    int add_new_participant(std::string& new_participant_id);
+    int set_chat_messages(const std::vector<TextMessage>& messages);
 
     bool is_empty() const;
     bool is_dialogue() const;

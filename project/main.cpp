@@ -1,8 +1,11 @@
-#include "postgresql_db.h"
+#include "database/include/postgresql_db.h"
 
 int main() {
-    Postgre_DB db;
+    // Postgre_DB db;
     // db.drop_tables();
+
+
+/* ADDING NW USERS TO DB */
 
     // User user_1("Artem", "adfadf");
     // User user_2("Maxim", "Qwerty1233");
@@ -12,24 +15,26 @@ int main() {
     // std::cout << db.add_user(user_1) << std::endl;
     // std::cout << db.add_user(user_2) << std::endl;
     // std::cout << db.add_user(user_3) << std::endl;
-
     // std::cout << db.add_user(user_4) << std::endl;
 
-    // std::cout << user_1.get_id() << std::endl;
-    // std::cout << user_1.get_login() << std::endl;
-    // std::cout << user_1.get_password() << std::endl;
-    // std::cout << user_1.get_active_status() << std::endl;
+/*****************************/
 
-
-
+/*GET CURRENTS USERS FROM DB*/
     // User user_1;
     // user_1 = db.get_user_by_login("Maxim");
     // std::cout << user_1.get_active_status() << std::endl;
 
+
+
     // std::cout << user_1.get_id() << std::endl;
     // std::cout << user_1.get_login() << std::endl;
     // std::cout << user_1.get_password() << std::endl;
 
+/******************/
+
+
+
+/*CHANGE USER ACTIVE STATUS*/
     // db.change_user_status(user_1, "inactive");
     // std::cout << user_1.get_active_status() << std::endl;
 
@@ -37,8 +42,10 @@ int main() {
     // User user_3("Artem", "adfadf", "active");
     // db.add_user(user_3);
     // std::cout << user_3.get_id() << std::endl;
+/********************************/
 
 
+/*ADD NEW CHAT TO DB*/
     // User user_1;
     // user_1 = db.get_user_by_login("Artem");
 
@@ -46,21 +53,18 @@ int main() {
     // user_2 = db.get_user_by_login("Maxim");
 
     // User user_3;
-    // user_3 = db.get_user_by_login("Yu
-    // User user_1;
-    // user_1 = db.get_user_by_login("Artem");
-
-    // User user_2;
-    // user_2 = db.get_user_by_login("Maxim");
+    // user_3 = db.get_user_by_login("Yuri");
 
     // std::vector<std::string> participants_1 = {user_1.get_login(), user_2.get_login(), user_3.get_login()};
     // Chat chat_1("Memeger", participants_1);
     // std::cout << db.add_chat(chat_1) << std::endl;
+/*****************************/
 
+/*GET CURRENT CHAT FROM DB*/
+    // Chat chat_1;
+    // chat_1 = db.get_chat_by_chat_name("Memeger");
 
-    Chat chat_1;
-    chat_1 = db.get_chat_by_chat_name("Memeger");
-
+/*GET PARTICIPANTS FROM CHAT*/
     // std::vector<std::string> chat_1_participants = chat_1.get_participants();
     // std::cerr << "Вернули вектор participants" << std::endl;
     // for (auto participant : chat_1_participants)
@@ -69,19 +73,20 @@ int main() {
     // }
 
 
-    // db.add_new_participant(user_1, chat_1);
+/*ADD NEW PARTICIPANT TO THE CURRENT CHAT*/
+    // User user_4;
+    // user_4 = db.get_user_by_login("Yaroslav");
     // db.add_new_participant(user_4, chat_1);
+/********************************************/
 
 
-
-    // TextMessage message(chat.get_chat_id(), user_1.get_id(), user_2.get_id(), "Hello, Maxim");
+/*ADD NEW MESSAGE TO DATABASE*/
+    // TextMessage message(chat_1.get_chat_id(), user_1.get_id(), "Hello, Maxim");
     // std::cout << db.add_message(message) << std::endl;
+/************************/
 
 
-
-    // std::cout << chat_1.get_chat_id() << std::endl;
-    // std::cout << chat_1.get_chat_name() << std::endl;
-
+/*ADD MANE MESSAGES TO THE CURRENT CHAT*/
     // Chat chat_1;
 
     // std::vector<std::string> participants_1 = {user_1.get_login(), user_2.get_login()};
@@ -90,49 +95,47 @@ int main() {
 
     // chat_1 = db.get_chat_by_chat_name("Artem/Maxim");
 
-    // TextMessage message_1(chat_1.get_chat_id(), user_1.get_id(), user_2.get_id(), "Hello, Maxim!");
+    // TextMessage message_1(chat_1.get_chat_id(), user_1.get_id(), "Hello, Maxim!");
     // std::cout << db.add_message(message_1) << std::endl;
-    // TextMessage message_2(chat_1.get_chat_id(), user_2.get_id(), user_1.get_id(), "Hi!");
+    // TextMessage message_2(chat_1.get_chat_id(), user_2.get_id(), "Hi!");
     // std::cout << db.add_message(message_2) << std::endl;
-    // TextMessage message_3(chat_1.get_chat_id(), user_1.get_id(), user_2.get_id(), "I did almost all methods what we need");
+    // TextMessage message_3(chat_1.get_chat_id(), user_1.get_id(), "I did almost all methods what we need");
     // std::cout << db.add_message(message_3) << std::endl;
-    // TextMessage message_4(chat_1.get_chat_id(), user_2.get_id(), user_1.get_id(), "It's good news.");
+    // TextMessage message_4(chat_1.get_chat_id(), user_2.get_id(), "It's good news.");
     // std::cout << db.add_message(message_4) << std::endl;
-    // TextMessage message_5(chat_1.get_chat_id(), user_2.get_id(), user_1.get_id(), "Let's call tonight and discuss?");
+    // TextMessage message_5(chat_1.get_chat_id(), user_2.get_id(), "Let's call tonight and discuss?");
     // std::cout << db.add_message(message_5) << std::endl;
 
+/***************************/
 
+/*GET PARTICIPANT'S LOGINS FROM CURRENT CHAT*/
     // std::vector<std::string> chat_1_participants = db.get_participants_from_chat(chat_1);
     // std::cerr << "Вернули вектор participants" << std::endl;
     // for (auto participant : chat_1_participants)
     // {
     //     std::cout << participant << std::endl;
     // }
+/************************/
 
-    // std::vector<Chat> chats = db.get_all_chats_by_user_login(user_3.get_login());
+
+/*GET ALL CHATS BY PARTICIPANT LOGIN*/
+    // std::vector<Chat> chats = db.get_all_chats_by_user_login(user_1.get_login());
     // std::cout << "Вернули вектор chats" << std::endl;
     // for (auto chat : chats)
     // {
     //     std::cout << chat.get_chat_name() << std::endl;
     // }
+/**********************/
 
 
-    Chat chat_2 = db.get_chat_by_id(chat_1.get_chat_id());
-
-    std::vector<TextMessage> messages = chat_2.get_messages();
-    std::cout << "Вернули вектор messages" << std::endl;
-    for (auto message : messages)
-    {
-        std::cout << message.get_message_text() << std::endl;
-    }
-
-    // std::cout << db.change_chat_name(chat_1, "Maxim/Artem") << std::endl;
-
-    // Chat chat_1 = db.get_chat_by_chat_name("Memeger");
-    // db.change_chat_name(chat_1, "BigBrainTeam");
-    // db.add_new_participant(user_4, chat_1);
-
-    // std::cout << db.delete_user(user_1) << std::endl;
+/*GET ALL MESSAGES FROM CHAT*/
+    // std::vector<TextMessage> messages = chat_1.get_messages();
+    // std::cout << "Вернули вектор messages" << std::endl;
+    // for (auto message : messages)
+    // {
+    //     std::cout << message.get_message_text() << std::endl;
+    // }
+/**********************/
 
     return 0;
 }

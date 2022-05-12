@@ -2,20 +2,45 @@
 
 #include "models.h"
 
-std::string User::get_login() const { return user_login_; }
-std::string User::get_password() const { return user_password_; }
-std::string User::get_id() const { return user_id_; }
-std::string User::get_active_status() const { return active_status_; }
+std::string User::get_login() const { 
+    return user_login_; 
+}
 
-void User::set_login(const std::string &user_login) { user_login_ = user_login; }
-void User::set_password(const std::string &user_password) { user_password_ = user_password; }
-void User::set_id(const std::string &user_id) { user_id_ = user_id; }
-void User::set_active_status(const std::string& active_status) { active_status_ = active_status; }
+std::string User::get_password() const { 
+    return user_password_; 
+}
 
-bool User::operator==(const User &user) const { return user_login_ == user.get_login(); }
-bool User::operator!=(const User &user) const { return user_login_ != user.get_login(); }
+std::string User::get_id() const { 
+    return user_id_; 
+}
 
+std::string User::get_active_status() const { 
+    return active_status_; 
+}
 
+void User::set_login(const std::string &user_login) { 
+    user_login_ = user_login; 
+}
+
+void User::set_password(const std::string &user_password) { 
+    user_password_ = user_password; 
+}
+
+void User::set_id(const std::string &user_id) { 
+    user_id_ = user_id; 
+}
+
+void User::set_active_status(const std::string& active_status) { 
+    active_status_ = active_status;
+}
+
+bool User::operator==(const User &user) const {  /* нужны ли? */
+    return user_login_ == user.get_login();
+}
+
+bool User::operator!=(const User &user) const { /* нужны ли? */
+    return user_login_ != user.get_login();
+}
 
 std::string TextMessage::get_message_id() const { 
     return message_id_; 
@@ -44,25 +69,14 @@ int TextMessage::set_sender_id(const std::string& sender_id) {
     return 0; 
 }
 
-std::string TextMessage::get_address_id() const { 
-    return address_id_; 
-}
-
-int TextMessage::set_address_id(const std::string& address_id) {
-    address_id_ = address_id;
-    return 0; 
-}
-
 std::string TextMessage::get_message_text() const { 
     return text_message_; 
 }
-
 
 int TextMessage::set_message_text(const std::string& text_message) {
     text_message_ = text_message;
     return 0; 
 }
-
 
 // time_t TextMessage::get_time_sent() const { 
 //     return time_sent_; 
@@ -121,31 +135,18 @@ int Chat::set_chat_name(const std::string& chat_name) {
 //     return 0;
 // }
 
-
 int Chat::set_chat_messages(const std::vector<TextMessage>& messages) {
     messages_ = messages;
     return 0;
 }
 
-int Chat::push_new_message(TextMessage new_message) {
-    messages_.push_back(new_message);
-    return 0;
-}
-
-int Chat::add_new_participant(std::string& new_participant_id) {
-    participants_.push_back(new_participant_id);
-    return 0;
-}
-
-
-bool Chat::operator==(const Chat &chat) const {
+bool Chat::operator==(const Chat &chat) const { /* нужны ли? */
     return chat_id_ == chat.get_chat_id();
 }
 
-bool Chat::operator!=(const Chat &chat) const {
+bool Chat::operator!=(const Chat &chat) const { /* нужны ли? */
     return chat_id_ != chat.get_chat_id();
 }
-
 
 bool Chat::is_empty() const {
     return participants_.size() == 0;

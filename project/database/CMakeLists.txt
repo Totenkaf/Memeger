@@ -18,37 +18,38 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werro
 # 1 | Include subdirectories
 # ------------------------------------------------------------------------------
 
-set(INCLUDES ${PROJECT_SOURCE_DIR}/project/include)
+set(${project_name}_lib_includes ${PROJECT_SOURCE_DIR}/include)
+message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}")
 include(ExternalProject)
 
 # find_package(libpqxx REQUIRED)
 # message(STATUS ${PostgreSQL_INCLUDE_DIRS})
 
-include_directories(${INCLUDES})
-message("INCLUDES_DIR = ${INCLUDES}")
+set(${project_name}_lib_sources ${PROJECT_SOURCE_DIR}/src)
+message("DB_SOURCE_DIR = ${${project_name}_lib_sources}")
 
 # ------------------------------------------------------------------------------
 # 2 | Add libraries
 # ------------------------------------------------------------------------------
-set(SOURCES ${PROJECT_SOURCE_DIR}/project/src)
-message("PROJECT_SOURCE_DIR = ${PROJECT_SOURCE_DIR}")
-
-set(MODELS_LIB_FILES ${SOURCES}/models.cpp)
+set(MODELS_LIB_FILES ${${project_name}_lib_sources}/models.cpp)
 message("MODELS_LIB_FILES = ${MODELS_LIB_FILES}")
 
 
-set(DATABASE_LIB_FILES ${SOURCES}/postgresql_db.cpp)
+set(DATABASE_LIB_FILES ${${project_name}_lib_sources}/postgresql_db.cpp)
 message("DATABASE_LIB_FILES = ${DATABASE_LIB_FILES}")
 
 add_library(database_lib STATIC ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
-set(DB_LIB database_lib)
+target_include_directories(database_lib PUBLIC ${${project_name}_lib_includes})
+target_link_libraries(database_lib PUBLIC -lpqxx -lpq)
+
+# add_subdirectory(test)
 
 
 # ------------------------------------------------------------------------------
 # 3 | Executable Main
 # ------------------------------------------------------------------------------
-add_executable(${PROJECT_NAME} ${SOURCES}/main.cpp)
-target_link_libraries(${PROJECT_NAME} PUBLIC ${DB_LIB} -lpqxx -lpq)
+# add_executable(${PROJECT_NAME} ${SOURCES}/main.cpp)
+# target_link_libraries(${PROJECT_NAME} PUBLIC ${DB_LIB} -lpqxx -lpq)
 
 
 # ==============================================================================
@@ -262,5 +263,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${DB_LIB} -lpqxx -lpq)
 option(BUILD_TESTS "Build all tests." OFF) # Makes boolean 'unit_test' available.
 
 if(BUILD_TESTS)
-  add_subdirectory(project/test)
+  add_subdirectory(test)
 endif()
