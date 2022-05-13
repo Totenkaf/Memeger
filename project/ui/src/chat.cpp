@@ -3,8 +3,7 @@
 
 #include "chat.h"
 
-GtkWidget *window;
-
+GtkWidget *window_chat;
 GtkWidget *message_box;
 GtkWidget *chat_box;
 GtkWidget *send_button;
@@ -16,14 +15,14 @@ void submit_chat() {
     gtk_box_pack_start(GTK_BOX(chat_box), sent_message_box, FALSE, TRUE, 0);
     std::cout << "Message: " << message << std::endl;
 
-    gtk_widget_show_all(window);
+    gtk_widget_show_all(window_chat);
     return;
 }
 
 static void activate_chat(GtkApplication *app) {
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Chat");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 800);
+    window_chat = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window_chat), "Chat");
+    gtk_window_set_default_size(GTK_WINDOW(window_chat), 600, 800);
 
     chat_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
@@ -39,10 +38,10 @@ static void activate_chat(GtkApplication *app) {
     sent_message_box = gtk_label_new("Messages:");
     gtk_box_pack_start(GTK_BOX(chat_box), sent_message_box, FALSE, TRUE, 0);
 
-    gtk_container_add(GTK_CONTAINER(window), chat_box);
+    gtk_container_add(GTK_CONTAINER(window_chat), chat_box);
 
-    gtk_widget_grab_focus(window);
-    gtk_widget_show_all(window);
+    gtk_widget_grab_focus(window_chat);
+    gtk_widget_show_all(window_chat);
     return;
 }
 

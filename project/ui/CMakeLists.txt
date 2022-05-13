@@ -23,7 +23,6 @@ message("UI_SOURCE_DIR = ${${project_name}_lib_sources}")
 set(CHAT_LIB_FILES ${${project_name}_lib_sources}/chat.cpp)
 message("CHAT_LIB_FILES = ${CHAT_LIB_FILES}")
 
-
 set(SEARCH_LIB_FILES ${${project_name}_lib_sources}/search.cpp)
 message("SEARCH_LIB_FILES = ${SEARCH_LIB_FILES}")
 
