@@ -1,0 +1,12 @@
+                                 |Lines       |Functions  |Branches    
+Filename                         |Rate     Num|Rate    Num|Rate     Num
+=======================================================================
+[/home/maxim/Рабочий стол/DB+SERVER/project/]
+DB/include/models.h              | 100%     16| 100%     6|    -      0
+src/async.http.server.cpp        | 0.0%     34| 0.0%     5|    -      0
+src/connection.cpp               | 0.0%     87| 0.0%     6|    -      0
+src/request.cpp                  | 100%      3| 100%     1|    -      0
+src/response.cpp                 |50.2%    233|65.0%    20|    -      0
+test/unit.cpp                    | 100%    215| 100%    57|    -      0
+=======================================================================
+                           Total:|59.7%    588|81.1%    95|    -      0
