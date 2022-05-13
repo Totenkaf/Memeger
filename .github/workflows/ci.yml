@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install -y postgresql postgresql-contrib
           sudo pg_ctlcluster 12 main start
           sudo netstat -pant | grep postgres
-          sudo psql -h 127.0.0.1 -p 5433 -U postgres
+          sudo -h 127.0.0.1 -p 5433 -u postgres psql
 
       - name: INSTALL GCC
         run: |
