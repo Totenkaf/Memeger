@@ -483,7 +483,15 @@ int Postgre_DB::delete_user(User& user) {
   } else {
     std::string where =
         "id = '" + remove_danger_characters(user.get_id()) + "'";
-    return delete_("USERS", where);
+        int delete_status = delete_("USERS", where);
+        if(!delete_status) {
+          user.set_id(std::string());
+          user.set_login(std::string());
+          user.set_password(std::string());
+          user.set_active_status(std::string());
+          return 0;
+        }
+    return 1;
   }
 }
 

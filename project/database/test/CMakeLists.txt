@@ -15,31 +15,17 @@ set(CMAKE_CXX_STANDARD 20)
 # ------------------------------------------------------------------------------
 # 1 | Includes
 # ------------------------------------------------------------------------------
-include(CTest)
 find_package(GTest REQUIRED)
 
 include_directories(${INCLUDES})
 set(db_test_src ${PROJECT_SOURCE_DIR}/postgresql_db_unit.cpp)
-set(models_test_src ${PROJECT_SOURCE_DIR}/models_unit.cpp)
-# set(integrity_test_src ${PROJECT_SOURCE_DIR}/postgresql_db_integrity.cpp)
+
 
 # ------------------------------------------------------------------------------
 # 2 | Executables
-# ------------------------------------------------------------------------------
-# add_executable(integrity_test ${integrity_test_src})
-
-# target_include_directories(integrity_test PUBLIC ${INCLUDES})
-# target_link_libraries(integrity_test ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
-# target_link_libraries(integrity_test ${GTEST_LIBRARIES} -pthread)
-
+# ------------------------------------------------------------------------------4
 add_executable(db_test ${db_test_src})
-add_executable(models_test ${models_test_src})
-
-target_link_libraries(db_test ${DB_LIB} -lpqxx -lpq)
-target_link_libraries(db_test ${GTEST_LIBRARIES} -pthread)
-
-target_link_libraries(models_test ${DB_LIB} -lpqxx -lpq)
-target_link_libraries(models_test ${GTEST_LIBRARIES} -pthread)
+target_link_libraries(db_test database_lib ${GTEST_LIBRARIES} -pthread)
 
 
 # ==============================================================================

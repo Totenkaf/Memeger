@@ -255,9 +255,9 @@ jobs:
   #         cd unit_test
   #         sudo ./parallel_test
   #         cd ../
-  #         lcov --directory . --capture --output-file coverage.info
-  #         lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
-  #         lcov --list coverage.info
+          # lcov --directory . --capture --output-file coverage.info
+          # lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
+          # lcov --list coverage.info
   #         cd ..
   #         bash <(curl -s https://codecov.io/bash) -f build/coverage.info || echo "CodeCov didn't collect coverage reports"
   #         cat codecov.yml | curl --data-binary @- https://codecov.io/validate

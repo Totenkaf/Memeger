@@ -128,7 +128,7 @@ endif()
 # ------------------------------------------------------------------------------
 if(ENABLE_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov --coverage")
-    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -lgcov")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -lgcov")
 endif()
 
 
@@ -177,7 +177,6 @@ if(ENABLE_CPPCHECK)
         COMMENT "running cppcheck"
     )
 endif()
-
 
 # ------------------------------------------------------------------------------
 # 7 | Google Sanitizers
