@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
+#include "search.h"
+
 GtkWidget *window;
 
 GtkWidget *query_box;

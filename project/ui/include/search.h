@@ -1,4 +1,3 @@
-// Copyright 2022 Yaroslav Zhovtyak
 #pragma once
 
 #include <iostream>

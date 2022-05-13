@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
+#include "chat.h"
+
 GtkWidget *window;
 
 GtkWidget *message_box;

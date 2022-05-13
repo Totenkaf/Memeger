@@ -1,5 +1,2 @@
-team.c
-build/
-a.out
-.vs/
 .idea/
+.vscode/
