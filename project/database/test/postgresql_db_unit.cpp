@@ -5,7 +5,7 @@
 #include "postgresql_db.h"
 
 // добавить в фикстуру базовых пользователей, чаты и сообщения
-// почему-то течет память, 262 в конце любого теста, вне зависимости от содержимого
+// почему-то течет память, 262байта still reachable в конце любого теста, вне зависимости от содержимого
 // ошибка с pqxx::connection, что-то с shared_ptr. как будто не отдает часть ресурсов
 class DataBaseEnvironment : public ::testing::Test {
 public:
@@ -178,6 +178,25 @@ TEST_F(DataBaseEnvironment, add_chat) {
   Chat chat_1("Memeger", participants_1);
 
   EXPECT_EQ(test_db.add_chat(chat_1), 0);
+}
+
+TEST_F(DataBaseEnvironment, add_exist_chat) {
+  User test_user_1("Artem", "missing");
+  test_db.add_user(test_user_1);
+
+  User test_user_2("Maxim", "finding");
+  test_db.add_user(test_user_2);
+
+  User user_from_db_1 = test_db.get_user_by_login("Artem");
+  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+
+  std::vector<std::string> participants_1 = {user_from_db_1.get_login(), user_from_db_2.get_login()};
+  Chat chat_1("Memeger", participants_1);
+  EXPECT_EQ(test_db.add_chat(chat_1), 0);
+
+  Chat chat_2("Memeger", participants_1);
+  EXPECT_EQ(test_db.add_chat(chat_2), 1);
+  
 }
 
 TEST_F(DataBaseEnvironment, get_chat) {

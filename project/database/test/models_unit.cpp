@@ -3,6 +3,14 @@
 #include <gtest/gtest.h>
 #include "models.h"
 
+class ModelsTest : public ::testing::Test {
+public:
+    User user;
+    Chat chat;
+    TextMessage message;
+    virtual ~ModelsTest() {}
+};
+
 TEST(MODELS, add_test_user) {
 }
 

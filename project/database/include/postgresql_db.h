@@ -6,7 +6,7 @@
 class Postgre_DB : public IDataBase {
  private:
   std::shared_ptr<pqxx::connection> PG_conn;
-  // добавить константность и ссылки на векторы
+
   virtual int save(const std::string& table,
                    const std::vector<std::string>& table_fields,
                    const std::vector<std::string>& values,
@@ -26,6 +26,7 @@ class Postgre_DB : public IDataBase {
                               int limit) override;
 
   int init_tables();
+  int execution_table(const std::string& table_name, std::shared_ptr<pqxx::connection>& PG_conn);
 
   std::string parse_table_fields(
       const std::vector<std::string>& fields);  // по идее, константные
@@ -41,10 +42,9 @@ class Postgre_DB : public IDataBase {
   std::string db_password_;
 
  public:
-  Postgre_DB();
   Postgre_DB(std::string db_host, std::string db_port, std::string db_name,
              std::string db_user, std::string db_password);
-  virtual ~Postgre_DB();
+  ~Postgre_DB();
 
   int drop_tables();
 

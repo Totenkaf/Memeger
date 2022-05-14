@@ -21,8 +21,8 @@ class User {
         user_id_(std::string()),
         active_status_(std::string()) {}
 
-  User(std::string user_id, std::string user_login, std::string user_password,
-       std::string active_status)
+  User(const std::string user_id, const std::string user_login, const std::string user_password,
+       const std::string active_status)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::move(user_id)),
@@ -112,7 +112,7 @@ class Chat {
  public:
   Chat() = default;
 
-  Chat(std::string chat_id, std::string chat_name,
+  Chat(const std::string chat_id, const std::string chat_name,
        std::vector<std::string>& participants,
        std::vector<TextMessage>& messages)
       : chat_id_(chat_id),
@@ -120,13 +120,13 @@ class Chat {
         participants_(participants),
         messages_(messages) {}
 
-  Chat(std::string chat_name, std::vector<std::string>& participants)
+  Chat(const std::string chat_name, std::vector<std::string>& participants)
       : chat_id_(std::string()),
         chat_name_(chat_name),
         participants_(participants),
         messages_(std::vector<TextMessage>()) {}
 
-  Chat(std::string chat_id, std::string chat_name,
+  Chat(const std::string chat_id, const std::string chat_name,
        std::vector<std::string>& participants)
       : chat_id_(chat_id),
         chat_name_(chat_name),
