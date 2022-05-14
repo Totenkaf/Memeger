@@ -6,6 +6,7 @@
 
 // добавить в фикстуру базовых пользователей, чаты и сообщения
 // почему-то течет память, 262 в конце любого теста, вне зависимости от содержимого
+// ошибка с pqxx::connection, что-то с shared_ptr. как будто не отдает часть ресурсов
 class DataBaseEnvironment : public ::testing::Test {
 public:
     void TearDown() override {

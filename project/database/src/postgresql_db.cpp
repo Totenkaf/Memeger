@@ -4,6 +4,7 @@
 #include "models.h"
 #include <algorithm>
 
+// Конструктор по умолчанию. Подлкючается к БД на локальном хосте и порте
 Postgre_DB::Postgre_DB()
     : db_host_("127.0.0.1"),
       db_port_("5432"),
@@ -24,6 +25,7 @@ Postgre_DB::Postgre_DB()
   init_tables();
 }
 
+// Конструктор с уставкой. Подлкючается к БД на указанном порте, хосте
 Postgre_DB::Postgre_DB(std::string db_host, std::string db_port,
                        std::string db_name, std::string db_user,
                        std::string db_password) {
@@ -47,6 +49,7 @@ Postgre_DB::~Postgre_DB() {
   }
 }
 
+// Инициализация пустых таблиц для хранения информации о сущностях
 int Postgre_DB::init_tables() {
   std::string create_table = "CREATE TABLE IF NOT EXISTS ";
 
@@ -121,6 +124,7 @@ int Postgre_DB::init_tables() {
   return 0;
 }
 
+// Удаление таблиц из БД
 int Postgre_DB::drop_tables() {  // отрефакторить, много копипасты, сделать обертку
   std::string drop_table = "DROP TABLE ";
   std::string users = drop_table + "USERS CASCADE;";
@@ -162,6 +166,7 @@ int Postgre_DB::drop_tables() {  // отрефакторить, много ко�
   return 0;
 }
 
+// Удаление лишних символов, которые могут помешать парсингу (/, '', ;)
 std::string Postgre_DB::remove_danger_characters(
     const std::string& row_column) {
   std::string prep_column = "";
@@ -173,6 +178,7 @@ std::string Postgre_DB::remove_danger_characters(
   return prep_column;
 }
 
+// Парсинг имен таблиц в запросах
 std::string Postgre_DB::parse_table_fields(
     const std::vector<std::string>& fields) {
   std::string request = " (";
@@ -186,6 +192,7 @@ std::string Postgre_DB::parse_table_fields(
   return request;
 }
 
+// Парсинг значений полей таблиц в запросах
 std::string Postgre_DB::parse_table_values(
     const std::vector<std::string>& values) {
   std::string request = " VALUES('";
@@ -199,6 +206,7 @@ std::string Postgre_DB::parse_table_values(
   return request;
 }
 
+// Парсинг выходных значений
 std::string Postgre_DB::parse_output_params(
     const std::vector<std::string>& output_params) {
   std::string request = " ";
@@ -212,6 +220,7 @@ std::string Postgre_DB::parse_output_params(
   return request;
 }
 
+// Обертка над запросом на вставку данных в БД
 int Postgre_DB::insert(const std::string& table,
                        const std::vector<std::string>& table_fields,
                        const std::vector<std::string>& values,
@@ -240,6 +249,7 @@ int Postgre_DB::insert(const std::string& table,
   return 0;
 }
 
+// Обертка над запросом на выбор данных из БД
 pqxx::result Postgre_DB::select(
     const std::string& table, std::string where = std::string(),
     std::vector<std::string> what = std::vector<std::string>(),
@@ -268,6 +278,7 @@ pqxx::result Postgre_DB::select(
   return res;
 }
 
+// Обертка над запросом на обновление существующих данных в БД
 int Postgre_DB::update(const std::string& table,
                        const std::vector<std::string>& table_fields,
                        const std::vector<std::string>& values,
@@ -293,7 +304,7 @@ int Postgre_DB::update(const std::string& table,
   return 0;
 }
 
-// создать enum класс со статусом возврата ошибки
+// Обертка над сохранением записи в БД
 int Postgre_DB::save(const std::string& table,
                      const std::vector<std::string>& table_fields,
                      const std::vector<std::string>& values,
@@ -314,6 +325,7 @@ int Postgre_DB::save(const std::string& table,
   }
 }
 
+// Обертка над удалением записи из конкретной таблицы БД
 int Postgre_DB::delete_(const std::string& table,
                         std::string where = std::string()) {
   pqxx::work N(*PG_conn);
@@ -331,8 +343,7 @@ int Postgre_DB::delete_(const std::string& table,
   return 0;
 }
 
-
-// добавить функцию для обновления пользователя, избавиться от двоякого поведения
+// Добавление нового пользователя в таблицу USERS в БД
 int Postgre_DB::add_user(User& user) {
   std::vector<std::string> data = {user.get_login(), user.get_password()};
   std::vector<std::string> table_fields = {"login", "password"};
@@ -350,6 +361,7 @@ int Postgre_DB::add_user(User& user) {
   return 0;
 }
 
+// Получение ID пользователя из БД
 std::string Postgre_DB::get_user_id(const std::string& login) {
   std::string where = "login = '" + remove_danger_characters(login) + "'";
   std::vector<std::string> what = {"id"};
@@ -368,6 +380,7 @@ std::string Postgre_DB::get_user_id(const std::string& login) {
   return user_id;
 }
 
+// Получение логина пользователя из БД
 std::string Postgre_DB::get_user_login(const std::string& id) {
   std::string where = "id = '" + remove_danger_characters(id) + "'";
   std::vector<std::string> what = {"login"};
@@ -385,6 +398,7 @@ std::string Postgre_DB::get_user_login(const std::string& id) {
   return user_login;
 }
 
+// Получение сущности пользователя по логину
 User Postgre_DB::get_user_by_login(const std::string& login) {
   std::string where = "login = '" + remove_danger_characters(login) + "'";
   pqxx::result res = select("USERS", where);
@@ -404,6 +418,7 @@ User Postgre_DB::get_user_by_login(const std::string& login) {
   return user;
 }
 
+// Поиск сущности пользователя по логину в БД
 bool Postgre_DB::find_user_by_login(const std::string& login) {
   std::string where = "login = '" + remove_danger_characters(login) + "'";
   try {
@@ -418,6 +433,7 @@ bool Postgre_DB::find_user_by_login(const std::string& login) {
   return false;
 }
 
+// Замена логина сущности пользователя в БД
 int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
   if (!find_user_by_login(user.get_login())) {
     return 1;
@@ -437,6 +453,7 @@ int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
   return 0;
 }
 
+// Замена статуса работы пользователя
 int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
   if (!find_user_by_login(user.get_login())) {
     return 1;
@@ -456,6 +473,7 @@ int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
   return 0;
 }
 
+// Замена пароля пользователя в БД
 int Postgre_DB::change_user_password(User& user,
                                      const std::string& new_password) {
   if (!find_user_by_login(user.get_login())) {
@@ -476,6 +494,7 @@ int Postgre_DB::change_user_password(User& user,
   return 0;
 }
 
+// Удаление пользователя из БД, удаляются все связанные линки
 int Postgre_DB::delete_user(User& user) {
   if (user.get_id().empty()) {
     return 1;
@@ -491,6 +510,7 @@ int Postgre_DB::delete_user(User& user) {
   }
 }
 
+// Удаление сообщения из БД
 int Postgre_DB::delete_message(TextMessage& message) {
   if (message.get_message_id().empty()) {
     return 1;
@@ -501,6 +521,7 @@ int Postgre_DB::delete_message(TextMessage& message) {
   }
 }
 
+// Добавление сообщения в БД
 int Postgre_DB::add_message(TextMessage& message) {
   std::vector<std::string> data = {message.get_sender_id(),
                                    message.get_parent_chat_id(),
@@ -517,6 +538,7 @@ int Postgre_DB::add_message(TextMessage& message) {
   return 0;
 }
 
+// Добавление связи конкретного пользователя с конкретным чатом
 int Postgre_DB::add_user_chat_link(const std::string& user_id,
                                    const std::string& chat_id) {
   std::vector<std::string> data = {user_id, chat_id};
@@ -531,6 +553,7 @@ int Postgre_DB::add_user_chat_link(const std::string& user_id,
   return 0;
 }
 
+// Добавление сущности чата в БД
 int Postgre_DB::add_chat(Chat& chat) {
   std::vector<std::string> data = {chat.get_chat_name()};
   std::vector<std::string> table_fields = {"chat_name"};
@@ -551,6 +574,7 @@ int Postgre_DB::add_chat(Chat& chat) {
   return 0;
 }
 
+// Получение сущности чата из БД
 Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
   static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where =
@@ -577,6 +601,7 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
   return chat;
 }
 
+// Удаление сущности чата из БД, удалятся все связанные линки
 int Postgre_DB::delete_chat(Chat& chat) {
   if (chat.get_chat_id().empty()) {
     return 1;
@@ -592,6 +617,7 @@ int Postgre_DB::delete_chat(Chat& chat) {
   }
 }
 
+// Поиск сущности чата в БД
 bool Postgre_DB::find_chat_by_chat_name(const std::string& chat_name) {
   std::string where =
       "chat_name = '" + remove_danger_characters(chat_name) + "'";
@@ -607,6 +633,7 @@ bool Postgre_DB::find_chat_by_chat_name(const std::string& chat_name) {
   return false;
 }
 
+// Получение списка имен пользователей из чата
 std::vector<std::string> Postgre_DB::get_participants_from_chat(
     const Chat& chat) {
   std::string where =
@@ -628,6 +655,7 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(
   return participants;
 }
 
+// Получение сущности чата по ID
 Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
   static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where = "id = '" + remove_danger_characters(chat_id) + "'";
@@ -652,6 +680,7 @@ Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
   return chat;
 }
 
+// Получение всех сущностей чатов из БД
 std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(
     const std::string& login) {
   std::vector<Chat> chats;
@@ -671,6 +700,7 @@ std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(
   return chats;
 }
 
+// Получение последних N (если указано) сообщений
 std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
     const Chat& chat, int num_of_messages = -1) {
   std::vector<TextMessage> messages;
@@ -702,6 +732,7 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
   return messages;
 }
 
+// Изменение имени сущности чата в БД
 int Postgre_DB::change_chat_name(Chat& chat, const std::string& new_chat_name) {
   if (!find_chat_by_chat_name(chat.get_chat_name())) {
     return 1;
@@ -720,6 +751,7 @@ int Postgre_DB::change_chat_name(Chat& chat, const std::string& new_chat_name) {
   return 0;
 }
 
+// Добавление нового пользователя в чат
 int Postgre_DB::add_new_participant(const User& user, const Chat& chat) {
   return add_user_chat_link(user.get_id(), chat.get_chat_id());
 }
