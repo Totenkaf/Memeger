@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
-#include "search.h"
+#include "../include/search.h"
 
-GtkWidget *window;
+GtkWidget *window_;
 GtkWidget *query_box;
 GtkWidget *search_box;
 GtkWidget *search_button;
@@ -14,14 +14,14 @@ void submit_search() {
 
     std::cout << "Query: " << query << std::endl;
 
-    gtk_widget_show_all(window);
+    gtk_widget_show_all(window_);
     return;
 }
 
-static void activate_search(GtkApplication *app) {
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Search");
-    gtk_window_set_default_size(GTK_WINDOW(window), 600, 800);
+void activate_search(GtkApplication *app) {
+    window_ = gtk_application_window_new(app);
+    gtk_window_set_title(GTK_WINDOW(window_), "Search");
+    gtk_window_set_default_size(GTK_WINDOW(window_), 600, 800);
 
     search_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
@@ -34,10 +34,10 @@ static void activate_search(GtkApplication *app) {
     gtk_box_pack_start(GTK_BOX(search_box), search_button, FALSE, TRUE, 0);
     g_signal_connect(search_button, "clicked", G_CALLBACK(submit_search), NULL);
 
-    gtk_container_add(GTK_CONTAINER(window), search_box);
+    gtk_container_add(GTK_CONTAINER(window_), search_box);
 
-    gtk_widget_grab_focus(window);
-    gtk_widget_show_all(window);
+    gtk_widget_grab_focus(window_);
+    gtk_widget_show_all(window_);
     return;
 }
 
@@ -46,7 +46,7 @@ static void activate_search(GtkApplication *app) {
 //     int status;
 
 //     app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-//     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+//     g_signal_connect(app, "activate", G_CALLBACK(activate_search), NULL);
 //     status = g_application_run(G_APPLICATION(app), argc, argv);
 //     g_object_unref(app);
 

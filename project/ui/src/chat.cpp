@@ -1,7 +1,7 @@
 #include <iostream>
 #include <gtk/gtk.h>
 
-#include "chat.h"
+#include "../include/chat.h"
 
 GtkWidget *window;
 
@@ -20,7 +20,7 @@ void submit_chat() {
     return;
 }
 
-static void activate_chat(GtkApplication *app) {
+void activate_chat(GtkApplication *app) {
     window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Chat");
     gtk_window_set_default_size(GTK_WINDOW(window), 600, 800);
