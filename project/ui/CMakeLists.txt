@@ -53,6 +53,8 @@ add_executable(${CMAKE_PROJECT_NAME}
     include/chat.h
     src/search.cpp
     include/search.h
+    include/login-signup.h
+    src/login-signup.cpp
     ../main.cpp
 )
 

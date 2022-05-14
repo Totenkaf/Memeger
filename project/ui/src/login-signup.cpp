@@ -1,9 +1,14 @@
 #include <iostream>
 #include <stdio.h>
 #include <gtk/gtk.h>
-#include "./store.h"
 
-// GtkWidget *window;
+#include "../include/login-signup.h"
+
+void createLoginBox();
+void createSignupBox();
+void switchBoxes(GtkWidget* box_to_remove, GtkWidget*  box_to_display);
+
+GtkWidget *login_signup_window;
 GtkWidget* nick_name_box;
 GtkWidget* password_box;
 GtkWidget* submit_button;
@@ -16,13 +21,10 @@ GtkWidget* signup_nickname_box;
 GtkWidget* signup_password_box;
 GtkWidget* signup_submit_button;
 
-void createLoginBox();
-void createSignupBox();
-
 void switchBoxes(GtkWidget* box_to_remove, GtkWidget*  box_to_display) {
-  gtk_container_remove(GTK_CONTAINER(window), box_to_remove);
-  gtk_container_add(GTK_CONTAINER(window), box_to_display);
-  gtk_widget_show_all (window);
+  gtk_container_remove(GTK_CONTAINER(login_signup_window), box_to_remove);
+  gtk_container_add(GTK_CONTAINER(login_signup_window), box_to_display);
+  gtk_widget_show_all (login_signup_window);
 }
 
 void signup_submit(GtkWidget* widget, GdkEvent  *event, gpointer data) {
@@ -52,7 +54,7 @@ void signup_submit(GtkWidget* widget, GdkEvent  *event, gpointer data) {
 void onCreateAccountButtonClick(GtkWidget* widget, GdkEvent  *event, gpointer data) {
   createSignupBox();
   switchBoxes(login_box, signup_box);
-  gtk_widget_show_all (window);
+  gtk_widget_show_all (login_signup_window);
 }
 
 void createSignupBox() {
@@ -77,7 +79,6 @@ void createLoginBox() {
   void submit(GtkWidget* widget, GdkEvent  *event, gpointer data);
 
   login_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-  // gtk_box_set_center_widget(GTK_CONTAINER(window), login_box);
 
   nick_name_box = gtk_entry_new();
   gtk_widget_set_size_request(nick_name_box, 200, -1);
@@ -122,31 +123,18 @@ void submit(GtkWidget* widget, GdkEvent  *event, gpointer data)
   switchBoxes(login_box, signup_box);
 }
 
-static void activate (GtkApplication *app, gpointer user_data)
+void activate_login_signup (GtkApplication *app, gpointer user_data)
 {
-  window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "Chat");
-  gtk_window_set_default_size (GTK_WINDOW (window), 600, 800);
+  login_signup_window = gtk_application_window_new (app);
+  gtk_window_set_title (GTK_WINDOW (login_signup_window), "Chat");
+  gtk_window_set_default_size (GTK_WINDOW (login_signup_window), 600, 800);
 
   // signup_box
   createLoginBox();
   // login box
 
-  gtk_container_add(GTK_CONTAINER(window), login_box);
+  gtk_container_add(GTK_CONTAINER(login_signup_window), login_box);
 
-  gtk_widget_grab_focus(window);
-  gtk_widget_show_all (window);
-}
-
-int main (int argc, char **argv)
-{
-  GtkApplication *app;
-  int status;
-
-  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
-
-  return status;
+  gtk_widget_grab_focus(login_signup_window);
+  gtk_widget_show_all (login_signup_window);
 }
