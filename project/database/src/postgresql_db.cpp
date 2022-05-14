@@ -1,10 +1,8 @@
 // Copyright 2022 by Artem Ustsov
 
 #include "postgresql_db.h"
-
-#include <algorithm>
-
 #include "models.h"
+#include <algorithm>
 
 Postgre_DB::Postgre_DB()
     : db_host_("127.0.0.1"),
@@ -296,6 +294,7 @@ int Postgre_DB::update(const std::string& table,
   return 0;
 }
 
+// создать enum класс со статусом возврата ошибки
 int Postgre_DB::save(const std::string& table,
                      const std::vector<std::string>& table_fields,
                      const std::vector<std::string>& values,
@@ -303,7 +302,7 @@ int Postgre_DB::save(const std::string& table,
                      std::string where = std::string()) {
   pqxx::result check = select(table, where);
   try {
-    if ((where != "") && (check.begin() != check.end())) {
+    if ((!where.empty()) && (!check.empty())) { 
       check.clear();
       return update(table, table_fields, values, where);
     } else {
@@ -320,7 +319,7 @@ int Postgre_DB::delete_(const std::string& table,
                         std::string where = std::string()) {
   pqxx::work N(*PG_conn);
   std::string request = "DELETE FROM " + table;
-  if (where != "") {
+  if (!where.empty()) {
     request += " WHERE " + where;
   }
   request += ";";
@@ -333,6 +332,8 @@ int Postgre_DB::delete_(const std::string& table,
   return 0;
 }
 
+
+// добавить функцию для обновления пользователя, избавиться от двоякого поведения
 int Postgre_DB::add_user(User& user) {
   std::vector<std::string> data = {user.get_login(), user.get_password()};
   std::vector<std::string> table_fields = {"login", "password"};
@@ -357,7 +358,7 @@ std::string Postgre_DB::get_user_id(const std::string& login) {
   std::string user_id;
 
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();
       user_id = c[0].as<std::string>();
     }
@@ -374,7 +375,7 @@ std::string Postgre_DB::get_user_login(const std::string& id) {
   pqxx::result res = select("USERS", where, what);
   std::string user_login;
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();
       user_login = c.at(0).as<std::string>();
     }
@@ -390,7 +391,7 @@ User Postgre_DB::get_user_by_login(const std::string& login) {
   pqxx::result res = select("USERS", where);
   User user;
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();  // TO DO SMART
       user.set_id(c.at(0).as<std::string>());
       user.set_login(c.at(1).as<std::string>());
@@ -408,7 +409,7 @@ bool Postgre_DB::find_user_by_login(const std::string& login) {
   std::string where = "login = '" + remove_danger_characters(login) + "'";
   try {
     pqxx::result res = select("USERS", where);
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       res.clear();
       return true;
     }
@@ -478,7 +479,7 @@ int Postgre_DB::change_user_password(User& user,
 }
 
 int Postgre_DB::delete_user(User& user) {
-  if (user.get_id() == "") {
+  if (user.get_id().empty()) {
     return 1;
   } else {
     std::string where =
@@ -496,7 +497,7 @@ int Postgre_DB::delete_user(User& user) {
 }
 
 int Postgre_DB::delete_message(TextMessage& message) {
-  if (message.get_message_id() == "") {
+  if (message.get_message_id().empty()) {
     return 1;
   } else {
     std::string where =
@@ -560,7 +561,7 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
   pqxx::result res = select("CHATS", where);
   Chat chat;
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();
       chat.set_chat_id(c.at(0).as<std::string>());
       chat.set_chat_name(c.at(1).as<std::string>());
@@ -580,7 +581,7 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
 }
 
 int Postgre_DB::delete_chat(Chat& chat) {
-  if (chat.get_chat_id() == "") {
+  if (chat.get_chat_id().empty()) {
     return 1;
   } else {
     std::string where =
@@ -594,7 +595,7 @@ bool Postgre_DB::find_chat_by_chat_name(const std::string& chat_name) {
       "chat_name = '" + remove_danger_characters(chat_name) + "'";
   try {
     pqxx::result res = select("CHATS", where);
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       res.clear();
       return true;
     }
@@ -612,7 +613,7 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(
   pqxx::result res = select("USERS_CHATS_LINK", where, what);
   std::vector<std::string> participants;
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
         std::string user_login = get_user_login(c.at(0).as<std::string>());
         participants.push_back(user_login);
@@ -633,7 +634,7 @@ Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
   try {
     std::vector<std::string> participants;
     std::vector<TextMessage> messages;
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();
       chat.set_chat_id(c.at(0).as<std::string>());
       chat.set_chat_name(c.at(1).as<std::string>());
@@ -677,7 +678,7 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
   pqxx::result res = select("MESSAGES", where, what, num_of_messages);
 
   try {
-    if (res.begin() != res.end()) {
+    if (!res.empty()) {
       for (pqxx::result::const_iterator c = res.begin(); c != res.end(); ++c) {
         TextMessage message;
         message.set_message_id(c.at(0).as<std::string>());
