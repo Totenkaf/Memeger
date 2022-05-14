@@ -555,7 +555,7 @@ int Postgre_DB::add_chat(Chat& chat) {
 }
 
 Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
-  static const size_t NUM_OF_LAST_MESSAGES = 25;
+  static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where =
       "chat_name = '" + remove_danger_characters(chat_name) + "'";
   pqxx::result res = select("CHATS", where);
@@ -627,7 +627,7 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(
 }
 
 Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
-  static const size_t NUM_OF_LAST_MESSAGES = 25;
+  static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where = "id = '" + remove_danger_characters(chat_id) + "'";
   pqxx::result res = select("CHATS", where);
   Chat chat;

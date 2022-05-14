@@ -83,7 +83,6 @@ TEST_F(DataBaseEnvironment, change_user_login) {
   EXPECT_EQ(user_from_db.get_active_status(), "active");
 }
 
-
 TEST_F(DataBaseEnvironment, change_wrong_user_login) {
   User test_user("Ivan", "Qwerty1235");
   test_db.add_user(test_user);
@@ -93,7 +92,6 @@ TEST_F(DataBaseEnvironment, change_wrong_user_login) {
   EXPECT_EQ(status_change_user_login, 1);
 }
 
-
 TEST_F(DataBaseEnvironment, change_user_password) {
   User test_user("Ivan", "Qwerty1235");
   test_db.add_user(test_user);
@@ -102,13 +100,11 @@ TEST_F(DataBaseEnvironment, change_user_password) {
   int status_change_user_login = test_db.change_user_password(user_from_db, "tiberius");
   EXPECT_EQ(status_change_user_login, 0);
 
-
   EXPECT_TRUE(user_from_db.get_id() != std::string());
   EXPECT_EQ(user_from_db.get_login(), "Ivan");
   EXPECT_EQ(user_from_db.get_password(), "tiberius");
   EXPECT_EQ(user_from_db.get_active_status(), "active");
 }
-
 
 TEST_F(DataBaseEnvironment, change_wrong_user_password) {
   User test_user("Ivan", "Qwerty1235");
