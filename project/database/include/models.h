@@ -143,8 +143,8 @@ class Chat {
   std::string get_chat_id() const;
   int set_chat_id(std::string chat_id);
 
-  time_t get_chat_time_creation() const;
-  int set_chat_time_creation(const time_t& time_creation);
+  // time_t get_chat_time_creation() const;
+  // int set_chat_time_creation(const time_t& time_creation);
 
   int set_participants(std::vector<std::string>& participants);
   std::vector<std::string> get_participants() const;
@@ -152,7 +152,7 @@ class Chat {
   int set_messages(const std::vector<TextMessage>& messages);
   std::vector<TextMessage> get_messages() const;
 
-  int push_new_message(TextMessage new_message);
+  // int push_new_message(TextMessage new_message);
   int set_chat_messages(const std::vector<TextMessage>& messages);
 
   bool is_empty() const;

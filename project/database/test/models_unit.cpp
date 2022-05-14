@@ -11,23 +11,51 @@ public:
     virtual ~ModelsTest() {}
 };
 
-TEST(MODELS, add_test_user) {
+TEST_F(ModelsTest, test_user) {
+  user.set_id("ajdfa-adsf64-6a46sdf6-adsf46");
+  user.set_login("Artem");
+  user.set_password("Qwerty12345");
+  user.set_active_status("active");
+
+  EXPECT_EQ(user.get_id(), "ajdfa-adsf64-6a46sdf6-adsf46");
+  EXPECT_EQ(user.get_login(), "Artem");
+  EXPECT_EQ(user.get_password(), "Qwerty12345");
+  EXPECT_EQ(user.get_active_status(), "active");
 }
 
-TEST(MODELS, change_test_user_login) {
+TEST_F(ModelsTest, test_chat) {
+  chat.set_chat_id("ajdfa-adsf64-6a46sdf6-adsf46");
+  chat.set_chat_name("Memeger");
+  
+  std::vector<std::string> participants = {"Artem", "Maxim", "Yuri", "Yaroslav"};
+  chat.set_participants(participants);
+  EXPECT_TRUE(participants.empty());
+
+  std::vector<TextMessage> messages;
+  message.set_message_id("lkaslma-65a16sd1f-a6ds1f6");
+  message.set_message_text("Hello");
+  messages.push_back(message);
+
+  chat.set_chat_messages(messages);
+
+  EXPECT_EQ(chat.get_chat_id(), "ajdfa-adsf64-6a46sdf6-adsf46");
+  EXPECT_EQ(chat.get_chat_name(), "Memeger");
+  EXPECT_TRUE(chat.is_polilogue());
+
+  std::vector<std::string> participants_1 = {"Artem", "Maxim", "Yuri", "Yaroslav"};
+  for (size_t i = 0; i < chat.get_participants().size(); ++i) {
+    EXPECT_EQ(chat.get_participants()[i], participants_1[i]);
+  }
+  EXPECT_EQ(chat.get_messages()[0].get_message_text(), message.get_message_text());
+
+  chat.clear_chat();
+  EXPECT_TRUE(chat.get_chat_id().empty());
+  EXPECT_TRUE(chat.get_messages().empty());
+  EXPECT_TRUE(chat.get_participants().empty());
+  EXPECT_TRUE(chat.get_chat_name().empty());
 }
 
-TEST(MODELS, change_test_user_password) {
-}
 
-TEST(MODELS, find_test_user_by_login) {
-}
-
-TEST(MODELS, delete_user) {
-}
-
-TEST(MODELS, add_chat) {
-}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
