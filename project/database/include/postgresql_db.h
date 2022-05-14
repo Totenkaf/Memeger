@@ -44,7 +44,7 @@ class Postgre_DB : public IDataBase {
   Postgre_DB();
   Postgre_DB(std::string db_host, std::string db_port, std::string db_name,
              std::string db_user, std::string db_password);
-  ~Postgre_DB();
+  virtual ~Postgre_DB();
 
   int drop_tables();
 
@@ -61,9 +61,6 @@ class Postgre_DB : public IDataBase {
 
   int add_message(TextMessage& message);
   int delete_message(TextMessage& message);
-  int change_read_status(
-      TextMessage& message,
-      bool new_status);  // is it need, how to process read status to message
   std::vector<TextMessage> get_last_N_messages_from_chat(
       const Chat& chat, int num_of_messages);  // по идее, константный
 

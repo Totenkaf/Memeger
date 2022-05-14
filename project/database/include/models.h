@@ -46,6 +46,8 @@ class User {
   void set_password(const std::string& user_password);
   void set_active_status(const std::string& active_status);
 
+  void clear_user();
+
   bool operator==(const User& user) const;
   bool operator!=(const User& user) const;
 };
@@ -92,6 +94,8 @@ class TextMessage {
 
   std::string get_message_text() const;
   int set_message_text(const std::string& text_message);
+
+  void clear_message();
 
  private:
   std::string message_id_;
@@ -158,6 +162,8 @@ class Chat {
 
   bool operator!=(const Chat& chat) const;
   bool operator==(const Chat& chat) const;
+
+  void clear_chat();
 
  private:
   std::string chat_id_;

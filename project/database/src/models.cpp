@@ -32,6 +32,14 @@ bool User::operator!=(const User& user) const { /* нужны ли? */
   return user_login_ != user.get_login();
 }
 
+void User::clear_user() {
+  user_login_.clear();
+  user_password_.clear();
+  user_id_.clear();
+  active_status_.clear();
+  return;
+}
+
 std::string TextMessage::get_message_id() const { return message_id_; }
 
 int TextMessage::set_message_id(const std::string& message_id) {
@@ -73,6 +81,15 @@ int TextMessage::set_read_status(bool is_read) {
 
 std::vector<TextMessage> Chat::get_messages() const { return messages_; }
 
+void TextMessage::clear_message() {
+  message_id_.clear();
+  parent_chat_id_.clear();
+  sender_id_.clear();
+  text_message_.clear();
+  is_read_ = false;
+  return;
+}
+
 TextMessage Chat::get_last_message() const { return messages_.back(); }
 
 std::vector<std::string> Chat::get_participants() const {
@@ -81,7 +98,7 @@ std::vector<std::string> Chat::get_participants() const {
 
 int Chat::set_participants(std::vector<std::string>& participants) {
   participants_ = std::move(participants);
-  return 1;
+  return 0;
 }
 
 std::string Chat::get_chat_id() const { return chat_id_; }
@@ -127,3 +144,11 @@ bool Chat::is_monologue() const { return participants_.size() == 1; }
 bool Chat::is_dialogue() const { return participants_.size() == 2; }
 
 bool Chat::is_polilogue() const { return participants_.size() > 2; }
+
+void Chat::clear_chat() {
+  chat_id_.clear();
+  chat_name_.clear();
+  participants_.clear();
+  messages_.clear();
+  return;
+}
