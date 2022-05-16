@@ -103,7 +103,7 @@ int Chat::set_participants(std::vector<std::string>& participants) {
 
 std::string Chat::get_chat_id() const { return chat_id_; }
 
-int Chat::set_chat_id(std::string chat_id) {
+int Chat::set_chat_id(const std::string chat_id) {
   chat_id_ = chat_id;
   return 0;
 }

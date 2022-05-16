@@ -5,9 +5,9 @@
 #include <algorithm>
 
 // Конструктор с уставкой. Подлкючается к БД на указанном порте, хосте
-Postgre_DB::Postgre_DB(std::string db_host, std::string db_port,
-                       std::string db_name, std::string db_user,
-                       std::string db_password)
+Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
+                       const std::string db_name, const std::string db_user,
+                       const std::string db_password)
 : db_host_(db_host), db_port_(db_port), db_name_(db_name), db_user_(db_user), db_password_(db_password)
 {
   std::string request = "dbname = " + db_name_ + " user = " + db_user_ +
@@ -207,8 +207,8 @@ int Postgre_DB::insert(const std::string& table,
 
 // Обертка над запросом на выбор данных из БД
 pqxx::result Postgre_DB::select(
-    const std::string& table, std::string where = std::string(),
-    std::vector<std::string> what = std::vector<std::string>(),
+    const std::string& table, const std::string where = std::string(),
+    const std::vector<std::string> what = std::vector<std::string>(),
     int limit = -1) {
   std::string request = "SELECT ";
   if (!what.empty()) {
@@ -238,7 +238,7 @@ pqxx::result Postgre_DB::select(
 int Postgre_DB::update(const std::string& table,
                        const std::vector<std::string>& table_fields,
                        const std::vector<std::string>& values,
-                       std::string where = std::string()) {
+                       const std::string where = std::string()) {
   pqxx::work N(*PG_conn);
   try {
     std::string request = "UPDATE " + table + " SET ";
@@ -266,7 +266,7 @@ int Postgre_DB::save(const std::string& table,
                      const std::vector<std::string>& table_fields,
                      const std::vector<std::string>& values,
                      std::vector<std::string>& output_params,
-                     std::string where = std::string()) {
+                     const std::string where = std::string()) {
   pqxx::result check = select(table, where);
   try {
     if ((!where.empty()) && (!check.empty())) { 
@@ -285,7 +285,7 @@ int Postgre_DB::save(const std::string& table,
 
 // Обертка над удалением записи из конкретной таблицы БД
 int Postgre_DB::delete_(const std::string& table,
-                        std::string where = std::string()) {
+                        const std::string where = std::string()) {
   pqxx::work N(*PG_conn);
   std::string request = "DELETE FROM " + table;
   if (!where.empty()) {
@@ -323,7 +323,7 @@ int Postgre_DB::add_user(User& user) {
 
 // Получение ID пользователя из БД
 std::string Postgre_DB::get_user_id(const std::string& login) {
-  std::string where = "login = '" + remove_danger_characters(login) + "'";
+  std::string where = "login = '" + login + "'";
   std::vector<std::string> what = {"id"};
   std::string user_id;
 
@@ -341,7 +341,7 @@ std::string Postgre_DB::get_user_id(const std::string& login) {
 
 // Получение логина пользователя из БД
 std::string Postgre_DB::get_user_login(const std::string& id) {
-  std::string where = "id = '" + remove_danger_characters(id) + "'";
+  std::string where = "id = '" + id + "'";
   std::vector<std::string> what = {"login"};
   std::string user_login;
   try {
@@ -358,7 +358,7 @@ std::string Postgre_DB::get_user_login(const std::string& id) {
 
 // Получение сущности пользователя по логину
 User Postgre_DB::get_user_by_login(const std::string& login) {
-  std::string where = "login = '" + remove_danger_characters(login) + "'";
+  std::string where = "login = '" + login + "'";
   User user;
   try {
     pqxx::result res = select("USERS", where);
@@ -379,7 +379,7 @@ User Postgre_DB::get_user_by_login(const std::string& login) {
 
 // Поиск сущности пользователя по логину в БД
 bool Postgre_DB::find_user_by_login(const std::string& login) {
-  std::string where = "login = '" + remove_danger_characters(login) + "'";
+  std::string where = "login = '" + login + "'";
   try {
     pqxx::result res = select("USERS", where);
     if(!res.empty()) {
@@ -541,7 +541,7 @@ int Postgre_DB::add_chat(Chat& chat) {
 Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
   static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where =
-      "chat_name = '" + remove_danger_characters(chat_name) + "'";
+      "chat_name = '" + chat_name + "'";
   pqxx::result res = select("CHATS", where);
   Chat chat;
   try {
