@@ -15,17 +15,20 @@ Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
                         " hostaddr = " + db_host_ + " port = " + db_port_;
   try {
     PG_conn = std::make_shared<pqxx::connection>(request);
-    if (!PG_conn->is_open()) {
+    if (PG_conn->is_open()) {
+      init_tables();
+    } else {
       std::cerr << "Can't open database" << std::endl;
     }
   } catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
   }
-  init_tables();
 }
 
 Postgre_DB::~Postgre_DB() {
-  if (PG_conn->is_open()) {
+  if (!PG_conn->is_open()) {
+    std::cerr << "Can't open database" << std::endl;
+  } else {
     PG_conn->disconnect();
   }
 }

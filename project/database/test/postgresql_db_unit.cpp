@@ -143,13 +143,6 @@ TEST_F(DataBaseEnvironment, change_wrong_user_status) {
   EXPECT_EQ(status_change_user_login, 1);
 }
 
-TEST_F(DataBaseEnvironment, get_user_id) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
-  std::string user_id = test_db.get_user_id("Ivan");
-  EXPECT_TRUE(!user_id.empty());
-}
-
 TEST_F(DataBaseEnvironment, delete_user) {
   User test_user("Ivan", "Qwerty1235");
   test_db.add_user(test_user);
