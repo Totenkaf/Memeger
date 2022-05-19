@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <gtk/gtk.h>
 
+#include "../include/store.h"
+
 #include "../include/login-signup.h"
 
 void createLoginBox();
@@ -54,7 +56,7 @@ void signup_submit(GtkWidget* widget, GdkEvent  *event, gpointer data) {
 void onCreateAccountButtonClick(GtkWidget* widget, GdkEvent  *event, gpointer data) {
   createSignupBox();
   switchBoxes(login_box, signup_box);
-  gtk_widget_show_all (login_signup_window);
+  // gtk_widget_show_all (login_signup_window);
 }
 
 void createSignupBox() {

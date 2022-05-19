@@ -49,6 +49,7 @@ include_directories(vendor/)
 
 # add an executable target with one source file
 add_executable(${CMAKE_PROJECT_NAME} 
+    include/store.h
     src/chat.cpp
     include/chat.h
     src/search.cpp
