@@ -3,8 +3,9 @@
 #include <gtk/gtk.h>
 
 #include "../include/store.h"
-
 #include "../include/login-signup.h"
+
+#include "./http.client.cpp"
 
 void createLoginBox();
 void createSignupBox();
@@ -46,8 +47,9 @@ void signup_submit(GtkWidget* widget, GdkEvent  *event, gpointer data) {
       return;
   }
 
-  std::cout << "nick " << nick << std::endl;
-  std::cout << "password " << password << std::endl;
+  net::io_context io_context;
+  std::make_shared<Client>(io_context)->signup(nick, password);
+  // std::make_shared<Client>(io_context)->run();
 
   createLoginBox();
   switchBoxes(signup_box, login_box);

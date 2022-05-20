@@ -11,7 +11,7 @@
 int main(int argc, char **argv) {
     GtkApplication *app;
     int status;
-    int widget_type = 1;
+    int widget_type = 2;
 
     app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
     if (widget_type == 1)

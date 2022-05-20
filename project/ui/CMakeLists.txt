@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.14)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 # set the name of the project, the version and which languages
 # are needed to build this project
@@ -22,6 +23,9 @@ LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
 
 # Add other flags to the compiler
 ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
+
+FIND_PACKAGE(Boost)
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 # some test warning levels for GCC
 set(WARNING_LEVELS_GCC
