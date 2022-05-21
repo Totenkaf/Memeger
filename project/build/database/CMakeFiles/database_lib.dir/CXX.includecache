@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../database/include/idatabase.h
+iostream
+-
+pqxx/pqxx
+-
+string
+-
+
+../database/include/models.h
+string
+-
+utility
+-
+vector
+-
+
+../database/include/postgresql_db.h
+idatabase.h
+../database/include/idatabase.h
+models.h
+../database/include/models.h
+
+/home/maxim/Рабочий стол/SERVER/project/database/src/postgresql_db.cpp
+postgresql_db.h
+/home/maxim/Рабочий стол/SERVER/project/database/src/postgresql_db.h
+models.h
+/home/maxim/Рабочий стол/SERVER/project/database/src/models.h
+algorithm
+-
+

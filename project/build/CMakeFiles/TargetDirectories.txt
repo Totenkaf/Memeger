@@ -1,0 +1,7 @@
+/home/maxim/Рабочий стол/SERVER/project/build/CMakeFiles/rebuild_cache.dir
+/home/maxim/Рабочий стол/SERVER/project/build/CMakeFiles/edit_cache.dir
+/home/maxim/Рабочий стол/SERVER/project/build/CMakeFiles/async.http.server.dir
+/home/maxim/Рабочий стол/SERVER/project/build/CMakeFiles/async.http.client.dir
+/home/maxim/Рабочий стол/SERVER/project/build/database/CMakeFiles/rebuild_cache.dir
+/home/maxim/Рабочий стол/SERVER/project/build/database/CMakeFiles/edit_cache.dir
+/home/maxim/Рабочий стол/SERVER/project/build/database/CMakeFiles/database_lib.dir

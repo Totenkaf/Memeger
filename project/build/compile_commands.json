@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/maxim/Рабочий стол/SERVER/project/build/database",
+  "command": "/usr/bin/c++  -Ddatabase_lib_EXPORTS -I\"/home/maxim/Рабочий стол/SERVER/project/include\" -I\"/home/maxim/Рабочий стол/SERVER/project/database/include\"   -pthread -Wall -Wextra -Wpedantic -Werror -fPIC   -std=gnu++2a -o CMakeFiles/database_lib.dir/src/models.cpp.o -c \"/home/maxim/Рабочий стол/SERVER/project/database/src/models.cpp\"",
+  "file": "/home/maxim/Рабочий стол/SERVER/project/database/src/models.cpp"
+},
+{
+  "directory": "/home/maxim/Рабочий стол/SERVER/project/build/database",
+  "command": "/usr/bin/c++  -Ddatabase_lib_EXPORTS -I\"/home/maxim/Рабочий стол/SERVER/project/include\" -I\"/home/maxim/Рабочий стол/SERVER/project/database/include\"   -pthread -Wall -Wextra -Wpedantic -Werror -fPIC   -std=gnu++2a -o CMakeFiles/database_lib.dir/src/postgresql_db.cpp.o -c \"/home/maxim/Рабочий стол/SERVER/project/database/src/postgresql_db.cpp\"",
+  "file": "/home/maxim/Рабочий стол/SERVER/project/database/src/postgresql_db.cpp"
+}
+]
