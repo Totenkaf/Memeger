@@ -19,13 +19,16 @@ find_package(GTest REQUIRED)
 
 include_directories(${INCLUDES})
 set(db_test_src ${PROJECT_SOURCE_DIR}/postgresql_db_unit.cpp)
-
+set(models_test_src ${PROJECT_SOURCE_DIR}/models_unit.cpp)
 
 # ------------------------------------------------------------------------------
 # 2 | Executables
 # ------------------------------------------------------------------------------4
 add_executable(db_test ${db_test_src})
 target_link_libraries(db_test database_lib ${GTEST_LIBRARIES} -pthread)
+
+add_executable(models_test ${models_test_src})
+target_link_libraries(models_test database_lib ${GTEST_LIBRARIES} -pthread)
 
 
 # ==============================================================================

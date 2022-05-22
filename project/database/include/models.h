@@ -21,14 +21,14 @@ class User {
         user_id_(std::string()),
         active_status_(std::string()) {}
 
-  User(std::string user_id, std::string user_login, std::string user_password,
-       std::string active_status)
+  User(const std::string user_id, const std::string user_login, const std::string user_password,
+       const std::string active_status)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::move(user_id)),
         active_status_(active_status) {}
 
-  User(std::string user_login, std::string user_password)
+  User(const std::string user_login, const std::string user_password)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::string()),
@@ -65,8 +65,8 @@ class TextMessage {
         text_message_(std::string()),
         is_read_(false) {}
 
-  TextMessage(std::string parent_chat_id, std::string sender_id,
-              std::string text_message)
+  TextMessage(const std::string parent_chat_id, const std::string sender_id,
+              const std::string text_message)
       : message_id_(std::string()),
         parent_chat_id_(parent_chat_id),
         sender_id_(sender_id),
@@ -112,7 +112,7 @@ class Chat {
  public:
   Chat() = default;
 
-  Chat(std::string chat_id, std::string chat_name,
+  Chat(const std::string chat_id, const std::string chat_name,
        std::vector<std::string>& participants,
        std::vector<TextMessage>& messages)
       : chat_id_(chat_id),
@@ -120,13 +120,13 @@ class Chat {
         participants_(participants),
         messages_(messages) {}
 
-  Chat(std::string chat_name, std::vector<std::string>& participants)
+  Chat(const std::string chat_name, std::vector<std::string>& participants)
       : chat_id_(std::string()),
         chat_name_(chat_name),
         participants_(participants),
         messages_(std::vector<TextMessage>()) {}
 
-  Chat(std::string chat_id, std::string chat_name,
+  Chat(const std::string chat_id, const std::string chat_name,
        std::vector<std::string>& participants)
       : chat_id_(chat_id),
         chat_name_(chat_name),
@@ -141,10 +141,10 @@ class Chat {
   int set_chat_name(const std::string& chat_name);
 
   std::string get_chat_id() const;
-  int set_chat_id(std::string chat_id);
+  int set_chat_id(const std::string chat_id);
 
-  time_t get_chat_time_creation() const;
-  int set_chat_time_creation(const time_t& time_creation);
+  // time_t get_chat_time_creation() const;
+  // int set_chat_time_creation(const time_t& time_creation);
 
   int set_participants(std::vector<std::string>& participants);
   std::vector<std::string> get_participants() const;
@@ -152,7 +152,7 @@ class Chat {
   int set_messages(const std::vector<TextMessage>& messages);
   std::vector<TextMessage> get_messages() const;
 
-  int push_new_message(TextMessage new_message);
+  // int push_new_message(TextMessage new_message);
   int set_chat_messages(const std::vector<TextMessage>& messages);
 
   bool is_empty() const;
