@@ -162,10 +162,10 @@ if(ENABLE_CPPCHECK)
         --language=c
         --check-config
         -DMAIN=main
-        -I ${CMAKE_SOURCE_DIR}/database
-           ${CMAKE_SOURCE_DIR}/src/*.cpp
-           ${CMAKE_SOURCE_DIR}/include/*.h
-           ${CMAKE_SOURCE_DIR}/test/*.cpp
+        -I ${CMAKE_SOURCE_DIR}/project/database
+           ${CMAKE_SOURCE_DIR}/project/database/src/*.cpp
+           ${CMAKE_SOURCE_DIR}/project/database/include/*.h
+           ${CMAKE_SOURCE_DIR}/project/database/test/*.cpp
     )
 
     add_custom_target(

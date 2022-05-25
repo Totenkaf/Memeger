@@ -21,6 +21,7 @@ jobs:
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "\conninfo"
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
 
       - name: INSTALL GCC
         run: |
@@ -135,6 +136,7 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
 
       - name: RUN VALGRIND PROGRAMM
         run: |
@@ -205,6 +207,7 @@ jobs:
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
           sudo -u postgres psql postgres -c "CREATE DATABASE test_db;"
+          sudo -u postgres psql postgres -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
 
       - name: MODELS_TEST
         run:  |
