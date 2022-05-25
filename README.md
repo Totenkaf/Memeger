@@ -1,4 +1,5 @@
 [![.github/workflows/ci.yml](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml/badge.svg)](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Totenkaf/Memeger/branch/Artem-dev/graph/badge.svg?token=yL5JK80TK0)](https://codecov.io/gh/Totenkaf/Memeger)
 
 # Memeger
 BMSTU_VK_Project | Углубленное программирование на C/С++  
