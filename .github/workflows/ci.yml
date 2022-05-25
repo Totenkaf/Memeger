@@ -21,9 +21,10 @@ jobs:
           sudo apt-get install -y postgresql
           sudo service postgresql start
           sudo -u postgres psql postgres
-          \l
           \conninfo
           ALTER USER postgres PASSWORD 'postgres';
+          \q
+
 # PGPASSWORD= psql -h 127.0.0.1 -p 5433 -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
 # psql -h 127.0.0.1 -p 5433 -U postgres -c "CREATE DATABASE test_db;"
 # psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
