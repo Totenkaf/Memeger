@@ -27,8 +27,8 @@ jobs:
           sudo chown root:ssl-cert  /etc/ssl/private/ssl-cert-snakeoil.key
           sudo chmod 740 /etc/ssl/private/ssl-cert-snakeoil.key
           sudo service postgresql restart
-          sudo su - postgres
-          PGPASSWORD=postgres psql -h 127.0.0.1 -p 5433 -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -h 127.0.0.1 -p 5433 -U postgres psql
+# PGPASSWORD=postgres psql -h 127.0.0.1 -p 5433 -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
 # PGPASSWORD=password psql -h 127.0.0.1 -p 5433 -c "ALTER USER postgres PASSWORD 'postgres';"
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 --no-password
