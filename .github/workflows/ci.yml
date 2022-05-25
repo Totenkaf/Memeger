@@ -18,10 +18,10 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y libpqxx-dev
-          sudo apt-get install -y postgresql-12
+          sudo apt-get install -y postgresql-9.6
+          sudo service postgresql start
           psql -h 127.0.0.1 -p 5433 -U postgres -c "CREATE DATABASE test_db;"
           psql -h 127.0.0.1 -U postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
-          sudo service postgresql start
 # sudo netstat -pant | grep postgres
 # sudo chown postgres -R /var/lib/postgresql/12/main/
 # sudo gpasswd -a postgres ssl-cert
