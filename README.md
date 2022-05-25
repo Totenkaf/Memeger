@@ -19,21 +19,19 @@ BMSTU_VK_Project | Углубленное программирование на 
 ## __2) Установка <pqxx/pqxx> -> libpqxx.so__
 ```
 - sudo apt-get install -y libpqxx-dev
-
 ```
 
 ## __3) Добавление пароля и расширения для генерации UUID внутри БД:__
 ```
 - sudo -h 127.0.0.1 -U postgres psql -с "ALTER USER postgres PASSWORD 'postgres';"
 - sudo -h 127.0.0.1 -U postgres psql -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
-
 ```
 
 # Server&Client Part
-Асинхронный сервер на библиотеке BOOST::ASIO, количество потоков указывается пользователем
-Клиент на библиотеке BOOST::ASIO
-Локальный хост: 127.0.0.1
-Локальный порт: 8080
+Асинхронный сервер на библиотеке BOOST::ASIO, количество потоков указывается пользователем  
+Клиент на библиотеке BOOST::ASIO  
+Локальный хост: 127.0.0.1  
+Локальный порт: 8080  
 
 ## __1) Установка BOOST+Json на Ubuntu:__
 ```
@@ -42,7 +40,6 @@ BMSTU_VK_Project | Углубленное программирование на 
 - git clone https://github.com/nlohmann/json.git 
 - cd json 
 - cmake -DBuildTests=OFF .
-
 ```
 
 ## __2) Сборка BOOST+Json:__
@@ -54,16 +51,14 @@ BMSTU_VK_Project | Углубленное программирование на 
     --pkgversion=2.1.1 \
     --pkgrelease=git \
     --deldesc=no
-
 ```
 
 # GUI Part
-Графический интерфейс реализован при помощи библиотеки GTK
+Графический интерфейс реализован при помощи библиотеки GTK  
 
 ## __1) Установка GTK-3 на Ubuntu:__
 ```
 - sudo apt-get install libgtk-3-dev
-
 ```
 
 # Сборка проекта и запуск
@@ -72,16 +67,13 @@ BMSTU_VK_Project | Углубленное программирование на 
 ```
 - mkdir build && cd build
 - cmake ..
-
 ```
 ## __2) Запуск сервера:__
 ```
 - ./run_server localhost 8080 4
-
 ```
 
 ## __3) Запуск клиента:__
 ```
 - ./run_client
-
 ```
