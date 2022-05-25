@@ -19,8 +19,8 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y libpqxx-dev
           sudo apt-get install -y postgresql
-          sudo netstat -pant | grep postgres
           sudo service postgresql start
+          sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
           sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE test_db;"
