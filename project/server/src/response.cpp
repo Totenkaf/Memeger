@@ -3,16 +3,14 @@
 #include <boost/beast/http/write.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
-#include"../include/response.h"
+#include "response.h"
 #include <string>
 #include <sstream>
- #include"../include/request.h"
-#include"models.h"
-#include"postgresql_db.h"
-namespace server3 
-{
+#include "request.h"
+#include "models.h"
+#include "postgresql_db.h"
 
- 
+namespace server3 {
 
 void Not_Found(Response &resp)
 {

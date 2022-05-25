@@ -1,5 +1,4 @@
-#ifndef BOOST_ASIO_RESPONSE
-#define BOOST_ASIO_RESPONSE
+#pragma once
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -16,9 +15,9 @@
 #include <thread>
 #include <vector>
 #include <nlohmann/json.hpp>
-#include"request.h"
-#include"models.h"
-#include"postgresql_db.h"
+#include "request.h"
+#include "models.h"
+#include "postgresql_db.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = beast::http;           // from <boost/beast/http.hpp>
@@ -95,12 +94,5 @@ CHAT cht;
 MESSAGE msg;
 void Send_Response(Response &resp ,std::string url,std::string status);
 void Not_Found(Response &resp); 
-
-
 };
- 
-
-
 }
-
-#endif 

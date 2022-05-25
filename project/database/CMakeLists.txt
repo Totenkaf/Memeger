@@ -8,7 +8,7 @@ project(database)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -pthread -Wall -Wextra -Wpedantic -Werror")
 
 # ==============================================================================
 # II | Preinstall settings
@@ -18,25 +18,21 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werro
 # 1 | Include subdirectories
 # ------------------------------------------------------------------------------
 
-set(${project_name}_lib_includes ${PROJECT_SOURCE_DIR}/include)
-message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}")
+set(${PROJECT_NAME}_lib_includes ${PROJECT_SOURCE_DIR}/include)
+message("DB_INCLUDES_DIR = ${${PROJECT_NAME}_lib_includes}")
 include(ExternalProject)
 
-set(${project_name}_lib_sources ${PROJECT_SOURCE_DIR}/src)
-message("DB_SOURCE_DIR = ${${project_name}_lib_sources}")
+set(${PROJECT_NAME}_lib_sources ${PROJECT_SOURCE_DIR}/src)
+message("DB_SOURCE_DIR = ${${PROJECT_NAME}_lib_sources}\n")
 
 # ------------------------------------------------------------------------------
 # 2 | Add libraries
 # ------------------------------------------------------------------------------
-set(MODELS_LIB_FILES ${${project_name}_lib_sources}/models.cpp)
-message("MODELS_LIB_FILES = ${MODELS_LIB_FILES}")
-
-
-set(DATABASE_LIB_FILES ${${project_name}_lib_sources}/postgresql_db.cpp)
-message("DATABASE_LIB_FILES = ${DATABASE_LIB_FILES}")
+set(MODELS_LIB_FILES ${${PROJECT_NAME}_lib_sources}/models.cpp)
+set(DATABASE_LIB_FILES ${${PROJECT_NAME}_lib_sources}/postgresql_db.cpp)
 
 add_library(database_lib SHARED ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
-target_include_directories(database_lib PUBLIC ${${project_name}_lib_includes})
+target_include_directories(database_lib PUBLIC ${${PROJECT_NAME}_lib_includes})
 target_link_libraries(database_lib PUBLIC -lpqxx -lpq)
 
 # ==============================================================================

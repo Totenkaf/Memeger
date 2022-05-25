@@ -1,5 +1,4 @@
-#ifndef BOOST_ASIO_SERVER_CONNECTION_H
-#define BOOST_ASIO_SERVER_CONNECTION_H
+#pragma once
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -15,8 +14,9 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include"request.h"
-#include"response.h"
+#include "request.h"
+#include "models.h"
+#include "response.h"
 
  
 
@@ -57,6 +57,3 @@ namespace server3 {
             // std::shared_ptr<void> res_;
         };
 } // namespace server3
-
-
-#endif //BOOST_ASIO_SERVER_CONNECTION_H

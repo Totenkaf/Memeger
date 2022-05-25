@@ -1,5 +1,4 @@
-#ifndef BOOST_ASIO_SERVER_ASYNC_HTTP_SERVER_H
-#define BOOST_ASIO_SERVER_ASYNC_HTTP_SERVER_H
+#pragma once
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
@@ -64,6 +63,3 @@ namespace server3 {
         };
 
 } // namespace server3
-
-
-#endif //BOOST_ASIO_SERVER_ASYNC_HTTP_SERVER_H

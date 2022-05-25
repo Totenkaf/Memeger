@@ -1,4 +1,3 @@
-
 #include "async.http.server.h"
 
 #include <boost/bind/bind.hpp>
@@ -8,10 +7,7 @@
 
 #include "connection.h"
 
-
-
 namespace server3 {
-
         server::server(const std::string& address, const std::string& port,
                        std::size_t thread_pool_size)
                 : thread_pool_size_(thread_pool_size),

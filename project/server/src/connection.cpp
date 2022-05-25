@@ -1,13 +1,13 @@
-#include "../include/connection.h"
+#include "connection.h"
  
-#include"models.h"
-#include"postgresql_db.h"
+#include "models.h"
+#include "postgresql_db.h"
 #include <vector>
 #include <boost/bind/bind.hpp>
 #include <boost/beast/http/write.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
-#include"../include/response.h"
+#include "response.h"
 #include <string>
 #include <sstream>
 #include <nlohmann/json.hpp>
@@ -63,8 +63,8 @@ Response obj_response;
                 boost::beast::http::request<boost::beast::http::string_body> &request_=obj_request.request_;
                 boost::beast::http::response<boost::beast::http::string_body> &res=obj_response.res;
                 std::string &response_body=obj_response.response_body;
-                 Postgre_DB database("127.0.0.1", "5432", "postgres", "postgres", "postgres");
-                database.drop_tables();
+                Postgre_DB database("127.0.0.1", "5432", "postgres", "postgres", "postgres");
+                // database.drop_tables();
                
                 bool check;
                 
