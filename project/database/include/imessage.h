@@ -6,9 +6,8 @@
 #include <string>
 
 class IMessage {
-public:
-  virtual ~IMessage()
-  {}
+ public:
+  virtual ~IMessage() {}
 
   virtual std::string get_message_id() const = 0;
   virtual int set_message_id(const std::string& message_id) = 0;

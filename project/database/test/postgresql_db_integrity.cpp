@@ -10,7 +10,7 @@
 using ::testing::Return;
 class MockDb : public IDataBase {
  public:
-  MOCK_METHOD(User*, searchUserLogin,
+  MOCK_METHOD(User *, searchUserLogin,
               (std::string login, std::string password), (override));
   MOCK_METHOD(void, writeUser, (User & user), (override));
   MOCK_METHOD(int, updateUser, (User & user), (override));

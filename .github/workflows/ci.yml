@@ -87,20 +87,20 @@ jobs:
           sudo make check
           cd -
 
-      - name: INSTALL FBINFER
-        run: |
-          VERSION=1.0.0; \
-            curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
-            | sudo tar -C /opt -xJ && \
-            sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
+      # - name: INSTALL FBINFER
+      #   run: |
+      #     VERSION=1.0.0; \
+      #       curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
+      #       | sudo tar -C /opt -xJ && \
+      #       sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
 
-      - name: FBINFER CHECK
-        run: |
-          mkdir -p build && cd build
-          sudo apt install libncurses5 -y
-          sudo cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_INFER=ON ..
-          sudo make infer
-          cd -
+      # - name: FBINFER CHECK
+      #   run: |
+      #     mkdir -p build && cd build
+      #     sudo apt install libncurses5 -y
+      #     sudo cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_INFER=ON ..
+      #     sudo make infer
+      #     cd -
 
   building:
     runs-on: ubuntu-latest
@@ -135,7 +135,7 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-          sudo -u postgres psql postgres -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 
       - name: RUN VALGRIND PROGRAMM
         run: |
@@ -206,7 +206,7 @@ jobs:
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
           sudo -u postgres psql postgres -c "CREATE DATABASE test_db;"
-          sudo -u postgres psql postgres -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 
       - name: MODELS_TEST
         run:  |

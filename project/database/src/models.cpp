@@ -24,11 +24,11 @@ void User::set_active_status(const std::string& active_status) {
   active_status_ = active_status;
 }
 
-bool User::operator==(const User& user) const { /* нужны ли? */
+bool User::operator==(const User& user) const {
   return user_login_ == user.get_login();
 }
 
-bool User::operator!=(const User& user) const { /* нужны ли? */
+bool User::operator!=(const User& user) const {
   return user_login_ != user.get_login();
 }
 
@@ -129,11 +129,11 @@ int Chat::set_chat_messages(const std::vector<TextMessage>& messages) {
   return _EXIT_SUCCESS;
 }
 
-bool Chat::operator==(const Chat& chat) const { /* нужны ли? */
+bool Chat::operator==(const Chat& chat) const {
   return chat_id_ == chat.get_chat_id();
 }
 
-bool Chat::operator!=(const Chat& chat) const { /* нужны ли? */
+bool Chat::operator!=(const Chat& chat) const {
   return chat_id_ != chat.get_chat_id();
 }
 

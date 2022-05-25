@@ -22,5 +22,6 @@ class IDataBase {
                      std::vector<std::string>& output_params) = 0;
   virtual int delete_(const std::string& table, const std::string where) = 0;
   virtual pqxx::result select(const std::string& table, const std::string where,
-                              const std::vector<std::string> what, int limit) = 0;
+                              const std::vector<std::string> what,
+                              int limit) = 0;
 };

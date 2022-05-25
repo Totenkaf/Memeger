@@ -8,15 +8,15 @@
 #include "imessage.h"
 
 enum exit_status {
-                  _EXIT_SUCCESS=0, 
-                  _EXIT_FAULT, 
-                  _TABLE_EXECUTION_FAULT,
-                  _TABLE_DELETION_FAULT,
-                  _INSERT_FAULT,
-                  _UPDATE_FAULT,
-                  _SAVE_FAULT,
-                  _DELETE_FAULT,
-                 };
+  _EXIT_SUCCESS = 0,
+  _EXIT_FAULT,
+  _TABLE_EXECUTION_FAULT,
+  _TABLE_DELETION_FAULT,
+  _INSERT_FAULT,
+  _UPDATE_FAULT,
+  _SAVE_FAULT,
+  _DELETE_FAULT,
+};
 
 // Добавить работу со временем создания пользователя
 class User {
@@ -34,8 +34,8 @@ class User {
         user_id_(std::string()),
         active_status_(std::string()) {}
 
-  User(const std::string user_id, const std::string user_login, const std::string user_password,
-       const std::string active_status)
+  User(const std::string user_id, const std::string user_login,
+       const std::string user_password, const std::string active_status)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::move(user_id)),
@@ -69,7 +69,7 @@ class User {
 // Попробовать реализовать картинку
 
 class TextMessage : public IMessage {
-public:
+ public:
   TextMessage()
       : message_id_(std::string()),
         parent_chat_id_(std::string()),
@@ -96,7 +96,6 @@ public:
   std::string get_sender_id() const override;
   int set_sender_id(const std::string& sender_id) override;
 
-
   bool get_read_status() const override;
   int set_read_status(bool is_read) override;
 
@@ -105,13 +104,12 @@ public:
 
   void clear_message() override;
 
-
   // std::string get_address_id() const override;
   // int set_address_id(const std::string& address_id) override;
   // time_t get_time_sent() const;
   // int set_time_sent(time_t time_sent);
 
-private:
+ private:
   std::string message_id_;
   std::string parent_chat_id_;
   std::string sender_id_;
@@ -180,7 +178,7 @@ class Chat {
 
   void clear_chat();
 
-private:
+ private:
   std::string chat_id_;
   std::string chat_name_;
   std::vector<std::string> participants_;
