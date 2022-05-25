@@ -15,7 +15,7 @@ BMSTU_VK_Project | Углубленное программирование на 
 ## __1) Установка PostgreSQL на Ubuntu:__
 ```
 - sudo apt-get update -y
-- sudo apt-get install postgresql postgresql-contrib
+- sudo apt-get install -y postgresql
 ```
 
 ## __2) Установка <pqxx/pqxx> -> libpqxx.so__
@@ -25,6 +25,7 @@ BMSTU_VK_Project | Углубленное программирование на 
 
 ## __3) Добавление пароля и расширения для генерации UUID внутри БД:__
 ```
-- sudo -h 127.0.0.1 -U postgres psql -с "ALTER USER postgres PASSWORD 'postgres';"
-- sudo -h 127.0.0.1 -U postgres psql -с "CREATE EXTENSION IF NOT EXISTS 'uuid-ossp';"
+- sudo -u postgres psql postgres -c "\conninfo"
+- sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+- sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 ```
