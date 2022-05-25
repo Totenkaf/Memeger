@@ -21,6 +21,7 @@ jobs:
           sudo -u postgres psql postgres -c "\conninfo"
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
           sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          sudo -u postgres psql postgres -c "\l"
 
       - name: INSTALL GCC
         run: |
@@ -79,13 +80,13 @@ jobs:
       #     sudo make cpplint
       #     cd -
 
-      - name: CPP CHECK
-        run: |
-          mkdir -p build && cd build
-          sudo cmake -DENABLE_CPPCHECK=ON ..
-          sudo make
-          sudo make check
-          cd -
+      # - name: CPP CHECK
+      #   run: |
+      #     mkdir -p build && cd build
+      #     sudo cmake -DENABLE_CPPCHECK=ON ..
+      #     sudo make
+      #     sudo make check
+      #     cd -
 
       # - name: INSTALL FBINFER
       #   run: |
@@ -145,7 +146,9 @@ jobs:
           sudo valgrind --tool=memcheck --leak-check=full ./run_db init_only
           sudo -u postgres psql postgres -c "SELECT * FROM USERS;"
           sudo -u postgres psql postgres -c "SELECT * FROM CHATS;"
+          sudo -u postgres psql postgres -c "SELECT * FROM USERS_CHATS_LINK;"
           sudo valgrind --tool=memcheck --leak-check=full ./run_db init_drop
+          sudo -u postgres psql postgres -c "SELECT * FROM USERS;"
           cd -
 
   testing:
@@ -205,8 +208,8 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-          sudo -u postgres psql postgres -c "CREATE DATABASE test_db;"
           sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          sudo -u postgres psql postgres -c "\l"
 
       - name: MODELS_TEST
         run:  |
