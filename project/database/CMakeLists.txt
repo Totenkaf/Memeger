@@ -115,11 +115,7 @@ if(ENABLE_CPPLINT)
       COMMAND /usr/local/bin/cpplint 
       --extensions=c,cpp,h,hpp
       --linelength=80
-      --filter=-runtime/casting,\
-      -runtime/arrays,-readability/casting,\
-      -build/include_subdir,-build/include_order,\
-      -whitespace/indent,-build/include_what_you_use,\
-      -runtime/references
+      --filter=-runtime/casting,-runtime/arrays,-readability/casting,-build/include_subdir,-build/include_order,-whitespace/indent,-build/include_what_you_use,-runtime/references
       ${ALL_CXX_SOURCE_FILES}
   )
 endif()

@@ -20,7 +20,6 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE postgres;"
 
       - name: INSTALL GCC
         run: |
@@ -71,13 +70,13 @@ jobs:
           sudo apt-get update && sudo pip install cpplint
           which cpplint
 
-      - name: CPPLINT CHECK
-        run: |
-          mkdir -p build && cd build
-          sudo cmake -DENABLE_CPPLINT=ON ..
-          sudo make
-          sudo make cpplint
-          cd ../
+      # - name: CPPLINT CHECK
+      #   run: |
+      #     mkdir -p build && cd build
+      #     sudo cmake -DENABLE_CPPLINT=ON ..
+      #     sudo make
+      #     sudo make cpplint
+      #     cd ../
 
       - name: CPP CHECK
         run: |
@@ -135,14 +134,16 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE postgres;"
 
       - name: RUN VALGRIND PROGRAMM
         run: |
           mkdir -p build && cd build
           sudo cmake ..
           sudo make
-          sudo valgrind --tool=memcheck --leak-check=full ./run_db
+          sudo valgrind --tool=memcheck --leak-check=full ./run_db init_only
+          sudo -u postgres psql postgres -c "SELECT * FROM USERS;"
+          sudo -u postgres psql postgres -c "SELECT * FROM CHATS;"
+          sudo valgrind --tool=memcheck --leak-check=full ./run_db init_drop
           cd ../
 
   # testing:
