@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -pthread -Wall -Wextra -Wpedantic -
 # ------------------------------------------------------------------------------
 # 1 | Include subdirectories
 # ------------------------------------------------------------------------------
-
+include(ExternalProject)
 set(${project_name}_lib_includes ${PROJECT_SOURCE_DIR}/include)
 message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}\n")
 
