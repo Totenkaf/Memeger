@@ -18,9 +18,10 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y libpqxx-dev
-          sudo apt-get install -y postgresql postgresql-contrib
+          sudo apt-get install -y postgresql-9.6
           sudo pg_ctlcluster 12 main start
           sudo netstat -pant | grep postgres
+          sudo psql --version
           sudo -u postgres psql -h 127.0.0.1 -p 5433 -c “ALTER USER postgres PASSWORD 'postgres';”
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 --no-password
 
