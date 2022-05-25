@@ -20,8 +20,7 @@ jobs:
           sudo netstat -pant | grep postgres
           sudo -u postgres psql postgres
           sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE test_db;"
-          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE USER tester WITH PASSWORD 'test_password'; GRANT ALL PRIVILEGES ON DATABASE test_db TO tester;"
+          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE postgres;"
 
       - name: INSTALL GCC
         run: |
@@ -103,41 +102,48 @@ jobs:
           sudo make infer
           cd ../
 
-  # building:
-  #   runs-on: ubuntu-latest
-  #   needs: [checking]
-  #   steps:
+  building:
+    runs-on: ubuntu-latest
+    needs: [checking]
+    steps:
 
-  #     - uses: actions/checkout@v2
-  #     - name: WORKING DIRECTORY
-  #       run: pwd
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
 
-  #     - name: INSTALL GCC
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y gcc g++
-  #         which gcc
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
 
-  #     - name: INSTALL CMAKE
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y cmake
-  #         which cmake
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
 
-  #     - name: INSTALL VALGRIND
-  #       run: |
-  #         sudo apt-get update && sudo apt-get install -y valgrind
-  #         which valgrind
+      - name: INSTALL VALGRIND
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind
+          which valgrind
 
-  #     - name: RUN VALGRIND PROGRAMM_STATIC LIB_FILEINPUT
-  #       run: |
-  #         mkdir -p build && cd build
-  #         sudo cmake -DBUILD_PARALLEL=OFF ..
-  #         sudo make
-  #         INPUT_KEY=-i1
-  #         DATA_FILENAME="data.txt"
-  #         SEQUENCE_SIZE=1000
-  #         R_WINDOW=15
-  #         sudo valgrind --tool=memcheck --leak-check=full --leak-resolution=med ./ECG -i1 ${DATA_FILENAME} ${SEQUENCE_SIZE} ${R_WINDOW}
-  #         cd ../
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpqxx-dev
+          sudo apt-get install -y postgresql
+          sudo service postgresql start
+          sudo netstat -pant | grep postgres
+          sudo -u postgres psql postgres
+          sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres PGPASSWORD=postgres psql postgres -c "CREATE DATABASE postgres;"
+
+      - name: RUN VALGRIND PROGRAMM
+        run: |
+          mkdir -p build && cd build
+          sudo cmake ..
+          sudo make
+          sudo valgrind --tool=memcheck --leak-check=full ./run_db
+          cd ../
 
   # testing:
   #   runs-on: ubuntu-latest

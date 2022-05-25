@@ -54,13 +54,13 @@ int Postgre_DB::init_tables() {
   std::string users =
       create_table +
       "USERS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                               login VARCHAR(50) NOT NULL, \
-                                               CONSTRAINT unique_login_users UNIQUE(login), \
-                                               password VARCHAR(50) NOT NULL, \
-                                               active_status VARCHAR(8) NOT NULL DEFAULT 'active', \
-                                               CONSTRAINT real_active_statuses CHECK(active_status = 'active' \
-                                               OR active_status = 'inactive'), \
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
+              login VARCHAR(50) NOT NULL, \
+              CONSTRAINT unique_login_users UNIQUE(login), \
+              password VARCHAR(50) NOT NULL, \
+              active_status VARCHAR(8) NOT NULL DEFAULT 'active', \
+              CONSTRAINT real_active_statuses CHECK(active_status = 'active' \
+              OR active_status = 'inactive'), \
+              time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
   if(execution_table(users, PG_conn)) {
     return _TABLE_EXECUTION_FAULT;
   }
@@ -68,9 +68,9 @@ int Postgre_DB::init_tables() {
   std::string chats =
       create_table +
       "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                               chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
-                                               CONSTRAINT unique_chat_name UNIQUE (chat_name), \
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
+              chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
+              CONSTRAINT unique_chat_name UNIQUE (chat_name), \
+              time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
   if(execution_table(chats, PG_conn)) {
     return _TABLE_EXECUTION_FAULT;
   }
@@ -78,11 +78,11 @@ int Postgre_DB::init_tables() {
   std::string messages =
       create_table +
       "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                                     user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
-                                                     time_sent TIMESTAMP NOT NULL DEFAULT NOW(), \
-                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
-                                                     content VARCHAR(150), \
-                                                     is_read BOOLEAN NOT NULL DEFAULT false);";
+                 user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
+                 time_sent TIMESTAMP NOT NULL DEFAULT NOW(), \
+                 chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
+                 content VARCHAR(150), \
+                 is_read BOOLEAN NOT NULL DEFAULT false);";
   if(execution_table(messages, PG_conn)) {
     return _TABLE_EXECUTION_FAULT;
   }
@@ -90,8 +90,8 @@ int Postgre_DB::init_tables() {
   std::string users_chats_link =
       create_table +
       "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                                                     user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
-                                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
+                         user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
+                         chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
   if(execution_table(users_chats_link, PG_conn)) {
     return _TABLE_EXECUTION_FAULT;
   }

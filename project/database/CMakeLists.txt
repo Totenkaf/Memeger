@@ -106,7 +106,8 @@ if(ENABLE_CPPLINT)
   file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
     ${PROJECT_SOURCE_DIR}/include/*.h
-    ${PROJECT_SOURCE_DIR}/test/*.cpp
+    ${PROJECT_SOURCE_DIR}/test/models_unit.cpp
+    ${PROJECT_SOURCE_DIR}/test/postgresql_db_unit.cpp
   )
 
   add_custom_target(
@@ -114,7 +115,11 @@ if(ENABLE_CPPLINT)
       COMMAND /usr/local/bin/cpplint 
       --extensions=c,cpp,h,hpp
       --linelength=80
-      --filter=-runtime/casting,-runtime/arrays,-readability/casting,-build/include_subdir,-build/include_order,-whitespace/indent,-build/include_what_you_use,
+      --filter=-runtime/casting,\
+      -runtime/arrays,-readability/casting,\
+      -build/include_subdir,-build/include_order,\
+      -whitespace/indent,-build/include_what_you_use,\
+      -runtime/references
       ${ALL_CXX_SOURCE_FILES}
   )
 endif()
