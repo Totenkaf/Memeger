@@ -21,6 +21,11 @@ jobs:
           sudo apt-get install -y postgresql postgresql-contrib
           sudo pg_ctlcluster 12 main start
           sudo netstat -pant | grep postgres
+          sudo chown postgres -R /var/lib/postgresql/12/main/
+          sudo gpasswd -a postgres ssl-cert
+          sudo chown root:ssl-cert  /etc/ssl/private/ssl-cert-snakeoil.key
+          sudo chmod 740 /etc/ssl/private/ssl-cert-snakeoil.key
+          sudo service postgresql restart
           sudo su - postgres
           psql -p 5433 -U postgres
 # PGPASSWORD=password psql -h 127.0.0.1 -p 5433 -c "ALTER USER postgres PASSWORD 'postgres';"
