@@ -20,6 +20,7 @@ jobs:
           sudo apt-get install -y libpqxx-dev
           sudo apt-get install -y postgresql postgresql-contrib
           sudo pg_ctlcluster 12 main start
+          sudo nano /etc/postgresql/12/main/pg_hba.conf
           sudo netstat -pant | grep postgres
           sudo chown postgres -R /var/lib/postgresql/12/main/
           sudo gpasswd -a postgres ssl-cert
