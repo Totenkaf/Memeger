@@ -44,28 +44,28 @@ std::string TextMessage::get_message_id() const { return message_id_; }
 
 int TextMessage::set_message_id(const std::string& message_id) {
   message_id_ = message_id;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::string TextMessage::get_parent_chat_id() const { return parent_chat_id_; }
 
 int TextMessage::set_parent_chat_id(const std::string& parent_chat_id) {
   parent_chat_id_ = parent_chat_id;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::string TextMessage::get_sender_id() const { return sender_id_; }
 
 int TextMessage::set_sender_id(const std::string& sender_id) {
   sender_id_ = sender_id;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::string TextMessage::get_message_text() const { return text_message_; }
 
 int TextMessage::set_message_text(const std::string& text_message) {
   text_message_ = text_message;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 // time_t TextMessage::get_time_sent() const {
@@ -76,7 +76,7 @@ bool TextMessage::get_read_status() const { return is_read_; }
 
 int TextMessage::set_read_status(bool is_read) {
   is_read_ = is_read;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::vector<TextMessage> Chat::get_messages() const { return messages_; }
@@ -98,21 +98,21 @@ std::vector<std::string> Chat::get_participants() const {
 
 int Chat::set_participants(std::vector<std::string>& participants) {
   participants_ = std::move(participants);
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::string Chat::get_chat_id() const { return chat_id_; }
 
 int Chat::set_chat_id(const std::string chat_id) {
   chat_id_ = chat_id;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 std::string Chat::get_chat_name() const { return chat_name_; }
 
 int Chat::set_chat_name(const std::string& chat_name) {
   chat_name_ = chat_name;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 // time_t Chat::get_chat_time_creation() const {
@@ -126,7 +126,7 @@ int Chat::set_chat_name(const std::string& chat_name) {
 
 int Chat::set_chat_messages(const std::vector<TextMessage>& messages) {
   messages_ = messages;
-  return 0;
+  return _EXIT_SUCCESS;
 }
 
 bool Chat::operator==(const Chat& chat) const { /* нужны ли? */

@@ -5,6 +5,19 @@
 #include <utility>
 #include <vector>
 
+#include "imessage.h"
+
+enum exit_status {
+                  _EXIT_SUCCESS=0, 
+                  _EXIT_FAULT, 
+                  _TABLE_EXECUTION_FAULT,
+                  _TABLE_DELETION_FAULT,
+                  _INSERT_FAULT,
+                  _UPDATE_FAULT,
+                  _SAVE_FAULT,
+                  _DELETE_FAULT,
+                 };
+
 // Добавить работу со временем создания пользователя
 class User {
  private:
@@ -53,11 +66,10 @@ class User {
 };
 
 // Добавить работу со временем отправки сообщения
-// Сделать интерфейс, отнаследоваться, везде отрефакторить
 // Попробовать реализовать картинку
 
-class TextMessage {
- public:
+class TextMessage : public IMessage {
+public:
   TextMessage()
       : message_id_(std::string()),
         parent_chat_id_(std::string()),
@@ -75,36 +87,39 @@ class TextMessage {
 
   ~TextMessage() = default;
 
-  std::string get_message_id() const;
-  int set_message_id(const std::string& message_id);
+  std::string get_message_id() const override;
+  int set_message_id(const std::string& message_id) override;
 
-  std::string get_parent_chat_id() const;
-  int set_parent_chat_id(const std::string& parent_chat_id);
+  std::string get_parent_chat_id() const override;
+  int set_parent_chat_id(const std::string& parent_chat_id) override;
 
-  std::string get_sender_id() const;
-  int set_sender_id(const std::string& sender_id);
+  std::string get_sender_id() const override;
+  int set_sender_id(const std::string& sender_id) override;
 
-  std::string get_address_id() const;
-  int set_address_id(const std::string& address_id);
 
-  // time_t get_time_sent() const;
-  // int set_time_sent(time_t time_sent);
-  bool get_read_status() const;
-  int set_read_status(bool is_read);
+  bool get_read_status() const override;
+  int set_read_status(bool is_read) override;
 
   std::string get_message_text() const;
   int set_message_text(const std::string& text_message);
 
-  void clear_message();
+  void clear_message() override;
 
- private:
+
+  // std::string get_address_id() const override;
+  // int set_address_id(const std::string& address_id) override;
+  // time_t get_time_sent() const;
+  // int set_time_sent(time_t time_sent);
+
+private:
   std::string message_id_;
   std::string parent_chat_id_;
   std::string sender_id_;
-  // std::string address_id_;
   std::string text_message_;
-  // time_t time_sent_;
   bool is_read_;
+
+  // std::string address_id_;
+  // time_t time_sent_;
 };
 
 // Добавить работу со временем создания чата
@@ -165,7 +180,7 @@ class Chat {
 
   void clear_chat();
 
- private:
+private:
   std::string chat_id_;
   std::string chat_name_;
   std::vector<std::string> participants_;

@@ -3,12 +3,12 @@
 # ==============================================================================
 # I | General project settings
 # ==============================================================================
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(database)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -pthread -Wall -Wextra -Wpedantic -Werror")
 
 # ==============================================================================
 # II | Preinstall settings
@@ -19,21 +19,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wpedantic -Werro
 # ------------------------------------------------------------------------------
 
 set(${project_name}_lib_includes ${PROJECT_SOURCE_DIR}/include)
-message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}")
-include(ExternalProject)
+message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}\n")
 
 set(${project_name}_lib_sources ${PROJECT_SOURCE_DIR}/src)
-message("DB_SOURCE_DIR = ${${project_name}_lib_sources}")
+message("DB_SOURCE_DIR = ${${project_name}_lib_sources}\n")
 
 # ------------------------------------------------------------------------------
 # 2 | Add libraries
 # ------------------------------------------------------------------------------
 set(MODELS_LIB_FILES ${${project_name}_lib_sources}/models.cpp)
-message("MODELS_LIB_FILES = ${MODELS_LIB_FILES}")
-
-
 set(DATABASE_LIB_FILES ${${project_name}_lib_sources}/postgresql_db.cpp)
-message("DATABASE_LIB_FILES = ${DATABASE_LIB_FILES}")
+
 
 add_library(database_lib SHARED ${MODELS_LIB_FILES} ${DATABASE_LIB_FILES})
 target_include_directories(database_lib PUBLIC ${${project_name}_lib_includes})
