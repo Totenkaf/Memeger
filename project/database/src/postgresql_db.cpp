@@ -1,10 +1,9 @@
 // Copyright 2022 by Artem Ustsov
 
-#include "postgresql_db.h"
-
 #include <algorithm>
 
 #include "models.h"
+#include "postgresql_db.h"
 
 // Конструктор с уставкой. Подлкючается к БД на указанном порте, хосте
 Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
