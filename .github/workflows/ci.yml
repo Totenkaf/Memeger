@@ -20,7 +20,7 @@ jobs:
           sudo apt-get install -y libpqxx-dev
           sudo apt-get install -y postgresql postgresql-contrib
           sudo cat /etc/postgresql/12/main/pg_hba.conf
-          sudo pg_ctlcluster 12 main start
+          sudo service postgresql start
           sudo netstat -pant | grep postgres
           sudo chown postgres -R /var/lib/postgresql/12/main/
           sudo gpasswd -a postgres ssl-cert
@@ -28,7 +28,7 @@ jobs:
           sudo chmod 740 /etc/ssl/private/ssl-cert-snakeoil.key
           sudo service postgresql restart
           sudo -i -u postgres
-          psql -U postgres -p 5433
+          psql -u postgres -p 5433
 # PGPASSWORD=postgres psql -h 127.0.0.1 -p 5433 -U postgres -c "ALTER USER postgres PASSWORD 'postgres';"
 # PGPASSWORD=password psql -h 127.0.0.1 -p 5433 -c "ALTER USER postgres PASSWORD 'postgres';"
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 
