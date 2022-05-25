@@ -22,7 +22,8 @@ jobs:
           sudo pg_ctlcluster 12 main start
           sudo netstat -pant | grep postgres
           sudo su - postgres
-          export PGPASSWORD='postgres' psql -h 127.0.0.1 -p 5433 -c "ALTER USER postgres PASSWORD 'postgres';"
+          psql -U postgres
+# PGPASSWORD=password psql -h 127.0.0.1 -p 5433 -c "ALTER USER postgres PASSWORD 'postgres';"
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 
 # sudo -u postgres psql -h 127.0.0.1 -p 5433 --no-password
 
