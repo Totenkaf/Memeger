@@ -32,8 +32,8 @@ class User {
   User(const User& other) = default;
   User(User&& other) = default;
 
-  User& operator=(const User&) = default;
-  User& operator=(User&& other) = default;
+  auto operator=(const User&) -> User& = default;
+  auto operator=(User&& other) -> User& = default;
 
   User(std::string user_id, std::string user_login,
        std::string user_password, std::string active_status)
@@ -73,15 +73,16 @@ class TextMessage : public IMessage {
   TextMessage(const TextMessage& other) = default;
   TextMessage(TextMessage&& other) = default;
 
-  TextMessage& operator=(const TextMessage&) = default;
-  TextMessage& operator=(TextMessage&& other) = default;
+  auto operator=(const TextMessage&) -> TextMessage& = default;
+  auto operator=(TextMessage&& other) -> TextMessage& = default;
+
+  ~TextMessage() = default;
 
   TextMessage(std::string parent_chat_id, std::string sender_id,
               std::string text_message)
       : parent_chat_id_(std::move(parent_chat_id)),
         sender_id_(std::move(sender_id)),
-        text_message_(std::move(text_message)),
-        is_read_(false) {}
+        text_message_(std::move(text_message)) {}
 
   [[nodiscard]] auto get_message_id() const -> std::string override;
   auto set_message_id(const std::string& message_id) -> int override;
@@ -123,8 +124,8 @@ class Chat {
   Chat(const Chat& other) = default;
   Chat(Chat&& other) = default;
 
-  Chat& operator=(const Chat&) = default;
-  Chat& operator=(Chat&& other) = default;
+  auto operator=(const Chat&) -> Chat& = default;
+  auto operator=(Chat&& other) -> Chat& = default;
 
   Chat(std::string chat_id, std::string chat_name,
        std::vector<std::string> participants,

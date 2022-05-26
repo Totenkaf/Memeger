@@ -1,6 +1,6 @@
 #include "postgresql_db.h"
 
-int main(int argc, char* argv[]) {
+auto main(int argc, char* argv[]) -> int {
     if(argc < 2) {
         std::cerr << "EMPTY COMMAND" << std::endl;
         return _EXIT_FAULT;
