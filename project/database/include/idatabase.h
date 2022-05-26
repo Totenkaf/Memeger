@@ -6,8 +6,6 @@
 #include <string>
 
 class IDataBase {
-public:
-    virtual ~IDataBase() = default;
 private:
   [[nodiscard]] virtual auto save(const std::string& table,
                    const std::vector<std::string>& table_fields,

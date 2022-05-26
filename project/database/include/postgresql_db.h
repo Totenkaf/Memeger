@@ -47,9 +47,18 @@ class Postgre_DB : public IDataBase {
   std::string db_password_;
 
  public:
-  Postgre_DB(const std::string db_host, const std::string db_port,
-             const std::string db_name, const std::string db_user,
-             const std::string db_password);
+  Postgre_DB() = default;
+  Postgre_DB(std::string db_host, std::string db_port,
+             std::string db_name, std::string db_user,
+             std::string db_password);
+
+
+  Postgre_DB(const Postgre_DB& other) = default;
+  Postgre_DB(Postgre_DB&& other) = default;
+
+  Postgre_DB& operator=(const Postgre_DB&) = default;
+  Postgre_DB& operator=(Postgre_DB&& other) = default;
+
   ~Postgre_DB();
 
   auto drop_tables() -> int;

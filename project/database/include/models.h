@@ -153,7 +153,7 @@ class Chat {
   auto set_chat_name(const std::string& chat_name) -> int;
 
   [[nodiscard]] auto get_chat_id() const -> std::string;
-  auto set_chat_id(const std::string chat_id) -> int;
+  auto set_chat_id(const std::string& chat_id) -> int;
 
   // time_t get_chat_time_creation() const;
   // int set_chat_time_creation(const time_t& time_creation);
