@@ -132,8 +132,8 @@ int Postgre_DB::drop_tables() {
 // Удаление лишних символов, которые могут помешать парсингу (/, '', ;)
 std::string Postgre_DB::remove_danger_characters(
     const std::string& row_column) {
-  std::string prep_column = "";
-  for (auto i : row_column) {
+  std::string prep_column = std::string();
+  for (const auto& i : row_column) {
     if (i != '\'' && i != '\"') {
       prep_column += i;
     }
@@ -220,8 +220,8 @@ pqxx::result Postgre_DB::select(
     int limit = -1) {
   std::string request = "SELECT ";
   if (!what.empty()) {
-    for (std::size_t i = 0; i < what.size(); ++i) {
-      request += remove_danger_characters(what[i]) + ", ";
+    for (const auto &item : what) {
+      request += remove_danger_characters(item) + ", ";
     }
     request =
         request.substr(0, request.size() - 2);  // MAGIC NUMBER. TO DO SMART

@@ -31,11 +31,11 @@ class User {
   User() = default;
 
   User(std::string user_id, std::string user_login,
-       std::string user_password, const std::string& active_status)
+       std::string user_password, std::string active_status)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::move(user_id)),
-        active_status_(active_status) {}
+        active_status_(std::move(active_status)) {}
 
   User(std::string user_login, std::string user_password)
       : user_login_(std::move(user_login)),
@@ -43,10 +43,10 @@ class User {
 
   ~User() = default;
 
-  std::string get_id() const;
-  std::string get_login() const;
-  std::string get_password() const;
-  std::string get_active_status() const;
+  [[nodiscard]] auto get_id() const -> std::string;
+  [[nodiscard]] auto get_login() const -> std::string;
+  [[nodiscard]] auto get_password() const -> std::string;
+  [[nodiscard]] auto get_active_status() const -> std::string;
 
   void set_id(const std::string& user_id);
   void set_login(const std::string& user_login);
@@ -55,8 +55,8 @@ class User {
 
   void clear_user();
 
-  bool operator==(const User& user) const;
-  bool operator!=(const User& user) const;
+  auto operator==(const User& user) const -> bool;
+  auto operator!=(const User& user) const -> bool;
 };
 
 // Добавить работу со временем отправки сообщения
@@ -76,20 +76,20 @@ class TextMessage : public IMessage {
 
   ~TextMessage() = default;
 
-  auto get_message_id() const -> std::string override;
-  int set_message_id(const std::string& message_id) override;
+  [[nodiscard]] auto get_message_id() const -> std::string override;
+  auto set_message_id(const std::string& message_id) -> int override;
 
-  std::string get_parent_chat_id() const override;
-  int set_parent_chat_id(const std::string& parent_chat_id) override;
+  [[nodiscard]] auto get_parent_chat_id() const -> std::string override;
+  auto set_parent_chat_id(const std::string& parent_chat_id) -> int override;
 
-  std::string get_sender_id() const override;
-  int set_sender_id(const std::string& sender_id) override;
+  [[nodiscard]] auto get_sender_id() const -> std::string override;
+  auto set_sender_id(const std::string& sender_id) -> int override;
 
-  bool get_read_status() const override;
-  int set_read_status(bool is_read) override;
+  [[nodiscard]] auto get_read_status() const -> bool override;
+  auto set_read_status(bool is_read) -> int override;
 
-  std::string get_message_text() const;
-  int set_message_text(const std::string& text_message);
+  [[nodiscard]] auto get_message_text() const -> std::string;
+  auto set_message_text(const std::string& text_message) -> int;
 
   void clear_message() override;
 
@@ -134,33 +134,33 @@ class Chat {
 
   ~Chat() = default;
 
-  TextMessage get_last_message() const;
+  [[nodiscard]] auto get_last_message() const -> TextMessage;
 
-  std::string get_chat_name() const;
-  int set_chat_name(const std::string& chat_name);
+  [[nodiscard]] auto get_chat_name() const -> std::string;
+  auto set_chat_name(const std::string& chat_name) -> int;
 
-  std::string get_chat_id() const;
-  int set_chat_id(const std::string chat_id);
+  [[nodiscard]] auto get_chat_id() const -> std::string;
+  auto set_chat_id(const std::string chat_id) -> int;
 
   // time_t get_chat_time_creation() const;
   // int set_chat_time_creation(const time_t& time_creation);
 
-  int set_participants(std::vector<std::string>& participants);
-  std::vector<std::string> get_participants() const;
+  auto set_participants(std::vector<std::string>& participants) -> int;
+  [[nodiscard]] auto get_participants() const -> std::vector<std::string>;
 
-  int set_messages(const std::vector<TextMessage>& messages);
-  std::vector<TextMessage> get_messages() const;
+  auto set_messages(const std::vector<TextMessage>& messages) -> int;
+  [[nodiscard]] auto get_messages() const -> std::vector<TextMessage>;
 
   // int push_new_message(TextMessage new_message);
-  int set_chat_messages(const std::vector<TextMessage>& messages);
+  auto set_chat_messages(const std::vector<TextMessage>& messages) -> int;
 
-  bool is_empty() const;
-  bool is_dialogue() const;
-  bool is_monologue() const;
-  bool is_polilogue() const;
+  auto is_empty() const -> bool;
+  auto is_dialogue() const -> bool;
+  auto is_monologue() const -> bool;
+  auto is_polilogue() const -> bool;
 
-  bool operator!=(const Chat& chat) const;
-  bool operator==(const Chat& chat) const;
+  auto operator!=(const Chat& chat) const -> bool;
+  auto operator==(const Chat& chat) const -> bool;
 
   void clear_chat();
 

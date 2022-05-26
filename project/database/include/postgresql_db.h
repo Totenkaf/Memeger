@@ -35,8 +35,8 @@ class Postgre_DB : public IDataBase {
   auto parse_output_params(
       const std::vector<std::string>& output_params) -> std::string;
   auto remove_danger_characters(const std::string& row_column) -> std::string;
-  auto get_user_id(const std::string& login) -> std::string;
-  auto get_user_login(const std::string& id) -> std::string;
+  [[nodiscard]] auto get_user_id(const std::string& login) -> std::string;
+  [[nodiscard]] auto get_user_login(const std::string& id) -> std::string;
   auto add_user_chat_link(const std::string& user_id,
                          const std::string& chat_id) -> int;
 
@@ -59,21 +59,21 @@ class Postgre_DB : public IDataBase {
   auto change_user_password(User& user, const std::string& new_password) -> int;
   auto change_user_status(User& user, const std::string& new_status) -> int;
   auto delete_user(User& user) -> int;
-  auto find_user_by_login(const std::string& login) -> bool;
-  auto get_user_by_login(const std::string& login) -> User;
+  [[nodiscard]] auto find_user_by_login(const std::string& login) -> bool;
+  [[nodiscard]] auto get_user_by_login(const std::string& login) -> User;
 
   auto add_message(TextMessage& message) -> int;
   auto delete_message(TextMessage& message) -> int;
-  auto get_last_N_messages_from_chat(const Chat& chat,
+  [[nodiscard]] auto get_last_N_messages_from_chat(const Chat& chat,
                                      int num_of_messages) -> std::vector<TextMessage>;
 
   auto add_chat(Chat& chat) -> int;
   auto add_new_participant(const User& user, const Chat& chat) -> int;
   auto change_chat_name(Chat& chat, const std::string& new_chat_name) -> int;
   auto delete_chat(Chat& chat) -> int;
-  auto find_chat_by_chat_name(const std::string& chat_name) -> bool;
-  auto get_chat_by_chat_name(const std::string& chat_name) -> Chat;
-  auto get_chat_by_id(const std::string& chat_id) -> Chat;
-  auto get_participants_from_chat(const Chat& chat) -> std::vector<std::string>;
-  auto get_all_chats_by_user_login(const std::string& login) -> std::vector<Chat>;
+  [[nodiscard]] auto find_chat_by_chat_name(const std::string& chat_name) -> bool;
+  [[nodiscard]] auto get_chat_by_chat_name(const std::string& chat_name) -> Chat;
+  [[nodiscard]] auto get_chat_by_id(const std::string& chat_id) -> Chat;
+  [[nodiscard]] auto get_participants_from_chat(const Chat& chat) -> std::vector<std::string>;
+  [[nodiscard]] auto get_all_chats_by_user_login(const std::string& login) -> std::vector<Chat>;
 };
