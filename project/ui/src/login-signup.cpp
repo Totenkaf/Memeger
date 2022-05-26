@@ -70,13 +70,10 @@ void signup_submit(GtkWidget* widget, GdkEvent* event, gpointer data) {
       return;
   }
 
-  // std::string host = "localhost"; // TO DO
-  // std::string port = "8080";
-  // std::string path = "/registration/";
+  net::io_context io_context;
 
-  // net::io_context io_context;
-  // std::make_shared<Client>(io_context)->run(host, port, path);
-  // std::make_shared<Client>(io_context)->signup(nick, password); // TO DO
+  std::make_shared<Client>(io_context)->signup(nick, password); // TO DO
+  io_context.run();
 
   createLoginBox();
   switchBoxes(signup_box, login_box);

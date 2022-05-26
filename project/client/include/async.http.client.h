@@ -16,8 +16,9 @@ namespace net = boost::asio;            // from <boost/asio.hpp>
 class Client : public std::enable_shared_from_this<Client> {
 public:
     Client(boost::asio::io_context& io_context);
-    void signup(const std::string& server, const std::string& port, const std::string& path);
-    void run(const std::string& server, const std::string& port, const std::string& path);
+    void signup(const std::string user_login, const std::string user_password);
+    // void run(const std::string& server, const std::string& port, const std::string& path);
+    void run(const std::string path);
 
 private:
     void handle_resolve(beast::error_code err,tcp::resolver::results_type results);

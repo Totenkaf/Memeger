@@ -13,40 +13,37 @@ namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
 namespace net = boost::asio;            // from <boost/asio.hpp>
 
+const std::string server = "localhost";
+const std::string port = "8080";
+
 Client::Client(boost::asio::io_context& io_context)
 : resolver_(net::make_strand(io_context)), stream_(net::make_strand(io_context))
 {}
 
 
-// void Client::signup(const std::string& user_login, const std::string& user_password) {
+void Client::signup(const std::string user_login, const std::string user_password) {
 
-//         std::cout << "nick is " << user_login << std::endl;
-//         std::cout << "password is " << user_password << std::endl;
+        std::cout << "nick is " << user_login << std::endl;
+        std::cout << "password is " << user_password << std::endl;
 
-//         std::string path = "/signup";
-//         std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
-//         request_.version(10);
-//         request_.method(http::verb::post);
-//         request_.target(path);
-//         request_.set(http::field::content_length, std::to_string(body.length()));
-//         request_.set(http::field::host, server);
-//         request_.set(http::field::accept, "application/json");
-//         request_.set(http::field::connection, "Keep-Alive");
-//         request_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-//         request_.body() = body;
+        std::string path = "/registration/";
+        std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
+        request_.version(10);
+        request_.method(http::verb::post);
+        request_.target(path);
+        request_.set(http::field::content_length, std::to_string(body.length()));
+        request_.set(http::field::host, server);
+        request_.set(http::field::accept, "application/json");
+        request_.set(http::field::connection, "Keep-Alive");
+        request_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+        request_.body() = body;
 
-//         return resolver_.async_resolve(
-//             server, 
-//             port, 
-//             beast::bind_front_handler(
-//                 &Client::handle_resolve, 
-//                 shared_from_this()
-//             )
-//         );
-// }
+        this->run(path);
+}
 
 
-void Client::run(const std::string& server, const std::string& port, const std::string& path){
+// void Client::run(const std::string& server, const std::string& port, const std::string& path){
+void Client::run(const std::string path){
 
     //add_message 
 
@@ -103,20 +100,20 @@ void Client::run(const std::string& server, const std::string& port, const std::
 
     //add_user
 
-std::string user_login="Lol2";
-std::string user_password="ewe";
+// std::string user_login="Lol2";
+// std::string user_password="ewe";
 
     
-std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
-request_.version(10);
-request_.method(http::verb::post);
-request_.target(path);
-request_.set(http::field::content_length, std::to_string(body.length()));
-request_.set(http::field::host, "localhost");
-request_.set(http::field::accept, "application/json");
-request_.set(http::field::connection, "Keep-Alive");
-request_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
-request_.body() = body;
+// std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
+// request_.version(10);
+// request_.method(http::verb::post);
+// request_.target(path);
+// request_.set(http::field::content_length, std::to_string(body.length()));
+// request_.set(http::field::host, "localhost");
+// request_.set(http::field::accept, "application/json");
+// request_.set(http::field::connection, "Keep-Alive");
+// request_.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+// request_.body() = body;
 
 //check login
 
@@ -433,9 +430,6 @@ void Client:: handle_read(beast::error_code err,
         std::cout << "Error: " << err << "\n";
     }
 }
-
-
-    
 
 // int main(int argc, char* argv[])
 // {
