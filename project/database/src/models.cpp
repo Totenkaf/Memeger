@@ -10,25 +10,25 @@ auto User::get_id() const -> std::string { return user_id_; }
 
 auto User::get_active_status() const -> std::string { return active_status_; }
 
-void User::set_login(const std::string& user_login) {
+void User::set_login(const std::string &user_login) {
   user_login_ = user_login;
 }
 
-void User::set_password(const std::string& user_password) {
+void User::set_password(const std::string &user_password) {
   user_password_ = user_password;
 }
 
-void User::set_id(const std::string& user_id) { user_id_ = user_id; }
+void User::set_id(const std::string &user_id) { user_id_ = user_id; }
 
-void User::set_active_status(const std::string& active_status) {
+void User::set_active_status(const std::string &active_status) {
   active_status_ = active_status;
 }
 
-auto User::operator==(const User& user) const -> bool {
+auto User::operator==(const User &user) const -> bool {
   return user_login_ == user.get_login();
 }
 
-auto User::operator!=(const User& user) const -> bool {
+auto User::operator!=(const User &user) const -> bool {
   return user_login_ != user.get_login();
 }
 
@@ -41,28 +41,32 @@ void User::clear_user() {
 
 auto TextMessage::get_message_id() const -> std::string { return message_id_; }
 
-auto TextMessage::set_message_id(const std::string& message_id) -> int {
+auto TextMessage::set_message_id(const std::string &message_id) -> int {
   message_id_ = message_id;
   return _EXIT_SUCCESS;
 }
 
-auto TextMessage::get_parent_chat_id() const -> std::string { return parent_chat_id_; }
+auto TextMessage::get_parent_chat_id() const -> std::string {
+  return parent_chat_id_;
+}
 
-auto TextMessage::set_parent_chat_id(const std::string& parent_chat_id) -> int {
+auto TextMessage::set_parent_chat_id(const std::string &parent_chat_id) -> int {
   parent_chat_id_ = parent_chat_id;
   return _EXIT_SUCCESS;
 }
 
 auto TextMessage::get_sender_id() const -> std::string { return sender_id_; }
 
-auto TextMessage::set_sender_id(const std::string& sender_id) -> int {
+auto TextMessage::set_sender_id(const std::string &sender_id) -> int {
   sender_id_ = sender_id;
   return _EXIT_SUCCESS;
 }
 
-auto TextMessage::get_message_text() const -> std::string { return text_message_; }
+auto TextMessage::get_message_text() const -> std::string {
+  return text_message_;
+}
 
-auto TextMessage::set_message_text(const std::string& text_message) -> int {
+auto TextMessage::set_message_text(const std::string &text_message) -> int {
   text_message_ = text_message;
   return _EXIT_SUCCESS;
 }
@@ -78,7 +82,9 @@ auto TextMessage::set_read_status(bool is_read) -> int {
   return _EXIT_SUCCESS;
 }
 
-auto Chat::get_messages() const -> std::vector<TextMessage> { return messages_; }
+auto Chat::get_messages() const -> std::vector<TextMessage> {
+  return messages_;
+}
 
 void TextMessage::clear_message() {
   message_id_.clear();
@@ -94,21 +100,21 @@ auto Chat::get_participants() const -> std::vector<std::string> {
   return participants_;
 }
 
-auto Chat::set_participants(std::vector<std::string>& participants) -> int {
+auto Chat::set_participants(std::vector<std::string> &participants) -> int {
   participants_ = std::move(participants);
   return _EXIT_SUCCESS;
 }
 
 auto Chat::get_chat_id() const -> std::string { return chat_id_; }
 
-auto Chat::set_chat_id(const std::string& chat_id) -> int {
+auto Chat::set_chat_id(const std::string &chat_id) -> int {
   chat_id_ = chat_id;
   return _EXIT_SUCCESS;
 }
 
 auto Chat::get_chat_name() const -> std::string { return chat_name_; }
 
-auto Chat::set_chat_name(const std::string& chat_name) -> int {
+auto Chat::set_chat_name(const std::string &chat_name) -> int {
   chat_name_ = chat_name;
   return _EXIT_SUCCESS;
 }
@@ -122,16 +128,16 @@ auto Chat::set_chat_name(const std::string& chat_name) -> int {
 //     return 0;
 // }
 
-auto Chat::set_chat_messages(const std::vector<TextMessage>& messages) -> int {
+auto Chat::set_chat_messages(const std::vector<TextMessage> &messages) -> int {
   messages_ = messages;
   return _EXIT_SUCCESS;
 }
 
-auto Chat::operator==(const Chat& chat) const -> bool {
+auto Chat::operator==(const Chat &chat) const -> bool {
   return chat_id_ == chat.get_chat_id();
 }
 
-auto Chat::operator!=(const Chat& chat) const -> bool {
+auto Chat::operator!=(const Chat &chat) const -> bool {
   return chat_id_ != chat.get_chat_id();
 }
 

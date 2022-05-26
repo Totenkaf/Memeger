@@ -10,7 +10,7 @@
 // это внутренняя особенность БД
 
 class DataBaseEnvironment : public ::testing::Test {
- public:
+public:
   void TearDown() override { test_db.drop_tables(); }
   Postgre_DB test_db =
       Postgre_DB("127.0.0.1", "5432", "postgres", "postgres", "postgres");

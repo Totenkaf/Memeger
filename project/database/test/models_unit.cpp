@@ -5,7 +5,7 @@
 #include "models.h"
 
 class ModelsTest : public ::testing::Test {
- public:
+public:
   User user;
   Chat chat;
   TextMessage message;
