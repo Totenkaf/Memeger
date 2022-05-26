@@ -7,6 +7,14 @@
 
 class IDataBase {
 public:
+    IDataBase() = default;
+
+    IDataBase(const IDataBase& other) = default;
+    IDataBase(IDataBase&& other) = default;
+
+    auto operator=(const IDataBase&) -> IDataBase& = default;
+    auto operator=(IDataBase&& other) -> IDataBase& = default;
+
     virtual ~IDataBase() = default;
 private:
   [[nodiscard]] virtual auto save(const std::string& table,

@@ -412,7 +412,7 @@ auto Postgre_DB::change_user_login(User& user, const std::string& new_login) -> 
   std::vector<std::string> table_fields = {"login"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_login(new_login);
     }
   } catch (const std::exception& e) {
