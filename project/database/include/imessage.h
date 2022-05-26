@@ -7,8 +7,6 @@
 
 class IMessage {
 public:
-  virtual ~IMessage() = default;
-
   [[nodiscard]] virtual auto get_message_id() const -> std::string = 0;
   [[nodiscard]] virtual auto set_message_id(const std::string& message_id) -> int = 0;
 
