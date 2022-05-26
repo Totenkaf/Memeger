@@ -6,14 +6,14 @@
 #include "postgresql_db.h"
 
 // Конструктор с уставкой. Подлкючается к БД на указанном порте, хосте
-Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
-                       const std::string db_name, const std::string db_user,
-                       const std::string db_password)
-    : db_host_(db_host),
-      db_port_(db_port),
-      db_name_(db_name),
-      db_user_(db_user),
-      db_password_(db_password) {
+Postgre_DB::Postgre_DB(std::string db_host, std::string db_port,
+                       std::string db_name, std::string db_user,
+                       std::string db_password)
+    : db_host_(std::move(db_host)),
+      db_port_(std::move(db_port)),
+      db_name_(std::move(db_name)),
+      db_user_(std::move(db_user)),
+      db_password_(std::move(db_password)) {
   std::string request = "dbname = " + db_name_ + " user = " + db_user_ +
                         " password = " + db_password_ +
                         " hostaddr = " + db_host_ + " port = " + db_port_;

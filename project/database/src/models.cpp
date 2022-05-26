@@ -37,7 +37,6 @@ void User::clear_user() {
   user_password_.clear();
   user_id_.clear();
   active_status_.clear();
-  return;
 }
 
 std::string TextMessage::get_message_id() const { return message_id_; }
@@ -87,7 +86,6 @@ void TextMessage::clear_message() {
   sender_id_.clear();
   text_message_.clear();
   is_read_ = false;
-  return;
 }
 
 TextMessage Chat::get_last_message() const { return messages_.back(); }
@@ -137,7 +135,7 @@ bool Chat::operator!=(const Chat& chat) const {
   return chat_id_ != chat.get_chat_id();
 }
 
-bool Chat::is_empty() const { return participants_.size() == 0; }
+bool Chat::is_empty() const { return participants_.empty(); }
 
 bool Chat::is_monologue() const { return participants_.size() == 1; }
 
@@ -150,5 +148,4 @@ void Chat::clear_chat() {
   chat_name_.clear();
   participants_.clear();
   messages_.clear();
-  return;
 }

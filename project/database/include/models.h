@@ -29,6 +29,11 @@ class User {
 
  public:
   User() = default;
+  User(const User& other) = default;
+  User(User&& other) = default;
+
+  User& operator=(const User&) = default;
+  User& operator=(User&& other) = default;
 
   User(std::string user_id, std::string user_login,
        std::string user_password, std::string active_status)
@@ -64,8 +69,12 @@ class User {
 
 class TextMessage : public IMessage {
  public:
-  TextMessage()
-      : is_read_(false) {}
+  TextMessage() = default;
+  TextMessage(const TextMessage& other) = default;
+  TextMessage(TextMessage&& other) = default;
+
+  TextMessage& operator=(const TextMessage&) = default;
+  TextMessage& operator=(TextMessage&& other) = default;
 
   TextMessage(std::string parent_chat_id, std::string sender_id,
               std::string text_message)
@@ -73,8 +82,6 @@ class TextMessage : public IMessage {
         sender_id_(std::move(sender_id)),
         text_message_(std::move(text_message)),
         is_read_(false) {}
-
-  ~TextMessage() = default;
 
   [[nodiscard]] auto get_message_id() const -> std::string override;
   auto set_message_id(const std::string& message_id) -> int override;
@@ -103,7 +110,7 @@ class TextMessage : public IMessage {
   std::string parent_chat_id_;
   std::string sender_id_;
   std::string text_message_;
-  bool is_read_;
+  bool is_read_ = false;
 
   // std::string address_id_;
   // time_t time_sent_;
@@ -113,23 +120,28 @@ class TextMessage : public IMessage {
 class Chat {
  public:
   Chat() = default;
+  Chat(const Chat& other) = default;
+  Chat(Chat&& other) = default;
 
-  Chat(const std::string& chat_id, const std::string& chat_name,
+  Chat& operator=(const Chat&) = default;
+  Chat& operator=(Chat&& other) = default;
+
+  Chat(std::string chat_id, std::string chat_name,
        std::vector<std::string> participants,
        std::vector<TextMessage> messages)
-      : chat_id_(chat_id),
-        chat_name_(chat_name),
+      : chat_id_(std::move(chat_id)),
+        chat_name_(std::move(chat_name)),
         participants_(std::move(participants)),
         messages_(std::move(messages)) {}
 
-  Chat(const std::string& chat_name, std::vector<std::string> participants)
-      : chat_name_(chat_name),
+  Chat(std::string chat_name, std::vector<std::string> participants)
+      : chat_name_(std::move(chat_name)),
         participants_(std::move(participants)) {}
 
-  Chat(const std::string& chat_id, const std::string& chat_name,
+  Chat(std::string chat_id, std::string chat_name,
        std::vector<std::string> participants)
-      : chat_id_(chat_id),
-        chat_name_(chat_name),
+      : chat_id_(std::move(chat_id)),
+        chat_name_(std::move(chat_name)),
         participants_(std::move(participants)) {}
 
   ~Chat() = default;
@@ -154,10 +166,10 @@ class Chat {
   // int push_new_message(TextMessage new_message);
   auto set_chat_messages(const std::vector<TextMessage>& messages) -> int;
 
-  auto is_empty() const -> bool;
-  auto is_dialogue() const -> bool;
-  auto is_monologue() const -> bool;
-  auto is_polilogue() const -> bool;
+  [[nodiscard]] auto is_empty() const -> bool;
+  [[nodiscard]] auto is_dialogue() const -> bool;
+  [[nodiscard]] auto is_monologue() const -> bool;
+  [[nodiscard]] auto is_polilogue() const -> bool;
 
   auto operator!=(const Chat& chat) const -> bool;
   auto operator==(const Chat& chat) const -> bool;
