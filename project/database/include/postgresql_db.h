@@ -27,14 +27,14 @@ class Postgre_DB : public IDataBase {
                               int limit) -> pqxx::result override;
 
   auto init_tables() -> int;
-  auto execution_table(const std::string& table_name,
+  static auto execution_table(const std::string& table_name,
                       std::shared_ptr<pqxx::connection>& PG_conn) -> int;
 
   auto parse_table_fields(const std::vector<std::string>& fields) -> std::string;
   auto parse_table_values(const std::vector<std::string>& values) -> std::string;
   auto parse_output_params(
       const std::vector<std::string>& output_params) -> std::string;
-  auto remove_danger_characters(const std::string& row_column) -> std::string;
+  static auto remove_danger_characters(const std::string& row_column) -> std::string;
   [[nodiscard]] auto get_user_id(const std::string& login) -> std::string;
   [[nodiscard]] auto get_user_login(const std::string& id) -> std::string;
   auto add_user_chat_link(const std::string& user_id,
