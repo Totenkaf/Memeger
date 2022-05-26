@@ -28,24 +28,18 @@ class User {
   // time_t time_creation;
 
  public:
-  User()
-      : user_login_(std::string()),
-        user_password_(std::string()),
-        user_id_(std::string()),
-        active_status_(std::string()) {}
+  User() = default;
 
-  User(const std::string user_id, const std::string user_login,
-       const std::string user_password, const std::string active_status)
+  User(std::string user_id, std::string user_login,
+       std::string user_password, const std::string& active_status)
       : user_login_(std::move(user_login)),
         user_password_(std::move(user_password)),
         user_id_(std::move(user_id)),
         active_status_(active_status) {}
 
-  User(const std::string user_login, const std::string user_password)
+  User(std::string user_login, std::string user_password)
       : user_login_(std::move(user_login)),
-        user_password_(std::move(user_password)),
-        user_id_(std::string()),
-        active_status_(std::string()) {}
+        user_password_(std::move(user_password)) {}
 
   ~User() = default;
 
@@ -71,23 +65,18 @@ class User {
 class TextMessage : public IMessage {
  public:
   TextMessage()
-      : message_id_(std::string()),
-        parent_chat_id_(std::string()),
-        sender_id_(std::string()),
-        text_message_(std::string()),
-        is_read_(false) {}
+      : is_read_(false) {}
 
-  TextMessage(const std::string parent_chat_id, const std::string sender_id,
-              const std::string text_message)
-      : message_id_(std::string()),
-        parent_chat_id_(parent_chat_id),
-        sender_id_(sender_id),
+  TextMessage(std::string parent_chat_id, std::string sender_id,
+              std::string text_message)
+      : parent_chat_id_(std::move(parent_chat_id)),
+        sender_id_(std::move(sender_id)),
         text_message_(std::move(text_message)),
         is_read_(false) {}
 
   ~TextMessage() = default;
 
-  std::string get_message_id() const override;
+  auto get_message_id() const -> std::string override;
   int set_message_id(const std::string& message_id) override;
 
   std::string get_parent_chat_id() const override;
@@ -125,26 +114,23 @@ class Chat {
  public:
   Chat() = default;
 
-  Chat(const std::string chat_id, const std::string chat_name,
-       std::vector<std::string>& participants,
-       std::vector<TextMessage>& messages)
+  Chat(const std::string& chat_id, const std::string& chat_name,
+       std::vector<std::string> participants,
+       std::vector<TextMessage> messages)
       : chat_id_(chat_id),
         chat_name_(chat_name),
-        participants_(participants),
-        messages_(messages) {}
+        participants_(std::move(participants)),
+        messages_(std::move(messages)) {}
 
-  Chat(const std::string chat_name, std::vector<std::string>& participants)
-      : chat_id_(std::string()),
-        chat_name_(chat_name),
-        participants_(participants),
-        messages_(std::vector<TextMessage>()) {}
+  Chat(const std::string& chat_name, std::vector<std::string> participants)
+      : chat_name_(chat_name),
+        participants_(std::move(participants)) {}
 
-  Chat(const std::string chat_id, const std::string chat_name,
-       std::vector<std::string>& participants)
+  Chat(const std::string& chat_id, const std::string& chat_name,
+       std::vector<std::string> participants)
       : chat_id_(chat_id),
         chat_name_(chat_name),
-        participants_(participants),
-        messages_(std::vector<TextMessage>()) {}
+        participants_(std::move(participants)) {}
 
   ~Chat() = default;
 

@@ -215,8 +215,8 @@ int Postgre_DB::insert(const std::string& table,
 
 // Обертка над запросом на выбор данных из БД
 pqxx::result Postgre_DB::select(
-    const std::string& table, const std::string where = std::string(),
-    const std::vector<std::string> what = std::vector<std::string>(),
+    const std::string& table, const std::string& where = std::string(),
+    const std::vector<std::string>& what = std::vector<std::string>(),
     int limit = -1) {
   std::string request = "SELECT ";
   if (!what.empty()) {
@@ -246,7 +246,7 @@ pqxx::result Postgre_DB::select(
 int Postgre_DB::update(const std::string& table,
                        const std::vector<std::string>& table_fields,
                        const std::vector<std::string>& values,
-                       const std::string where = std::string()) {
+                       const std::string& where = std::string()) {
   pqxx::work N(*PG_conn);
   try {
     std::string request = "UPDATE " + table + " SET ";
@@ -274,7 +274,7 @@ int Postgre_DB::save(const std::string& table,
                      const std::vector<std::string>& table_fields,
                      const std::vector<std::string>& values,
                      std::vector<std::string>& output_params,
-                     const std::string where = std::string()) {
+                     const std::string& where = std::string()) {
   pqxx::result check = select(table, where);
   try {
     if ((!where.empty()) && (!check.empty())) {
@@ -293,7 +293,7 @@ int Postgre_DB::save(const std::string& table,
 
 // Обертка над удалением записи из конкретной таблицы БД
 int Postgre_DB::delete_(const std::string& table,
-                        const std::string where = std::string()) {
+                        const std::string& where = std::string()) {
   pqxx::work N(*PG_conn);
   std::string request = "DELETE FROM " + table;
   if (!where.empty()) {

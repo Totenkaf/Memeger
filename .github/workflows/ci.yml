@@ -1,7 +1,6 @@
 # Copyright 2022 by Artem Ustsov
 
 on: push
-
 jobs:
   checking:
     runs-on: ubuntu-latest
