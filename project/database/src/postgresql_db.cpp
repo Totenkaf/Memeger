@@ -66,7 +66,7 @@ auto Postgre_DB::init_tables() -> int {
               CONSTRAINT real_active_statuses CHECK(active_status = 'active' \
               OR active_status = 'inactive'), \
               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
-  if (execution_table(users, PG_conn)) {
+  if (execution_table(users, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
 
@@ -76,7 +76,7 @@ auto Postgre_DB::init_tables() -> int {
               chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
               CONSTRAINT unique_chat_name UNIQUE (chat_name), \
               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
-  if (execution_table(chats, PG_conn)) {
+  if (execution_table(chats, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
 
@@ -88,7 +88,7 @@ auto Postgre_DB::init_tables() -> int {
                  chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
                  content VARCHAR(150), \
                  is_read BOOLEAN NOT NULL DEFAULT false);";
-  if (execution_table(messages, PG_conn)) {
+  if (execution_table(messages, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
 
@@ -97,7 +97,7 @@ auto Postgre_DB::init_tables() -> int {
       "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
                          user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
                          chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
-  if (execution_table(users_chats_link, PG_conn)) {
+  if (execution_table(users_chats_link, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
   return _EXIT_SUCCESS;
@@ -108,22 +108,22 @@ auto Postgre_DB::drop_tables() -> int {
   std::string drop_table = "DROP TABLE ";
 
   std::string users = drop_table + "USERS CASCADE;";
-  if (execution_table(users, PG_conn)) {
+  if (execution_table(users, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string messages = drop_table + "MESSAGES CASCADE;";
-  if (execution_table(messages, PG_conn)) {
+  if (execution_table(messages, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string chats = drop_table + "CHATS CASCADE;";
-  if (execution_table(chats, PG_conn)) {
+  if (execution_table(chats, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string users_chats_link = drop_table + "USERS_CHATS_LINK CASCADE;";
-  if (execution_table(users_chats_link, PG_conn)) {
+  if (execution_table(users_chats_link, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
   return _EXIT_SUCCESS;
@@ -280,11 +280,11 @@ auto Postgre_DB::save(const std::string& table,
     if ((!where.empty()) && (!check.empty())) {
       check.clear();
       return update(table, table_fields, values, where);
-    } else {
-      check.clear();
-      return insert(table, table_fields, values, output_params);
     }
-  } catch (const std::exception& e) {
+    check.clear();
+    return insert(table, table_fields, values, output_params);
+  } 
+  catch (const std::exception& e) {
     std::cerr << e.what() << std::endl;
     check.clear();
     return _SAVE_FAULT;
@@ -433,7 +433,7 @@ auto Postgre_DB::change_user_status(User& user, const std::string& new_status) -
   std::vector<std::string> table_fields = {"active_status"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_active_status(new_status);
     }
   } catch (const std::exception& e) {
@@ -455,7 +455,7 @@ auto Postgre_DB::change_user_password(User& user,
   std::vector<std::string> table_fields = {"password"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_password(new_password);
     }
   } catch (const std::exception& e) {
@@ -471,7 +471,7 @@ auto Postgre_DB::delete_user(User& user) -> int {
     std::string where =
         "id = '" + remove_danger_characters(user.get_id()) + "'";
     int delete_status = delete_("USERS", where);
-    if (!delete_status) {
+    if (delete_status == 0) {
       user.clear_user();
       return _EXIT_SUCCESS;
     }
@@ -530,10 +530,10 @@ auto Postgre_DB::add_chat(Chat& chat) -> int {
   std::vector<std::string> output_params = {"id"};
   try {
     save("CHATS", table_fields, data, output_params);
-    if (output_params[0] == "id") {
+    if (output_params.at(0) == "id") {
       return _SAVE_FAULT;
     }
-    chat.set_chat_id(output_params[0]);
+    chat.set_chat_id(output_params.at(0));
     std::vector<std::string> participants = chat.get_participants();
     for (const auto& participant : participants) {
       add_user_chat_link(get_user_id(participant), chat.get_chat_id());
@@ -576,7 +576,7 @@ auto Postgre_DB::delete_chat(Chat& chat) -> int {
     std::string where =
         "id = '" + remove_danger_characters(chat.get_chat_id()) + "'";
     int delete_status = delete_("CHATS", where);
-    if (!delete_status) {
+    if (delete_status == 0) {
       chat.clear_chat();
       return _EXIT_SUCCESS;
     }

@@ -56,8 +56,8 @@ class Postgre_DB : public IDataBase {
   Postgre_DB(const Postgre_DB& other) = default;
   Postgre_DB(Postgre_DB&& other) = default;
 
-  Postgre_DB& operator=(const Postgre_DB&) = default;
-  Postgre_DB& operator=(Postgre_DB&& other) = default;
+  auto operator=(const Postgre_DB&) -> Postgre_DB& = default;
+  auto operator=(Postgre_DB&& other) -> Postgre_DB& = default;
 
   ~Postgre_DB();
 

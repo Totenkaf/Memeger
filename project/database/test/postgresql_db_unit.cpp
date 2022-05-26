@@ -5,9 +5,10 @@
 #include "models.h"
 #include "postgresql_db.h"
 
-// почему-то течет память, 262байта still reachable в конце любого теста, вне
-// зависимости от содержимого ошибка с pqxx::connection, что-то с shared_ptr.
-// как будто не отдает часть ресурсов
+// течет память, 262байта still reachable в конце любого теста, вне
+// зависимости от содержимого ошибка с pqxx::connection
+// это внутренняя особенность БД
+
 class DataBaseEnvironment : public ::testing::Test {
  public:
   void TearDown() override { test_db.drop_tables(); }
