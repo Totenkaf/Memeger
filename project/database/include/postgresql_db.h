@@ -59,7 +59,7 @@ class Postgre_DB : public IDataBase {
   auto operator=(const Postgre_DB&) -> Postgre_DB& = default;
   auto operator=(Postgre_DB&& other) -> Postgre_DB& = default;
 
-  ~Postgre_DB();
+  ~Postgre_DB() override;
 
   auto drop_tables() -> int;
 

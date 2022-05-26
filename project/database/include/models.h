@@ -76,7 +76,7 @@ class TextMessage : public IMessage {
   auto operator=(const TextMessage&) -> TextMessage& = default;
   auto operator=(TextMessage&& other) -> TextMessage& = default;
 
-  ~TextMessage() = default;
+  ~TextMessage() override = default;
 
   TextMessage(std::string parent_chat_id, std::string sender_id,
               std::string text_message)
@@ -101,10 +101,10 @@ class TextMessage : public IMessage {
 
   void clear_message() override;
 
-  // std::string get_address_id() const override;
-  // int set_address_id(const std::string& address_id) override;
-  // time_t get_time_sent() const;
-  // int set_time_sent(time_t time_sent);
+  // [[nodiscard]] auto get_address_id() const -> std::string override;
+  // auto set_address_id(const std::string& address_id) -> int override;
+  // [[nodiscard]] auto get_time_sent() const -> time_t;
+  // auto set_time_sent(time_t time_sent) -> int;
 
  private:
   std::string message_id_;
@@ -155,8 +155,8 @@ class Chat {
   [[nodiscard]] auto get_chat_id() const -> std::string;
   auto set_chat_id(const std::string& chat_id) -> int;
 
-  // time_t get_chat_time_creation() const;
-  // int set_chat_time_creation(const time_t& time_creation);
+  // [[nodiscard]] auto get_chat_time_creation() const -> time_t;
+  // auto set_chat_time_creation(const time_t& time_creation) -> int;
 
   auto set_participants(std::vector<std::string>& participants) -> int;
   [[nodiscard]] auto get_participants() const -> std::vector<std::string>;
@@ -164,7 +164,6 @@ class Chat {
   auto set_messages(const std::vector<TextMessage>& messages) -> int;
   [[nodiscard]] auto get_messages() const -> std::vector<TextMessage>;
 
-  // int push_new_message(TextMessage new_message);
   auto set_chat_messages(const std::vector<TextMessage>& messages) -> int;
 
   [[nodiscard]] auto is_empty() const -> bool;

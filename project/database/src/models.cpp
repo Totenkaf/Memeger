@@ -67,7 +67,7 @@ auto TextMessage::set_message_text(const std::string& text_message) -> int {
   return _EXIT_SUCCESS;
 }
 
-// time_t TextMessage::get_time_sent() const {
+// auto TextMessage::get_time_sent() const -> time_t {
 //     return time_sent_;
 // }
 
@@ -113,11 +113,11 @@ auto Chat::set_chat_name(const std::string& chat_name) -> int {
   return _EXIT_SUCCESS;
 }
 
-// time_t Chat::get_chat_time_creation() const {
+// auto Chat::get_chat_time_creation() const -> time_t {
 //     return date_creation_;
 // }
 
-// int Chat::set_chat_time_creation(const time_t& date_creation) {
+// auto Chat::set_chat_time_creation(const time_t& date_creation) -> int {
 //     date_creation_ = date_creation;
 //     return 0;
 // }
