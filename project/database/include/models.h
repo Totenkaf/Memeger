@@ -95,8 +95,8 @@ public:
   [[nodiscard]] auto get_read_status() const -> bool override;
   auto set_read_status(bool is_read) -> int override;
 
-  [[nodiscard]] auto get_message_text() const -> std::string;
-  auto set_message_text(const std::string &text_message) -> int;
+  [[nodiscard]] auto get_message_content() const -> std::string override;
+  auto set_message_content(const std::string &text_message) -> int override;
 
   void clear_message() override;
 
@@ -142,8 +142,6 @@ public:
         participants_(std::move(participants)) {}
 
   ~Chat() = default;
-
-  [[nodiscard]] auto get_last_message() const -> TextMessage;
 
   [[nodiscard]] auto get_chat_name() const -> std::string;
   auto set_chat_name(const std::string &chat_name) -> int;

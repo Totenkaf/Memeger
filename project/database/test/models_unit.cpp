@@ -35,7 +35,7 @@ TEST_F(ModelsTest, test_chat) {
 
   std::vector<TextMessage> messages;
   message.set_message_id("lkaslma-65a16sd1f-a6ds1f6");
-  message.set_message_text("Hello");
+  message.set_message_content("Hello");
   messages.push_back(message);
 
   chat.set_chat_messages(messages);
@@ -49,8 +49,8 @@ TEST_F(ModelsTest, test_chat) {
   for (size_t i = 0; i < chat.get_participants().size(); ++i) {
     EXPECT_EQ(chat.get_participants()[i], participants_1[i]);
   }
-  EXPECT_EQ(chat.get_messages()[0].get_message_text(),
-            message.get_message_text());
+  EXPECT_EQ(chat.get_messages()[0].get_message_content(),
+            message.get_message_content());
 
   chat.clear_chat();
   EXPECT_TRUE(chat.get_chat_id().empty());

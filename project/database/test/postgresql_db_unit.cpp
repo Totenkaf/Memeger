@@ -416,7 +416,7 @@ TEST_F(DataBaseEnvironment, add_message) {
   EXPECT_EQ(message.get_parent_chat_id(), chat_from_db.get_chat_id());
   EXPECT_EQ(message.get_sender_id(), user_from_db_1.get_id());
   EXPECT_EQ(message.get_read_status(), false);
-  EXPECT_EQ(message.get_message_text(), "Hello, Maxim");
+  EXPECT_EQ(message.get_message_content(), "Hello, Maxim");
 }
 
 TEST_F(DataBaseEnvironment, get_messages_from_chat) {
@@ -466,7 +466,7 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
   std::vector<TextMessage> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, -1);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_text(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
   }
 }
 
@@ -514,7 +514,7 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
   std::vector<TextMessage> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, 3);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_text(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
   }
 }
 

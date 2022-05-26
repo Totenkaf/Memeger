@@ -494,7 +494,7 @@ auto Postgre_DB::delete_message(TextMessage &message) -> int {
 auto Postgre_DB::add_message(TextMessage &message) -> int {
   std::vector<std::string> data = {message.get_sender_id(),
                                    message.get_parent_chat_id(),
-                                   message.get_message_text()};
+                                   message.get_message_content()};
   std::vector<std::string> table_fields = {"user_from", "chat_id", "content"};
   try {
     std::vector<std::string> output_params = {"id"};
@@ -682,7 +682,7 @@ auto Postgre_DB::get_last_N_messages_from_chat(const Chat &chat,
       message.set_message_id(el.at(0).as<std::string>());
       message.set_sender_id(el.at(1).as<std::string>());
       message.set_parent_chat_id(el.at(2).as<std::string>());
-      message.set_message_text(el.at(3).as<std::string>());
+      message.set_message_content(el.at(3).as<std::string>());
       message.set_read_status(false);
       messages.push_back(message);
     }

@@ -36,6 +36,8 @@ public:
 
   // [[nodiscard]] virtual auto get_time_sent() const -> time_t = 0;
   // [[nodiscard]] virtual auto set_time_sent(time_t time_sent) -> int = 0;
+  [[nodiscard]] virtual auto get_message_content() const -> std::string = 0;
+  [[nodiscard]] virtual auto set_message_content(const std::string &text_message) -> int = 0;
 
   [[nodiscard]] virtual auto get_read_status() const -> bool = 0;
   [[nodiscard]] virtual auto set_read_status(bool is_read) -> int = 0;

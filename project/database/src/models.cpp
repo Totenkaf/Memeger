@@ -62,11 +62,11 @@ auto TextMessage::set_sender_id(const std::string &sender_id) -> int {
   return _EXIT_SUCCESS;
 }
 
-auto TextMessage::get_message_text() const -> std::string {
+auto TextMessage::get_message_content() const -> std::string {
   return text_message_;
 }
 
-auto TextMessage::set_message_text(const std::string &text_message) -> int {
+auto TextMessage::set_message_content(const std::string &text_message) -> int {
   text_message_ = text_message;
   return _EXIT_SUCCESS;
 }
@@ -93,8 +93,6 @@ void TextMessage::clear_message() {
   text_message_.clear();
   is_read_ = false;
 }
-
-auto Chat::get_last_message() const -> TextMessage { return messages_.back(); }
 
 auto Chat::get_participants() const -> std::vector<std::string> {
   return participants_;
