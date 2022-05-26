@@ -93,7 +93,8 @@ auto Postgre_DB::init_tables() -> int {
 
   std::string users_chats_link =
   create_table +
-  "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY,\
+  "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT\
+                     uuid_generate_v4() PRIMARY KEY,\
         user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
         chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
   if (execution_table(users_chats_link, PG_conn) != 0) {
