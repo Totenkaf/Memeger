@@ -1,4 +1,4 @@
-[![.github/workflows/ci.yml](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml/badge.svg)](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml)
+[![.github/workflows/ci.yml](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml/badge.svg?branch=Artem-dev)](https://github.com/Totenkaf/Memeger/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/Totenkaf/Memeger/branch/Artem-dev/graph/badge.svg?token=yL5JK80TK0)](https://codecov.io/gh/Totenkaf/Memeger)
 
 # Memeger
@@ -6,12 +6,12 @@ BMSTU_VK_Project | Углубленное программирование на 
 Клиент серверное приложение для обмена файлами между пользователями
 
 # DataBase Part
-Реляционная база данных PostgreSQL для хранения данных пользователей, чатов, сообщений  
+Реляционная база данных PostgreSQL для хранения данных пользователей, чатов, сообщений, файлов  
 Локальный хост: 127.0.0.1  
 Локальный порт: 5432  
 Имя пользователя по умолчанию: postgres  
 Имя базы данных по умолчанию: postgres  
-Пароль по умолчанию: не устанавливается  
+Пароль по умолчанию: не устанавливается, после надстройки - postgres  
 
 ## __1) Установка PostgreSQL на Ubuntu:__
 ```
