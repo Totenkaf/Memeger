@@ -44,7 +44,7 @@ jobs:
           pwd
 
       - name: INSTALL POSTGRESQL
-          run: |
+        run: |
             sudo apt-get update -y
             sudo apt-get install -y libpqxx-dev
             sudo apt-get install -y postgresql
