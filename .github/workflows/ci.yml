@@ -59,8 +59,6 @@ jobs:
         run: |
            sudo apt update && sudo apt upgrade
            sudo apt-get install libboost-all-dev
-           sudo apt-get update -y
-           sudo apt-get install -y nlohmann-json-dev
 
 
        
