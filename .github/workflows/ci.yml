@@ -64,8 +64,6 @@ jobs:
            ls
            cd json 
            sudo cmake -DBuildTests=OFF .
-           cd ../
-           pwd
            sudo apt-get install checkinstall
            sudo checkinstall -D \
            -y --nodoc \
@@ -73,6 +71,8 @@ jobs:
            --pkgversion=2.1.1 \
            --pkgrelease=git \
            --deldesc=no
+           cd ../
+           pwd
 
            sudo apt update && sudo apt upgrade
            sudo apt-get install libboost-all-dev
