@@ -281,7 +281,7 @@ bool CHAT::find_chat(Request &req,Response &resp ,Postgre_DB &database)
         for (size_t i = 0; i < messages.size(); i++)
         {
                 std::string mess2=mess +std::to_string(i+1);
-                resp.j_response[mess2]=messages[i].get_message_text();
+                resp.j_response[mess2]=messages[i].get_message_content();
         }
         
          Send_Response(resp,"/messages/",std::to_string(0));

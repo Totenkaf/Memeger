@@ -1,15 +1,17 @@
 // Copyright 2022 by Artem Ustsov
 
-#include "models.h"
-#include "postgresql_db.h"
 #include <algorithm>
 
+#include "models.h"
+#include "postgresql_db.h"
+
 // Конструктор с уставкой. Подлкючается к БД на указанном порте, хосте
-Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
-                       const std::string db_name, const std::string db_user,
-                       const std::string db_password)
-: db_host_(db_host), db_port_(db_port), db_name_(db_name), db_user_(db_user), db_password_(db_password)
-{
+Postgre_DB::Postgre_DB(std::string db_host, std::string db_port,
+                       std::string db_name, std::string db_user,
+                       std::string db_password)
+    : db_host_(std::move(db_host)), db_port_(std::move(db_port)),
+      db_name_(std::move(db_name)), db_user_(std::move(db_user)),
+      db_password_(std::move(db_password)) {
   std::string request = "dbname = " + db_name_ + " user = " + db_user_ +
                         " password = " + db_password_ +
                         " hostaddr = " + db_host_ + " port = " + db_port_;
@@ -20,7 +22,7 @@ Postgre_DB::Postgre_DB(const std::string db_host, const std::string db_port,
     } else {
       std::cerr << "Can't open database" << std::endl;
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
   }
 }
@@ -34,11 +36,13 @@ Postgre_DB::~Postgre_DB() {
 }
 
 // Создание воркеров для отправки запросов в БД
-int Postgre_DB::execution_table(const std::string& table_name, std::shared_ptr<pqxx::connection>& PG_conn) {
+auto Postgre_DB::execution_table(const std::string &table_name,
+                                 std::shared_ptr<pqxx::connection> &PG_conn)
+    -> int {
   pqxx::work N(*PG_conn);
   try {
     N.exec(table_name);
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "TABLE " << table_name << " execution fault" << std::endl;
     return _TABLE_EXECUTION_FAULT;
@@ -48,87 +52,88 @@ int Postgre_DB::execution_table(const std::string& table_name, std::shared_ptr<p
 }
 
 // Инициализация пустых таблиц для хранения информации о сущностях
-int Postgre_DB::init_tables() {
+auto Postgre_DB::init_tables() -> int {
   std::string create_table = "CREATE TABLE IF NOT EXISTS ";
 
   std::string users =
-      create_table +
-      "USERS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                               login VARCHAR(50) NOT NULL, \
-                                               CONSTRAINT unique_login_users UNIQUE(login), \
-                                               password VARCHAR(50) NOT NULL, \
-                                               active_status VARCHAR(8) NOT NULL DEFAULT 'active', \
-                                               CONSTRAINT real_active_statuses CHECK(active_status = 'active' \
-                                               OR active_status = 'inactive'), \
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
-  if(execution_table(users, PG_conn)) {
+  create_table +
+  "USERS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+          login VARCHAR(50) NOT NULL, \
+          CONSTRAINT unique_login_users UNIQUE(login), \
+          password VARCHAR(50) NOT NULL, \
+          active_status VARCHAR(8) NOT NULL DEFAULT 'active', \
+          CONSTRAINT real_active_statuses CHECK(active_status = 'active' \
+          OR active_status = 'inactive'), \
+          time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
+  if (execution_table(users, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
-  
+
   std::string chats =
-      create_table +
-      "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                               chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
-                                               CONSTRAINT unique_chat_name UNIQUE (chat_name), \
-                                               time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
-  if(execution_table(chats, PG_conn)) {
+  create_table +
+  "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+          chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
+          CONSTRAINT unique_chat_name UNIQUE (chat_name), \
+          time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
+  if (execution_table(chats, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
 
   std::string messages =
-      create_table +
-      "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                                     user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
-                                                     time_sent TIMESTAMP NOT NULL DEFAULT NOW(), \
-                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
-                                                     content VARCHAR(150), \
-                                                     is_read BOOLEAN NOT NULL DEFAULT false);";
-  if(execution_table(messages, PG_conn)) {
+  create_table +
+  "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+        user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
+        time_sent TIMESTAMP NOT NULL DEFAULT NOW(), \
+        chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
+        content VARCHAR(150), \
+        is_read BOOLEAN NOT NULL DEFAULT false);";
+  if (execution_table(messages, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
 
   std::string users_chats_link =
-      create_table +
-      "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
-                                                                     user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
-                                                                     chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
-  if(execution_table(users_chats_link, PG_conn)) {
+  create_table +
+  "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT\
+                     uuid_generate_v4() PRIMARY KEY,\
+        user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
+        chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
+  if (execution_table(users_chats_link, PG_conn) != 0) {
     return _TABLE_EXECUTION_FAULT;
   }
   return _EXIT_SUCCESS;
 }
 
 // Удаление таблиц из БД
-int Postgre_DB::drop_tables() {
+auto Postgre_DB::drop_tables() -> int {
   std::string drop_table = "DROP TABLE ";
 
   std::string users = drop_table + "USERS CASCADE;";
-  if(execution_table(users, PG_conn)) {
+  if (execution_table(users, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string messages = drop_table + "MESSAGES CASCADE;";
-  if(execution_table(messages, PG_conn)) {
+  if (execution_table(messages, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string chats = drop_table + "CHATS CASCADE;";
-  if(execution_table(chats, PG_conn)) {
+  if (execution_table(chats, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
 
   std::string users_chats_link = drop_table + "USERS_CHATS_LINK CASCADE;";
-  if(execution_table(users_chats_link, PG_conn)) {
+  if (execution_table(users_chats_link, PG_conn) != 0) {
     return _TABLE_DELETION_FAULT;
   }
   return _EXIT_SUCCESS;
 }
 
 // Удаление лишних символов, которые могут помешать парсингу (/, '', ;)
-std::string Postgre_DB::remove_danger_characters(
-    const std::string& row_column) {
-  std::string prep_column = "";
-  for (auto i : row_column) {
+auto Postgre_DB::remove_danger_characters(const std::string &row_column)
+    -> std::string {
+  std::string prep_column = std::string();
+  for (const auto &i : row_column) {
     if (i != '\'' && i != '\"') {
       prep_column += i;
     }
@@ -137,8 +142,8 @@ std::string Postgre_DB::remove_danger_characters(
 }
 
 // Парсинг имен таблиц в запросах
-std::string Postgre_DB::parse_table_fields(
-    const std::vector<std::string>& fields) {
+auto Postgre_DB::parse_table_fields(const std::vector<std::string> &fields)
+    -> std::string {
   std::string request = " (";
   for (size_t i = 0; i < fields.size(); ++i) {
     if (i == fields.size() - 1) {
@@ -151,8 +156,8 @@ std::string Postgre_DB::parse_table_fields(
 }
 
 // Парсинг значений полей таблиц в запросах
-std::string Postgre_DB::parse_table_values(
-    const std::vector<std::string>& values) {
+auto Postgre_DB::parse_table_values(const std::vector<std::string> &values)
+    -> std::string {
   std::string request = " VALUES('";
   for (size_t i = 0; i < values.size(); ++i) {
     if (i == values.size() - 1) {
@@ -165,8 +170,8 @@ std::string Postgre_DB::parse_table_values(
 }
 
 // Парсинг выходных значений
-std::string Postgre_DB::parse_output_params(
-    const std::vector<std::string>& output_params) {
+auto Postgre_DB::parse_output_params(
+    const std::vector<std::string> &output_params) -> std::string {
   std::string request = " ";
   for (size_t i = 0; i < output_params.size(); ++i) {
     if (i == output_params.size() - 1) {
@@ -179,10 +184,10 @@ std::string Postgre_DB::parse_output_params(
 }
 
 // Обертка над запросом на вставку данных в БД
-int Postgre_DB::insert(const std::string& table,
-                       const std::vector<std::string>& table_fields,
-                       const std::vector<std::string>& values,
-                       std::vector<std::string>& output_params) {
+auto Postgre_DB::insert(const std::string &table,
+                        const std::vector<std::string> &table_fields,
+                        const std::vector<std::string> &values,
+                        std::vector<std::string> &output_params) -> int {
   pqxx::work N(*PG_conn);
   try {
     std::string request = "INSERT INTO " + table +
@@ -201,7 +206,7 @@ int Postgre_DB::insert(const std::string& table,
     }
     N.commit();
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _INSERT_FAULT;
   }
@@ -209,17 +214,17 @@ int Postgre_DB::insert(const std::string& table,
 }
 
 // Обертка над запросом на выбор данных из БД
-pqxx::result Postgre_DB::select(
-    const std::string& table, const std::string where = std::string(),
-    const std::vector<std::string> what = std::vector<std::string>(),
-    int limit = -1) {
+auto Postgre_DB::select(
+    const std::string &table, const std::string &where = std::string(),
+    const std::vector<std::string> &what = std::vector<std::string>(),
+    int limit = -1) -> pqxx::result {
   std::string request = "SELECT ";
   if (!what.empty()) {
-    for (std::size_t i = 0; i < what.size(); ++i) {
-      request += remove_danger_characters(what[i]) + ", ";
+    for (const auto &item : what) {
+      request += remove_danger_characters(item) + ", ";
     }
     request =
-        request.substr(0, request.size() - 2);  // MAGIC NUMBER. TO DO SMART
+        request.substr(0, request.size() - 2);
   } else {
     request += "*";
   }
@@ -238,10 +243,10 @@ pqxx::result Postgre_DB::select(
 }
 
 // Обертка над запросом на обновление существующих данных в БД
-int Postgre_DB::update(const std::string& table,
-                       const std::vector<std::string>& table_fields,
-                       const std::vector<std::string>& values,
-                       const std::string where = std::string()) {
+auto Postgre_DB::update(const std::string &table,
+                        const std::vector<std::string> &table_fields,
+                        const std::vector<std::string> &values,
+                        const std::string &where = std::string()) -> int {
   pqxx::work N(*PG_conn);
   try {
     std::string request = "UPDATE " + table + " SET ";
@@ -250,14 +255,14 @@ int Postgre_DB::update(const std::string& table,
                  remove_danger_characters(values[i]) + "', ";
     }
     request =
-        request.substr(0, request.size() - 2);  // MAGIC NUMBER. TO DO SMART
+        request.substr(0, request.size() - 2);
     if (!where.empty()) {
       request += " WHERE " + where;
     }
     request += ";";
     N.exec(request);
     N.commit();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _UPDATE_FAULT;
   }
@@ -265,21 +270,20 @@ int Postgre_DB::update(const std::string& table,
 }
 
 // Обертка над сохранением записи в БД
-int Postgre_DB::save(const std::string& table,
-                     const std::vector<std::string>& table_fields,
-                     const std::vector<std::string>& values,
-                     std::vector<std::string>& output_params,
-                     const std::string where = std::string()) {
+auto Postgre_DB::save(const std::string &table,
+                      const std::vector<std::string> &table_fields,
+                      const std::vector<std::string> &values,
+                      std::vector<std::string> &output_params,
+                      const std::string &where = std::string()) -> int {
   pqxx::result check = select(table, where);
   try {
-    if ((!where.empty()) && (!check.empty())) { 
+    if ((!where.empty()) && (!check.empty())) {
       check.clear();
       return update(table, table_fields, values, where);
-    } else {
-      check.clear();
-      return insert(table, table_fields, values, output_params);
     }
-  } catch (const std::exception& e) {
+    check.clear();
+    return insert(table, table_fields, values, output_params);
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     check.clear();
     return _SAVE_FAULT;
@@ -287,8 +291,8 @@ int Postgre_DB::save(const std::string& table,
 }
 
 // Обертка над удалением записи из конкретной таблицы БД
-int Postgre_DB::delete_(const std::string& table,
-                        const std::string where = std::string()) {
+auto Postgre_DB::delete_(const std::string &table,
+                         const std::string &where = std::string()) -> int {
   pqxx::work N(*PG_conn);
   std::string request = "DELETE FROM " + table;
   if (!where.empty()) {
@@ -298,7 +302,7 @@ int Postgre_DB::delete_(const std::string& table,
   try {
     N.exec(request);
     N.commit();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _DELETE_FAULT;
   }
@@ -306,7 +310,7 @@ int Postgre_DB::delete_(const std::string& table,
 }
 
 // Добавление нового пользователя в таблицу USERS в БД
-int Postgre_DB::add_user(User& user) {
+auto Postgre_DB::add_user(User &user) -> int {
   std::vector<std::string> data = {user.get_login(), user.get_password()};
   std::vector<std::string> table_fields = {"login", "password"};
   std::vector<std::string> output_params = {"id", "active_status"};
@@ -317,7 +321,7 @@ int Postgre_DB::add_user(User& user) {
     }
     user.set_id(output_params[0]);
     user.set_active_status(output_params[1]);
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _SAVE_FAULT;
   }
@@ -325,7 +329,7 @@ int Postgre_DB::add_user(User& user) {
 }
 
 // Получение ID пользователя из БД
-std::string Postgre_DB::get_user_id(const std::string& login) {
+auto Postgre_DB::get_user_id(const std::string &login) -> std::string {
   std::string where = "login = '" + login + "'";
   std::vector<std::string> what = {"id"};
   std::string user_id;
@@ -335,7 +339,7 @@ std::string Postgre_DB::get_user_id(const std::string& login) {
     pqxx::result::const_iterator c = res.begin();
     user_id = c[0].as<std::string>();
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return user_id;
   }
@@ -343,16 +347,16 @@ std::string Postgre_DB::get_user_id(const std::string& login) {
 }
 
 // Получение логина пользователя из БД
-std::string Postgre_DB::get_user_login(const std::string& id) {
+auto Postgre_DB::get_user_login(const std::string &id) -> std::string {
   std::string where = "id = '" + id + "'";
   std::vector<std::string> what = {"login"};
   std::string user_login;
   try {
-      pqxx::result res = select("USERS", where, what);
-      pqxx::result::const_iterator c = res.begin();
-      user_login = c.at(0).as<std::string>();
+    pqxx::result res = select("USERS", where, what);
+    pqxx::result::const_iterator c = res.begin();
+    user_login = c.at(0).as<std::string>();
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG USER" << std::endl;
   }
@@ -360,12 +364,12 @@ std::string Postgre_DB::get_user_login(const std::string& id) {
 }
 
 // Получение сущности пользователя по логину
-User Postgre_DB::get_user_by_login(const std::string& login) {
+auto Postgre_DB::get_user_by_login(const std::string &login) -> User {
   std::string where = "login = '" + login + "'";
   User user;
   try {
     pqxx::result res = select("USERS", where);
-    if(!res.empty()) {
+    if (!res.empty()) {
       pqxx::result::const_iterator c = res.begin();
       user.set_id(c.at(0).as<std::string>());
       user.set_login(c.at(1).as<std::string>());
@@ -373,7 +377,7 @@ User Postgre_DB::get_user_by_login(const std::string& login) {
       user.set_active_status(c.at(3).as<std::string>());
     }
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG USER" << std::endl;
   }
@@ -381,15 +385,15 @@ User Postgre_DB::get_user_by_login(const std::string& login) {
 }
 
 // Поиск сущности пользователя по логину в БД
-bool Postgre_DB::find_user_by_login(const std::string& login) {
+auto Postgre_DB::find_user_by_login(const std::string &login) -> bool {
   std::string where = "login = '" + login + "'";
   try {
     pqxx::result res = select("USERS", where);
-    if(!res.empty()) {
+    if (!res.empty()) {
       return true;
     }
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return false;
   }
@@ -397,7 +401,8 @@ bool Postgre_DB::find_user_by_login(const std::string& login) {
 }
 
 // Замена логина сущности пользователя в БД
-int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
+auto Postgre_DB::change_user_login(User &user, const std::string &new_login)
+    -> int {
   if (!find_user_by_login(user.get_login())) {
     return _UPDATE_FAULT;
   }
@@ -407,10 +412,10 @@ int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
   std::vector<std::string> table_fields = {"login"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_login(new_login);
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _UPDATE_FAULT;
   }
@@ -418,7 +423,8 @@ int Postgre_DB::change_user_login(User& user, const std::string& new_login) {
 }
 
 // Замена статуса работы пользователя
-int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
+auto Postgre_DB::change_user_status(User &user, const std::string &new_status)
+    -> int {
   if (!find_user_by_login(user.get_login())) {
     return _UPDATE_FAULT;
   }
@@ -428,10 +434,10 @@ int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
   std::vector<std::string> table_fields = {"active_status"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_active_status(new_status);
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _UPDATE_FAULT;
   }
@@ -439,8 +445,8 @@ int Postgre_DB::change_user_status(User& user, const std::string& new_status) {
 }
 
 // Замена пароля пользователя в БД
-int Postgre_DB::change_user_password(User& user,
-                                     const std::string& new_password) {
+auto Postgre_DB::change_user_password(User &user,
+                                      const std::string &new_password) -> int {
   if (!find_user_by_login(user.get_login())) {
     return _UPDATE_FAULT;
   }
@@ -450,10 +456,10 @@ int Postgre_DB::change_user_password(User& user,
   std::vector<std::string> table_fields = {"password"};
   try {
     int update_status = update("USERS", table_fields, values, where);
-    if (!update_status) {
+    if (update_status == 0) {
       user.set_password(new_password);
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _UPDATE_FAULT;
   }
@@ -461,21 +467,21 @@ int Postgre_DB::change_user_password(User& user,
 }
 
 // Удаление пользователя из БД, удаляются все связанные линки
-int Postgre_DB::delete_user(User& user) {
+auto Postgre_DB::delete_user(User &user) -> int {
   if (!user.get_id().empty()) {
     std::string where =
         "id = '" + remove_danger_characters(user.get_id()) + "'";
-        int delete_status = delete_("USERS", where);
-        if(!delete_status) {
-          user.clear_user();
-          return _EXIT_SUCCESS;
-        }
+    int delete_status = delete_("USERS", where);
+    if (delete_status == 0) {
+      user.clear_user();
+      return _EXIT_SUCCESS;
+    }
   }
-    return _DELETE_FAULT;
+  return _DELETE_FAULT;
 }
 
 // Удаление сообщения из БД
-int Postgre_DB::delete_message(TextMessage& message) {
+auto Postgre_DB::delete_message(TextMessage &message) -> int {
   if (!message.get_message_id().empty()) {
     std::string where =
         "id = '" + remove_danger_characters(message.get_message_id()) + "'";
@@ -485,16 +491,16 @@ int Postgre_DB::delete_message(TextMessage& message) {
 }
 
 // Добавление сообщения в БД
-int Postgre_DB::add_message(TextMessage& message) {
+auto Postgre_DB::add_message(TextMessage &message) -> int {
   std::vector<std::string> data = {message.get_sender_id(),
                                    message.get_parent_chat_id(),
-                                   message.get_message_text()};
+                                   message.get_message_content()};
   std::vector<std::string> table_fields = {"user_from", "chat_id", "content"};
   try {
     std::vector<std::string> output_params = {"id"};
     save("MESSAGES", table_fields, data, output_params);
     message.set_message_id(output_params[0]);
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG ADD USER" << std::endl;
     return _SAVE_FAULT;
@@ -503,14 +509,14 @@ int Postgre_DB::add_message(TextMessage& message) {
 }
 
 // Добавление связи конкретного пользователя с конкретным чатом
-int Postgre_DB::add_user_chat_link(const std::string& user_id,
-                                   const std::string& chat_id) {
+auto Postgre_DB::add_user_chat_link(const std::string &user_id,
+                                    const std::string &chat_id) -> int {
   std::vector<std::string> data = {user_id, chat_id};
   std::vector<std::string> table_fields = {"user_id", "chat_id"};
   std::vector<std::string> output_params = {};
   try {
     save("USERS_CHATS_LINK", table_fields, data, output_params);
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG USERS CHATS linking" << std::endl;
     return _SAVE_FAULT;
@@ -519,21 +525,21 @@ int Postgre_DB::add_user_chat_link(const std::string& user_id,
 }
 
 // Добавление сущности чата в БД
-int Postgre_DB::add_chat(Chat& chat) {
+auto Postgre_DB::add_chat(Chat &chat) -> int {
   std::vector<std::string> data = {chat.get_chat_name()};
   std::vector<std::string> table_fields = {"chat_name"};
   std::vector<std::string> output_params = {"id"};
   try {
     save("CHATS", table_fields, data, output_params);
-    if (output_params[0] == "id") {
+    if (output_params.at(0) == "id") {
       return _SAVE_FAULT;
     }
-    chat.set_chat_id(output_params[0]);
+    chat.set_chat_id(output_params.at(0));
     std::vector<std::string> participants = chat.get_participants();
-    for (const auto& participant : participants) {
+    for (const auto &participant : participants) {
       add_user_chat_link(get_user_id(participant), chat.get_chat_id());
     }
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _SAVE_FAULT;
   }
@@ -541,10 +547,9 @@ int Postgre_DB::add_chat(Chat& chat) {
 }
 
 // Получение сущности чата из БД
-Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
+auto Postgre_DB::get_chat_by_chat_name(const std::string &chat_name) -> Chat {
   static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
-  std::string where =
-      "chat_name = '" + chat_name + "'";
+  std::string where = "chat_name = '" + chat_name + "'";
   pqxx::result res = select("CHATS", where);
   Chat chat;
   try {
@@ -559,7 +564,7 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG CHAT_NAME" << std::endl;
   }
@@ -567,48 +572,48 @@ Chat Postgre_DB::get_chat_by_chat_name(const std::string& chat_name) {
 }
 
 // Удаление сущности чата из БД, удалятся все связанные линки
-int Postgre_DB::delete_chat(Chat& chat) {
+auto Postgre_DB::delete_chat(Chat &chat) -> int {
   if (!chat.get_chat_id().empty()) {
     std::string where =
         "id = '" + remove_danger_characters(chat.get_chat_id()) + "'";
-      int delete_status = delete_("CHATS", where);
-        if(!delete_status) {
-          chat.clear_chat();
-          return _EXIT_SUCCESS;
-        }
+    int delete_status = delete_("CHATS", where);
+    if (delete_status == 0) {
+      chat.clear_chat();
+      return _EXIT_SUCCESS;
+    }
   }
-    return _DELETE_FAULT;
+  return _DELETE_FAULT;
 }
 
 // Поиск сущности чата в БД
-bool Postgre_DB::find_chat_by_chat_name(const std::string& chat_name) {
+auto Postgre_DB::find_chat_by_chat_name(const std::string &chat_name) -> bool {
   std::string where =
       "chat_name = '" + remove_danger_characters(chat_name) + "'";
   try {
     pqxx::result res = select("CHATS", where);
     res.clear();
-  } catch (const std::exception& e) {
-      std::cerr << e.what() << std::endl;
-      return false;
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << std::endl;
+    return false;
   }
   return true;
 }
 
 // Получение списка имен пользователей из чата
-std::vector<std::string> Postgre_DB::get_participants_from_chat(
-    const Chat& chat) {
+auto Postgre_DB::get_participants_from_chat(const Chat &chat)
+    -> std::vector<std::string> {
   std::string where =
       "chat_id = '" + remove_danger_characters(chat.get_chat_id()) + "'";
   std::vector<std::string> what = {"user_id"};
   pqxx::result res = select("USERS_CHATS_LINK", where, what);
   std::vector<std::string> participants;
   try {
-    for (const auto& el : res) {
+    for (const auto &el : res) {
       std::string user_login = get_user_login(el.at(0).as<std::string>());
       participants.push_back(user_login);
     }
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG PARTICIPANTS" << std::endl;
   }
@@ -616,7 +621,7 @@ std::vector<std::string> Postgre_DB::get_participants_from_chat(
 }
 
 // Получение сущности чата по ID
-Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
+auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
   static constexpr size_t NUM_OF_LAST_MESSAGES = 25;
   std::string where = "id = '" + remove_danger_characters(chat_id) + "'";
   Chat chat;
@@ -632,7 +637,7 @@ Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG CHAT" << std::endl;
   }
@@ -640,8 +645,8 @@ Chat Postgre_DB::get_chat_by_id(const std::string& chat_id) {
 }
 
 // Получение всех сущностей чатов из БД
-std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(
-    const std::string& login) {
+auto Postgre_DB::get_all_chats_by_user_login(const std::string &login)
+    -> std::vector<Chat> {
   std::vector<Chat> chats;
   std::string where =
       "user_id = '" + remove_danger_characters(get_user_id(login)) + "'";
@@ -653,7 +658,7 @@ std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(
       chats.push_back(chat);
     }
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "wrong get chats" << std::endl;
   }
@@ -661,8 +666,9 @@ std::vector<Chat> Postgre_DB::get_all_chats_by_user_login(
 }
 
 // Получение последних N (если указано) сообщений
-std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
-    const Chat& chat, int num_of_messages = -1) {
+auto Postgre_DB::get_last_N_messages_from_chat(const Chat &chat,
+                                               int num_of_messages = -1)
+    -> std::vector<TextMessage> {
   std::vector<TextMessage> messages;
   std::string where =
       "chat_id = '" + remove_danger_characters(chat.get_chat_id()) + "'";
@@ -671,12 +677,12 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
   pqxx::result res = select("MESSAGES", where, what, num_of_messages);
 
   try {
-    for (const auto& el : res) {
+    for (const auto &el : res) {
       TextMessage message;
       message.set_message_id(el.at(0).as<std::string>());
       message.set_sender_id(el.at(1).as<std::string>());
       message.set_parent_chat_id(el.at(2).as<std::string>());
-      message.set_message_text(el.at(3).as<std::string>());
+      message.set_message_content(el.at(3).as<std::string>());
       message.set_read_status(false);
       messages.push_back(message);
     }
@@ -684,7 +690,7 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
       std::reverse(messages.begin(), messages.end());
     }
     res.clear();
-  } catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "Wrong get chats" << std::endl;
   }
@@ -692,7 +698,8 @@ std::vector<TextMessage> Postgre_DB::get_last_N_messages_from_chat(
 }
 
 // Изменение имени сущности чата в БД
-int Postgre_DB::change_chat_name(Chat& chat, const std::string& new_chat_name) {
+auto Postgre_DB::change_chat_name(Chat &chat, const std::string &new_chat_name)
+    -> int {
   if (!find_chat_by_chat_name(chat.get_chat_name())) {
     return _UPDATE_FAULT;
   }
@@ -703,8 +710,7 @@ int Postgre_DB::change_chat_name(Chat& chat, const std::string& new_chat_name) {
   try {
     update("CHATS", table_fields, values, where);
     chat.set_chat_name(new_chat_name);
-  } 
-  catch (const std::exception& e) {
+  } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return _UPDATE_FAULT;
   }
@@ -712,6 +718,7 @@ int Postgre_DB::change_chat_name(Chat& chat, const std::string& new_chat_name) {
 }
 
 // Добавление нового пользователя в чат
-int Postgre_DB::add_new_participant(const User& user, const Chat& chat) {
+auto Postgre_DB::add_new_participant(const User &user, const Chat &chat)
+    -> int {
   return add_user_chat_link(user.get_id(), chat.get_chat_id());
 }

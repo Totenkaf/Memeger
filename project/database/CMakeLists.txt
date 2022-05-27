@@ -17,7 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ldl -pthread -Wall -Wextra -Wpedantic -
 # ------------------------------------------------------------------------------
 # 1 | Include subdirectories
 # ------------------------------------------------------------------------------
-
+include(ExternalProject)
 set(${project_name}_lib_includes ${PROJECT_SOURCE_DIR}/include)
 message("DB_INCLUDES_DIR = ${${project_name}_lib_includes}\n")
 
@@ -58,7 +58,7 @@ if(ENABLE_CLANG_TIDY)
     list(APPEND RUN_CLANG_TIDY_BIN_ARGS
         -clang-tidy-binary ${CLANG_TIDY_BIN}
         -header-filter=.*
-        -checks=misc*,perf*,cppc*,read*,mode*
+        -checks=perf*,mode*
     )
     add_custom_target(
         tidy
@@ -80,7 +80,7 @@ if(ENABLE_CLANG_FORMAT)
     clang-format
     COMMAND /usr/bin/clang-format
     -i
-    -style=Google
+    -style=LLVM
     ${ALL_CXX_SOURCE_FILES}
   )
 
@@ -106,15 +106,13 @@ if(ENABLE_CPPLINT)
   file(GLOB_RECURSE ALL_CXX_SOURCE_FILES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
     ${PROJECT_SOURCE_DIR}/include/*.h
-    ${PROJECT_SOURCE_DIR}/test/*.cpp
+    ${PROJECT_SOURCE_DIR}/test/models_unit.cpp
+    ${PROJECT_SOURCE_DIR}/test/postgresql_db_unit.cpp
   )
 
   add_custom_target(
       cpplint
       COMMAND /usr/local/bin/cpplint 
-      --extensions=c,cpp,h,hpp
-      --linelength=80
-      --filter=-runtime/casting,-runtime/arrays,-readability/casting,-build/include_subdir,-build/include_order,-whitespace/indent,-build/include_what_you_use,
       ${ALL_CXX_SOURCE_FILES}
   )
 endif()
@@ -161,10 +159,10 @@ if(ENABLE_CPPCHECK)
         --language=c
         --check-config
         -DMAIN=main
-        -I ${CMAKE_SOURCE_DIR}/database
-           ${CMAKE_SOURCE_DIR}/src/*.cpp
-           ${CMAKE_SOURCE_DIR}/include/*.h
-           ${CMAKE_SOURCE_DIR}/test/*.cpp
+        -I ${CMAKE_SOURCE_DIR}/project/database
+           ${CMAKE_SOURCE_DIR}/project/database/src/*.cpp
+           ${CMAKE_SOURCE_DIR}/project/database/include/*.h
+           ${CMAKE_SOURCE_DIR}/project/database/test/*.cpp
     )
 
     add_custom_target(
