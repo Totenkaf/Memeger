@@ -65,22 +65,24 @@ jobs:
 
       - name: UNIT_TEST
         run:  |
+          cd project/
           mkdir -p build && cd build
           sudo cmake -DBUILD_TESTS=ON ..
           sudo make
-          cd project/server/test
+          cd server/test
           sudo valgrind --tool=memcheck --leak-check=full ./unit_test
-          cd -
+          cd ../../
 
       - uses: codecov/codecov-action@v2
       - name: CODE COVERAGE
         run: |
+          cd project/
           mkdir -p build && cd build
           sudo cmake -DBUILD_TESTS=ON ..
           sudo make
-          cd project/server/test
+          cd server/test
           sudo ./unit_test       
-          cd -
+          cd ../../
           lcov --directory . --capture --output-file coverage.info
           lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
           lcov --list coverage.info
