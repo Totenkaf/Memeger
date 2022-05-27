@@ -66,6 +66,14 @@ jobs:
            sudo cmake -DBuildTests=OFF .
            cd ../
            pwd
+           sudo apt-get install checkinstall
+           sudo checkinstall -D \
+           -y --nodoc \
+           --pkgname=libnlohmann-json-dev-custom \
+           --pkgversion=2.1.1 \
+           --pkgrelease=git \
+           --deldesc=no
+
            sudo apt update && sudo apt upgrade
            sudo apt-get install libboost-all-dev
 
