@@ -22,12 +22,9 @@ Client::Client(boost::asio::io_context& io_context)
 
 
 void Client::signup(const std::string user_login, const std::string user_password) {
-
-        std::cout << "nick is " << user_login << std::endl;
-        std::cout << "password is " << user_password << std::endl;
-
         std::string path = "/registration/";
         std::string body = "{\"login\":\"" + user_login + "\"," + "\"password\":\"" + user_password +  "\"}";
+
         request_.version(10);
         request_.method(http::verb::post);
         request_.target(path);
@@ -416,7 +413,8 @@ void Client:: handle_read(beast::error_code err,
     if (!err)
     {
         // Write the message to standard out
-        std::cout << response_ << std::endl;
+        std::cout<< "[handle_read response]" << std::endl;
+        std::cout<< this -> response_ << std::endl;
 
         // Gracefully close the socket
         stream_.socket().shutdown(tcp::socket::shutdown_both, err);
@@ -429,6 +427,11 @@ void Client:: handle_read(beast::error_code err,
     {
         std::cout << "Error: " << err << "\n";
     }
+}
+
+http::response<http::string_body> Client:: handle_response()
+{
+    return response_;
 }
 
 // int main(int argc, char* argv[])

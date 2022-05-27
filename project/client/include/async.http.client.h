@@ -19,6 +19,7 @@ public:
     void signup(const std::string user_login, const std::string user_password);
     // void run(const std::string& server, const std::string& port, const std::string& path);
     void run(const std::string path);
+    http::response<http::string_body> handle_response();
 
 private:
     void handle_resolve(beast::error_code err,tcp::resolver::results_type results);

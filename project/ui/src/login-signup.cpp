@@ -1,5 +1,6 @@
 #include <iostream>
 #include <utility>
+#include <thread>
 
 #include "store.h"
 #include "login-signup.h"
@@ -55,6 +56,10 @@ void switchBoxes(GtkWidget* box_to_remove, GtkWidget*  box_to_display) {
   return;
 }
 
+void printSmth() {
+  std::cout << "print Smth" << std::endl;
+}
+
 void signup_submit(GtkWidget* widget, GdkEvent* event, gpointer data) {
   const char* nick = gtk_entry_get_text(GTK_ENTRY(signup_nickname_box));
   const char* password = gtk_entry_get_text(GTK_ENTRY(signup_password_box));
@@ -71,9 +76,16 @@ void signup_submit(GtkWidget* widget, GdkEvent* event, gpointer data) {
   }
 
   net::io_context io_context;
+  std::shared_ptr<Client> cli = std::make_shared<Client>(io_context);
 
-  std::make_shared<Client>(io_context)->signup(nick, password); // TO DO
-  io_context.run();
+  cli->signup(nick, password);
+
+  std::thread t([&io_context](){ io_context.run(); });
+
+  t.join();
+  
+  auto response = cli->handle_response();
+  std::cout << response.body() << std::endl;
 
   createLoginBox();
   switchBoxes(signup_box, login_box);
