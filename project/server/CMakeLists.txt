@@ -127,7 +127,7 @@ if(ENABLE_CLANG_TIDY)
         -checks=perf*,mode*
     )
     add_custom_target(
-        tidy
+        tidy-server
         COMMAND ${RUN_CLANG_TIDY_BIN} ${RUN_CLANG_TIDY_BIN_ARGS}
         COMMENT "running clang tidy"
     )

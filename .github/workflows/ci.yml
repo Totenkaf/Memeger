@@ -55,6 +55,7 @@ jobs:
             sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
             sudo -u postgres psql postgres -c "\l"
 
+
       - name: INSTALL JSON+BOOST
         run: |
            pwd
@@ -77,7 +78,39 @@ jobs:
            sudo apt update && sudo apt upgrade
            sudo apt-get install libboost-all-dev
 
-
+      - name: INSTALL CLANG-FORMAT
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-format
+          which clang
+      - name: CLANG-FORMATTING
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_FORMAT=ON ..
+          sudo make
+          sudo make clang-format-server
+          cd ../
+      - name: INSTALL CLANG-TIDY
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-tidy
+          which clang-tidy
+      - name: CLANG-TIDY CHECK
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_TIDY=ON ..
+          sudo make
+          sudo make tidy-server > output.txt
+          if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
+              echo "You must pass the clang tidy checks before submitting a pull request"
+              echo ""
+              grep --color -E '^|warning: |error: ' output.txt
+              exit -1;
+          else
+              echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
+          fi
+          cd ../
+      
        
 
       - name: UNIT_TEST
@@ -89,7 +122,33 @@ jobs:
           cd server/test
           sudo valgrind --tool=memcheck --leak-check=full ./unit_test
           cd ../../
-
+      - name: ADDRESS SANITIZER
+        run: |
+         cd project/
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_USAN=OFF -DENABLE_TSAN=OFF ..
+          sudo make
+          cd server/test
+          sudo ./unit_test
+          cd ../
+      - name: UNDEFINED SANITIZER
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=ON -DENABLE_TSAN=OFF ..
+          sudo make
+          cd server/test
+          sudo ./unit_test
+          cd ../
+      - name: THREAD SANITIZER
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=OFF -DENABLE_TSAN=ON ..
+          sudo make
+          cd server/test
+          sudo ./unit_test
+          cd ../
       - uses: codecov/codecov-action@v2
       - name: CODE COVERAGE
         run: |
