@@ -44,16 +44,16 @@ jobs:
           pwd
 
       - name: INSTALL POSTGRESQL
-              run: |
-                sudo apt-get update -y
-                sudo apt-get install -y libpqxx-dev
-                sudo apt-get install -y postgresql
-                sudo service postgresql start
-                sudo netstat -pant | grep postgres
-                sudo -u postgres psql postgres
-                sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
-                sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
-                sudo -u postgres psql postgres -c "\l"
+          run: |
+            sudo apt-get update -y
+            sudo apt-get install -y libpqxx-dev
+            sudo apt-get install -y postgresql
+            sudo service postgresql start
+            sudo netstat -pant | grep postgres
+            sudo -u postgres psql postgres
+            sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+            sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+            sudo -u postgres psql postgres -c "\l"
 
       - name: INSTALL JSON+BOOST
         run: |
