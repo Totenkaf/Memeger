@@ -1,0 +1,98 @@
+
+on: push
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
+
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
+      - name: INSTALL LCOV
+        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
+          which lcov
+      - name: INSTALL PIP
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          which python3
+          which pip
+      - name: INSTALL VALGRIND
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind
+          which valgrind
+      - name: INSTALL GTEST
+        run:  |
+          git clone https://github.com/google/googletest
+          pwd
+          cd ./googletest
+          pwd
+          mkdir -p build && cd build
+          sudo cmake ..
+          sudo make
+          sudo make install
+          cd -
+          pwd
+
+      - name: INSTALL JSON+BOOST
+        run: |
+           sudo apt update && sudo apt upgrade
+           sudo apt-get install libboost-all-dev
+           sudo git clone https://github.com/nlohmann/json.git 
+           cd json 
+           cmake -DBuildTests=OFF .
+           sudo apt-get install checkinstall
+           sudo checkinstall -D \
+             -y --nodoc \
+            --pkgname=libnlohmann-json-dev-custom \
+            --pkgversion=2.1.1 \
+            --pkgrelease=git \
+            --deldesc=no
+           cd ../
+
+
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpqxx-dev
+          sudo apt-get install -y postgresql
+          sudo service postgresql start
+          sudo netstat -pant | grep postgres
+          sudo -u postgres psql postgres
+          sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          sudo -u postgres psql postgres -c "\l"
+
+      - name: UNIT_TEST
+        run:  |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd project/server/test
+          sudo valgrind --tool=memcheck --leak-check=full ./unit_test
+          cd -
+
+      - uses: codecov/codecov-action@v2
+      - name: CODE COVERAGE
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd project/server/test
+          sudo ./unit_test       
+          cd -
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
+          lcov --list coverage.info
+          cd ..
+          bash <(curl -s https://codecov.io/bash) -f build/coverage.info || echo "CodeCov didn't collect coverage reports"
+          cat codecov.yml | curl --data-binary @- https://codecov.io/validate
