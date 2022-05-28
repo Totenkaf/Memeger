@@ -551,13 +551,11 @@ auto Postgre_DB::get_chat_by_chat_name(const std::string &chat_name) -> Chat {
   Chat chat;
   try {
     pqxx::result::const_iterator c = res.begin();
-
     chat.set_chat_id(c.at(0).as<std::string>());
     chat.set_chat_name(c.at(1).as<std::string>());
     std::vector<std::string> participants;
     participants = get_participants_from_chat(chat);
     chat.set_participants(participants);
-
     std::vector<std::shared_ptr<IMessage>> messages;
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
@@ -628,7 +626,6 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
     std::vector<std::string> participants;
     std::vector<std::shared_ptr<IMessage>> messages;
     pqxx::result::const_iterator c = res.begin();
-
     chat.set_chat_id(c.at(0).as<std::string>());
     chat.set_chat_name(c.at(1).as<std::string>());
     participants = get_participants_from_chat(chat);
@@ -636,7 +633,6 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
-
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG CHAT" << std::endl;
