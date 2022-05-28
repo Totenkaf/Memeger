@@ -126,7 +126,8 @@ auto Chat::set_chat_name(const std::string &chat_name) -> int {
 //     return 0;
 // }
 
-auto Chat::set_chat_messages(const std::vector<std::shared_ptr<IMessage>> &messages) -> int {
+auto Chat::set_chat_messages(
+    const std::vector<std::shared_ptr<IMessage>> &messages) -> int {
   messages_ = messages;
   return _EXIT_SUCCESS;
 }

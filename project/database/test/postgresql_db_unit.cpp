@@ -274,7 +274,6 @@ TEST_F(DataBaseEnvironment, get_all_chats_by_user_login) {
   test_db.add_chat(chat_2);
   Chat chat_from_db_2 = test_db.get_chat_by_chat_name("Artem/Maxim");
 
-
   std::vector<Chat> chats_by_user_login_1 =
       test_db.get_all_chats_by_user_login(test_user_1.get_login());
   EXPECT_EQ(chats_by_user_login_1.size(), 2);
@@ -312,11 +311,9 @@ TEST_F(DataBaseEnvironment, get_participants_from_chat) {
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
   EXPECT_EQ(chat_from_db.get_chat_name(), "Memeger");
 
-  std::vector<std::string> true_participants = { 
-                                                 test_user_1.get_login(), 
-                                                 test_user_2.get_login(),
-                                                 test_user_3.get_login()
-                                               };
+  std::vector<std::string> true_participants = {test_user_1.get_login(),
+                                                test_user_2.get_login(),
+                                                test_user_3.get_login()};
   std::vector<std::string> participants_from_chat =
       test_db.get_participants_from_chat(chat_from_db);
   for (size_t i = 0; i < participants_from_chat.size(); ++i) {
@@ -417,7 +414,8 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
   std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, -1);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i]->get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(),
+              true_messages_text[i]);
   }
 }
 
@@ -463,7 +461,8 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
   std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, 3);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i]->get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(),
+              true_messages_text[i]);
   }
 }
 

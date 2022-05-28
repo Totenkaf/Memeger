@@ -56,8 +56,8 @@ auto Postgre_DB::init_tables() -> int {
   std::string create_table = "CREATE TABLE IF NOT EXISTS ";
 
   std::string users =
-  create_table +
-  "USERS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+      create_table +
+      "USERS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
           login VARCHAR(50) NOT NULL, \
           CONSTRAINT unique_login_users UNIQUE(login), \
           password VARCHAR(50) NOT NULL, \
@@ -70,8 +70,8 @@ auto Postgre_DB::init_tables() -> int {
   }
 
   std::string chats =
-  create_table +
-  "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+      create_table +
+      "CHATS (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
           chat_name VARCHAR(50) NOT NULL DEFAULT 'with_yourself', \
           CONSTRAINT unique_chat_name UNIQUE (chat_name), \
           time_creation TIMESTAMP NOT NULL DEFAULT NOW());";
@@ -80,8 +80,8 @@ auto Postgre_DB::init_tables() -> int {
   }
 
   std::string messages =
-  create_table +
-  "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
+      create_table +
+      "MESSAGES (id UUID NOT NULL DEFAULT uuid_generate_v4() PRIMARY KEY, \
         user_from UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
         time_sent TIMESTAMP NOT NULL DEFAULT NOW(), \
         chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE, \
@@ -92,8 +92,7 @@ auto Postgre_DB::init_tables() -> int {
   }
 
   std::string users_chats_link =
-  create_table +
-  "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT\
+      create_table + "USERS_CHATS_LINK (id UUID NOT NULL DEFAULT\
                      uuid_generate_v4() PRIMARY KEY,\
         user_id UUID NOT NULL REFERENCES USERS(id) ON DELETE CASCADE, \
         chat_id UUID NOT NULL REFERENCES CHATS(id) ON DELETE CASCADE);";
@@ -223,8 +222,7 @@ auto Postgre_DB::select(
     for (const auto &item : what) {
       request += remove_danger_characters(item) + ", ";
     }
-    request =
-        request.substr(0, request.size() - 2);
+    request = request.substr(0, request.size() - 2);
   } else {
     request += "*";
   }
@@ -254,8 +252,7 @@ auto Postgre_DB::update(const std::string &table,
       request += table_fields[i] + " = '" +
                  remove_danger_characters(values[i]) + "', ";
     }
-    request =
-        request.substr(0, request.size() - 2);
+    request = request.substr(0, request.size() - 2);
     if (!where.empty()) {
       request += " WHERE " + where;
     }
@@ -631,7 +628,7 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
     std::vector<std::string> participants;
     std::vector<std::shared_ptr<IMessage>> messages;
     pqxx::result::const_iterator c = res.begin();
-  
+
     chat.set_chat_id(c.at(0).as<std::string>());
     chat.set_chat_name(c.at(1).as<std::string>());
     participants = get_participants_from_chat(chat);
@@ -639,7 +636,7 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
-  
+
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG CHAT" << std::endl;
