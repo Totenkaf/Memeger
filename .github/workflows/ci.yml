@@ -1,0 +1,167 @@
+
+on: push
+jobs:
+  testing:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
+
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
+      - name: INSTALL LCOV
+        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
+          which lcov
+      - name: INSTALL PIP
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          which python3
+          which pip
+      - name: INSTALL VALGRIND
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind
+          which valgrind
+      - name: INSTALL GTEST
+        run:  |
+          git clone https://github.com/google/googletest
+          pwd
+          cd ./googletest
+          pwd
+          mkdir -p build && cd build
+          sudo cmake ..
+          sudo make
+          sudo make install
+          cd -
+          pwd
+
+      - name: INSTALL POSTGRESQL
+        run: |
+            sudo apt-get update -y
+            sudo apt-get install -y libpqxx-dev
+            sudo apt-get install -y postgresql
+            sudo service postgresql start
+            sudo netstat -pant | grep postgres
+            sudo -u postgres psql postgres
+            sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+            sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+            sudo -u postgres psql postgres -c "\l"
+
+
+      - name: INSTALL JSON+BOOST
+        run: |
+           pwd
+           cd project/
+           pwd  
+           sudo git clone https://github.com/nlohmann/json.git 
+           ls
+           cd json 
+           sudo cmake -DBuildTests=OFF .
+           sudo apt-get install checkinstall
+           sudo checkinstall -D \
+           -y --nodoc \
+           --pkgname=libnlohmann-json-dev-custom \
+           --pkgversion=2.1.1 \
+           --pkgrelease=git \
+           --deldesc=no
+           cd ../
+           pwd
+
+           sudo apt update && sudo apt upgrade
+           sudo apt-get install libboost-all-dev
+
+      - name: INSTALL CLANG-FORMAT
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-format
+          which clang
+      - name: CLANG-FORMATTING
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_FORMAT=ON ..
+          sudo make
+          sudo make clang-format-server
+          cd ../
+      - name: INSTALL CLANG-TIDY
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-tidy
+          which clang-tidy
+      # - name: CLANG-TIDY CHECK
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DENABLE_CLANG_TIDY=ON ..
+      #     sudo make
+      #     sudo make tidy-server > output.txt
+      #     if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
+      #         echo "You must pass the clang tidy checks before submitting a pull request"
+      #         echo ""
+      #         grep --color -E '^|warning: |error: ' output.txt
+      #         exit -1;
+      #     else
+      #         echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
+      #     fi
+      #     cd ../
+      
+       
+
+      - name: UNIT_TEST
+        run:  |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd server/test
+          sudo valgrind --tool=memcheck --leak-check=full ./unit_test
+          cd ../../
+      # - name: ADDRESS SANITIZER
+      #   run: |
+      #    cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_USAN=OFF -DENABLE_TSAN=OFF ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
+      # - name: UNDEFINED SANITIZER
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=ON -DENABLE_TSAN=OFF ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
+      # - name: THREAD SANITIZER
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=OFF -DENABLE_TSAN=ON ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
+      - uses: codecov/codecov-action@v2
+      - name: CODE COVERAGE
+        run: |
+          cd project/
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd server/test
+          sudo ./unit_test       
+          cd ../../
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
+          lcov --list coverage.info
+          cd ..
+          bash <(curl -s https://codecov.io/bash) -f build/coverage.info || echo "CodeCov didn't collect coverage reports"
+          cat codecov.yml | curl --data-binary @- https://codecov.io/validate
