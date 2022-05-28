@@ -3,6 +3,7 @@
 #include <boost/beast/http/write.hpp>
 #include <boost/lexical_cast.hpp>
 #include <iostream>
+#include <memory>
 #include "response.h"
 #include <string>
 #include <sstream>
@@ -266,10 +267,10 @@ bool CHAT::find_chat(Request &req,Response &resp ,Postgre_DB &database)
        req.j_req = json::parse(  req.request_.body());
                         
         std::string str;
-        str=   req.j_req["num_of_messages"];
+        str = req.j_req["num_of_messages"];
         int digit =boost::lexical_cast<int>( str.c_str());
         Chat chat=database.get_chat_by_chat_name(req.j_req["chat_name"]);
-        messages=database.get_last_N_messages_from_chat(  chat,digit);
+        messages=database.get_last_N_messages_from_chat(chat, digit);
         
 
         if(messages.size()==0)
@@ -281,7 +282,7 @@ bool CHAT::find_chat(Request &req,Response &resp ,Postgre_DB &database)
         for (size_t i = 0; i < messages.size(); i++)
         {
                 std::string mess2=mess +std::to_string(i+1);
-                resp.j_response[mess2]=messages[i].get_message_content();
+                resp.j_response[mess2]=messages[i]->get_message_content();
         }
         
          Send_Response(resp,"/messages/",std::to_string(0));
@@ -605,8 +606,8 @@ bool MESSAGE::add_message(Request &req,Response &resp ,Postgre_DB &database)
     //std::string user_id=database.get_user_id(req.j_req["login"]);
     User user=database.get_user_by_login(req.j_req["login"]);
     Chat chat=database.get_chat_by_chat_name(req.j_req["chat_name"]);
-    TextMessage message= TextMessage(chat.get_chat_id(),user.get_id(),req.j_req["content"]);
-    int result=database.add_message( message);
+    std::shared_ptr<IMessage> message = std::make_shared<TextMessage>(chat.get_chat_id(),user.get_id(),req.j_req["content"]);
+    int result=database.add_message(message);
 
 
     if (result != 0)
@@ -639,7 +640,7 @@ req.j_req = json::parse(req.request_.body());
     //std::string user_id=database.get_user_id(req.j_req["login"]);
      User user=database.get_user_by_login(req.j_req["login"]);
     Chat chat=database.get_chat_by_chat_name(req.j_req["chat_name"]);
-    TextMessage message= TextMessage(chat.get_chat_id(),user.get_id(),req.j_req["content"]);
+    std::shared_ptr<IMessage> message = std::make_shared<TextMessage>(chat.get_chat_id(),user.get_id(),req.j_req["content"]);
     int result=database.delete_message( message);
 
 

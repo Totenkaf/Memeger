@@ -76,7 +76,7 @@ bool delete_message(Request &req,Response &resp ,Postgre_DB &database);
 
 private:
 
-std::vector<TextMessage> messages;
+std::vector<std::shared_ptr<IMessage>> messages;
 
 };
  

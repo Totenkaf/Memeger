@@ -1,34 +1,28 @@
 // Copyright 2022 by Artem Ustsov
 
 #include <gtest/gtest.h>
-
+#include <memory>
 #include "models.h"
 #include "postgresql_db.h"
 
-// течет память, 262байта still reachable в конце любого теста, вне
-// зависимости от содержимого ошибка с pqxx::connection
-// это внутренняя особенность БД
-
 class DataBaseEnvironment : public ::testing::Test {
 public:
-  void TearDown() override { test_db.drop_tables(); }
   Postgre_DB test_db =
       Postgre_DB("127.0.0.1", "5432", "postgres", "postgres", "postgres");
+  User test_user_1 = User("Ivan", "Qwerty1235");
+  User test_user_2 = User("Maxim", "Qwerty1235");
+  User test_user_3 = User("Yuri", "kigorg");
+  User test_user_4 = User("Yaroslav", "superduper");
+  void TearDown() override { test_db.drop_tables(); }
   virtual ~DataBaseEnvironment() {}
 };
 
 TEST_F(DataBaseEnvironment, add_test_user) {
-  User test_user("Ivan", "Qwerty1235");
-  int status_add_user = test_db.add_user(test_user);
+  int status_add_user = test_db.add_user(test_user_1);
   EXPECT_EQ(status_add_user, _EXIT_SUCCESS);
 }
 
 TEST_F(DataBaseEnvironment, add_test_users) {
-  User test_user_1("Artem", "qwwaqwaw");
-  User test_user_2("Maxim", "Qwerty1235");
-  User test_user_3("Yuri", "kigorg");
-  User test_user_4("Yaroslav", "superduper");
-
   int status_add_user_1 = test_db.add_user(test_user_1);
   int status_add_user_2 = test_db.add_user(test_user_2);
   int status_add_user_3 = test_db.add_user(test_user_3);
@@ -41,43 +35,36 @@ TEST_F(DataBaseEnvironment, add_test_users) {
 }
 
 TEST_F(DataBaseEnvironment, add_exist_user) {
-  User test_user_1("Ivan", "Qwerty1235");
   test_db.add_user(test_user_1);
-
-  User test_user_2("Ivan", "Qwerty1235");
-  int status_add_exist_user = test_db.add_user(test_user_2);
+  int status_add_exist_user = test_db.add_user(test_user_1);
   EXPECT_EQ(status_add_exist_user, _SAVE_FAULT);
 }
 
 TEST_F(DataBaseEnvironment, find_user_by_login) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
-  bool status_find_user = test_db.find_user_by_login("Ivan");
+  test_db.add_user(test_user_1);
+  bool status_find_user = test_db.find_user_by_login(test_user_1.get_login());
   EXPECT_TRUE(status_find_user);
 }
 
 TEST_F(DataBaseEnvironment, find_wrong_user_by_login) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
   bool status_find_user = test_db.find_user_by_login("Artems");
   EXPECT_FALSE(status_find_user);
 }
 
 TEST_F(DataBaseEnvironment, get_user_by_login) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
-  User user_from_db = test_db.get_user_by_login("Ivan");
+  test_db.add_user(test_user_1);
+  User user_from_db = test_db.get_user_by_login(test_user_1.get_login());
 
   EXPECT_TRUE(user_from_db.get_id() != std::string());
-  EXPECT_EQ(user_from_db.get_login(), "Ivan");
-  EXPECT_EQ(user_from_db.get_password(), "Qwerty1235");
-  EXPECT_EQ(user_from_db.get_active_status(), "active");
+  EXPECT_EQ(user_from_db.get_login(), test_user_1.get_login());
+  EXPECT_EQ(user_from_db.get_password(), test_user_1.get_password());
+  EXPECT_EQ(user_from_db.get_active_status(), test_user_1.get_active_status());
 }
 
 TEST_F(DataBaseEnvironment, change_user_login) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
-  User user_from_db = test_db.get_user_by_login("Ivan");
+  test_db.add_user(test_user_1);
+  User user_from_db = test_db.get_user_by_login(test_user_1.get_login());
 
   int status_change_user_login =
       test_db.change_user_login(user_from_db, "Vasiliy");
@@ -90,8 +77,7 @@ TEST_F(DataBaseEnvironment, change_user_login) {
 }
 
 TEST_F(DataBaseEnvironment, change_wrong_user_login) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
   User user_from_db = test_db.get_user_by_login("Victor");
 
   int status_change_user_login =
@@ -100,9 +86,8 @@ TEST_F(DataBaseEnvironment, change_wrong_user_login) {
 }
 
 TEST_F(DataBaseEnvironment, change_user_password) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
-  User user_from_db = test_db.get_user_by_login("Ivan");
+  test_db.add_user(test_user_1);
+  User user_from_db = test_db.get_user_by_login(test_user_1.get_login());
 
   int status_change_user_login =
       test_db.change_user_password(user_from_db, "tiberius");
@@ -115,8 +100,7 @@ TEST_F(DataBaseEnvironment, change_user_password) {
 }
 
 TEST_F(DataBaseEnvironment, change_wrong_user_password) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
   User user_from_db = test_db.get_user_by_login("Victor");
 
   int status_change_user_login =
@@ -125,8 +109,7 @@ TEST_F(DataBaseEnvironment, change_wrong_user_password) {
 }
 
 TEST_F(DataBaseEnvironment, change_user_status) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
   User user_from_db = test_db.get_user_by_login("Ivan");
 
   int status_change_user_login =
@@ -140,8 +123,7 @@ TEST_F(DataBaseEnvironment, change_user_status) {
 }
 
 TEST_F(DataBaseEnvironment, change_wrong_user_status) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
   User user_from_db = test_db.get_user_by_login("Victor");
 
   int status_change_user_login =
@@ -150,10 +132,9 @@ TEST_F(DataBaseEnvironment, change_wrong_user_status) {
 }
 
 TEST_F(DataBaseEnvironment, delete_user) {
-  User test_user("Ivan", "Qwerty1235");
-  test_db.add_user(test_user);
+  test_db.add_user(test_user_1);
 
-  User user_from_db = test_db.get_user_by_login("Ivan");
+  User user_from_db = test_db.get_user_by_login(test_user_1.get_login());
   int status_delete_user = test_db.delete_user(user_from_db);
   EXPECT_EQ(status_delete_user, _EXIT_SUCCESS);
 
@@ -164,31 +145,24 @@ TEST_F(DataBaseEnvironment, delete_user) {
 }
 
 TEST_F(DataBaseEnvironment, add_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
   Chat chat_1("Memeger", participants_1);
-
   EXPECT_EQ(test_db.add_chat(chat_1), _EXIT_SUCCESS);
 }
 
 TEST_F(DataBaseEnvironment, add_exist_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -200,14 +174,11 @@ TEST_F(DataBaseEnvironment, add_exist_chat) {
 }
 
 TEST_F(DataBaseEnvironment, get_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -222,13 +193,11 @@ TEST_F(DataBaseEnvironment, get_chat) {
 }
 
 TEST_F(DataBaseEnvironment, add_new_chat_participant) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -236,7 +205,6 @@ TEST_F(DataBaseEnvironment, add_new_chat_participant) {
   test_db.add_chat(chat_1);
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
-  User test_user_3("Yuir", "adsfads");
   test_db.add_user(test_user_3);
 
   int status_add_new_participant =
@@ -248,13 +216,11 @@ TEST_F(DataBaseEnvironment, add_new_chat_participant) {
 }
 
 TEST_F(DataBaseEnvironment, fing_chat_by_chat_name) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -266,13 +232,11 @@ TEST_F(DataBaseEnvironment, fing_chat_by_chat_name) {
 }
 
 TEST_F(DataBaseEnvironment, change_chat_name) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -289,16 +253,13 @@ TEST_F(DataBaseEnvironment, change_chat_name) {
 }
 
 TEST_F(DataBaseEnvironment, get_all_chats_by_user_login) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
-  User test_user_3("Yuri", "asdfas");
   test_db.add_user(test_user_3);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
-  User user_from_db_3 = test_db.get_user_by_login("Yuri");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
+  User user_from_db_3 = test_db.get_user_by_login(test_user_3.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login(),
@@ -314,7 +275,7 @@ TEST_F(DataBaseEnvironment, get_all_chats_by_user_login) {
   Chat chat_from_db_2 = test_db.get_chat_by_chat_name("Artem/Maxim");
 
   std::vector<Chat> chats_by_user_login_1 =
-      test_db.get_all_chats_by_user_login("Artem");
+      test_db.get_all_chats_by_user_login(test_user_1.get_login());
   EXPECT_EQ(chats_by_user_login_1.size(), 2);
 
   std::vector<std::string> true_chats_1 = {"Memeger", "Artem/Maxim"};
@@ -323,7 +284,7 @@ TEST_F(DataBaseEnvironment, get_all_chats_by_user_login) {
   }
 
   std::vector<Chat> chats_by_user_login_2 =
-      test_db.get_all_chats_by_user_login("Yuri");
+      test_db.get_all_chats_by_user_login(test_user_3.get_login());
   EXPECT_EQ(chats_by_user_login_2.size(), 1);
 
   std::vector<std::string> true_chats_2 = {"Memeger"};
@@ -333,16 +294,13 @@ TEST_F(DataBaseEnvironment, get_all_chats_by_user_login) {
 }
 
 TEST_F(DataBaseEnvironment, get_participants_from_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
-  User test_user_3("Yuri", "asdfas");
   test_db.add_user(test_user_3);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
-  User user_from_db_3 = test_db.get_user_by_login("Yuri");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
+  User user_from_db_3 = test_db.get_user_by_login(test_user_3.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login(),
@@ -353,7 +311,9 @@ TEST_F(DataBaseEnvironment, get_participants_from_chat) {
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
   EXPECT_EQ(chat_from_db.get_chat_name(), "Memeger");
 
-  std::vector<std::string> true_participants = {"Artem", "Maxim", "Yuri"};
+  std::vector<std::string> true_participants = {test_user_1.get_login(),
+                                                test_user_2.get_login(),
+                                                test_user_3.get_login()};
   std::vector<std::string> participants_from_chat =
       test_db.get_participants_from_chat(chat_from_db);
   for (size_t i = 0; i < participants_from_chat.size(); ++i) {
@@ -362,16 +322,13 @@ TEST_F(DataBaseEnvironment, get_participants_from_chat) {
 }
 
 TEST_F(DataBaseEnvironment, delete_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
-  User test_user_3("Yuri", "asdfas");
   test_db.add_user(test_user_3);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
-  User user_from_db_3 = test_db.get_user_by_login("Yuri");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
+  User user_from_db_3 = test_db.get_user_by_login(test_user_3.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login(),
@@ -394,13 +351,11 @@ TEST_F(DataBaseEnvironment, delete_chat) {
 }
 
 TEST_F(DataBaseEnvironment, add_message) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -409,24 +364,18 @@ TEST_F(DataBaseEnvironment, add_message) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
-                      "Hello, Maxim");
+  std::shared_ptr<IMessage> message = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), 
+                                                                    user_from_db_1.get_id(),
+                                                                    "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message), _EXIT_SUCCESS);
-  EXPECT_TRUE(!message.get_message_id().empty());
-  EXPECT_EQ(message.get_parent_chat_id(), chat_from_db.get_chat_id());
-  EXPECT_EQ(message.get_sender_id(), user_from_db_1.get_id());
-  EXPECT_EQ(message.get_read_status(), false);
-  EXPECT_EQ(message.get_message_content(), "Hello, Maxim");
 }
 
 TEST_F(DataBaseEnvironment, get_messages_from_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -435,23 +384,23 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message_1(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_1 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message_1), _EXIT_SUCCESS);
-  TextMessage message_2(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_2 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Hi");
   EXPECT_EQ(test_db.add_message(message_2), _EXIT_SUCCESS);
-  TextMessage message_3(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_3 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "I have already done all my tests!");
   EXPECT_EQ(test_db.add_message(message_3), _EXIT_SUCCESS);
-  TextMessage message_4(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_4 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Great news. Proud of you");
   EXPECT_EQ(test_db.add_message(message_4), _EXIT_SUCCESS);
-  TextMessage message_5(
+  std::shared_ptr<IMessage> message_5 = std::make_shared<TextMessage>(
       chat_from_db.get_chat_id(), user_from_db_1.get_id(),
       "Thanks! Let is discuss and integrate the project tonight?");
   EXPECT_EQ(test_db.add_message(message_5), _EXIT_SUCCESS);
-  TextMessage message_6(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_6 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Sure, deal. See you");
   EXPECT_EQ(test_db.add_message(message_6), _EXIT_SUCCESS);
 
@@ -463,21 +412,20 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
       "Thanks! Let is discuss and integrate the project tonight?",
       "Sure, deal. See you"};
 
-  std::vector<TextMessage> messages_from_db =
+  std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, -1);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(),
+              true_messages_text[i]);
   }
 }
 
 TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
-  User test_user_1("Artem", "missing");
   test_db.add_user(test_user_1);
-  User test_user_2("Maxim", "finding");
   test_db.add_user(test_user_2);
 
-  User user_from_db_1 = test_db.get_user_by_login("Artem");
-  User user_from_db_2 = test_db.get_user_by_login("Maxim");
+  User user_from_db_1 = test_db.get_user_by_login(test_user_1.get_login());
+  User user_from_db_2 = test_db.get_user_by_login(test_user_2.get_login());
 
   std::vector<std::string> participants_1 = {user_from_db_1.get_login(),
                                              user_from_db_2.get_login()};
@@ -486,23 +434,23 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message_1(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_1 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message_1), _EXIT_SUCCESS);
-  TextMessage message_2(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_2 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Hi");
   EXPECT_EQ(test_db.add_message(message_2), _EXIT_SUCCESS);
-  TextMessage message_3(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_3 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "I have already done all my tests!");
   EXPECT_EQ(test_db.add_message(message_3), _EXIT_SUCCESS);
-  TextMessage message_4(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_4 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Great news. Proud of you");
   EXPECT_EQ(test_db.add_message(message_4), _EXIT_SUCCESS);
-  TextMessage message_5(
+  std::shared_ptr<IMessage> message_5 = std::make_shared<TextMessage>(
       chat_from_db.get_chat_id(), user_from_db_1.get_id(),
       "Thanks! Let is discuss and integrate the project tonight?");
   EXPECT_EQ(test_db.add_message(message_5), _EXIT_SUCCESS);
-  TextMessage message_6(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_6 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Sure, deal. See you");
   EXPECT_EQ(test_db.add_message(message_6), _EXIT_SUCCESS);
 
@@ -511,10 +459,11 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
       "Thanks! Let is discuss and integrate the project tonight?",
       "Sure, deal. See you"};
 
-  std::vector<TextMessage> messages_from_db =
+  std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, 3);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(),
+              true_messages_text[i]);
   }
 }
 
