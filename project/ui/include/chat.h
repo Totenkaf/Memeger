@@ -4,7 +4,7 @@
 
 void submit_chat();
 void activate_chat(GtkApplication *app);
-GtkWidget* create_row(const gchar* text);
+GtkWidget *create_row(const gchar *text);
 
 GtkWidget *window;
 

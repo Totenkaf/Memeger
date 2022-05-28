@@ -17,6 +17,10 @@ class Client : public std::enable_shared_from_this<Client> {
 public:
     Client(boost::asio::io_context& io_context);
     void signup(const std::string user_login, const std::string user_password);
+    void login(const std::string user_login, const std::string user_password);
+    void start_chat(const std::string user_1, const std::string user_2);
+    void send_message(std::string user_login, const std::string message);
+    void get_last_messages();
     // void run(const std::string& server, const std::string& port, const std::string& path);
     void run(const std::string path);
     http::response<http::string_body> handle_response();
