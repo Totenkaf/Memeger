@@ -478,7 +478,7 @@ auto Postgre_DB::delete_user(User &user) -> int {
 }
 
 // Удаление сообщения из БД
-auto Postgre_DB::delete_message(std::shared_ptr<IMessage> message) -> int {
+auto Postgre_DB::delete_message(const std::shared_ptr<IMessage>& message) -> int {
   if (!message->get_message_id().empty()) {
     std::string where =
         "id = '" + remove_danger_characters(message->get_message_id()) + "'";
@@ -488,7 +488,7 @@ auto Postgre_DB::delete_message(std::shared_ptr<IMessage> message) -> int {
 }
 
 // Добавление сообщения в БД
-auto Postgre_DB::add_message(std::shared_ptr<IMessage> message) -> int {
+auto Postgre_DB::add_message(const std::shared_ptr<IMessage>& message) -> int {
   std::vector<std::string> data = {message->get_sender_id(),
                                    message->get_parent_chat_id(),
                                    message->get_message_content()};

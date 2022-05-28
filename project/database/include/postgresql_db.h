@@ -73,8 +73,8 @@ public:
   [[nodiscard]] auto find_user_by_login(const std::string &login) -> bool;
   [[nodiscard]] auto get_user_by_login(const std::string &login) -> User;
 
-  auto add_message(std::shared_ptr<IMessage> message) -> int;
-  auto delete_message(std::shared_ptr<IMessage> message) -> int;
+  auto add_message(const std::shared_ptr<IMessage>& message) -> int;
+  auto delete_message(const std::shared_ptr<IMessage>& message) -> int;
   [[nodiscard]] auto get_last_N_messages_from_chat(const Chat &chat,
                                                    int num_of_messages)
       -> std::vector<std::shared_ptr<IMessage>>;
