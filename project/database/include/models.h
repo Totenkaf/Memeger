@@ -1,6 +1,7 @@
 // Copyright 2022 by Artem Ustsov
 
 #pragma once
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -127,7 +128,7 @@ public:
   auto operator=(Chat &&other) -> Chat & = default;
 
   Chat(std::string chat_id, std::string chat_name,
-       std::vector<std::string> participants, std::vector<TextMessage> messages)
+       std::vector<std::string> participants, std::vector<std::shared_ptr<IMessage>> messages)
       : chat_id_(std::move(chat_id)), chat_name_(std::move(chat_name)),
         participants_(std::move(participants)), messages_(std::move(messages)) {
   }
@@ -155,10 +156,8 @@ public:
   auto set_participants(std::vector<std::string> &participants) -> int;
   [[nodiscard]] auto get_participants() const -> std::vector<std::string>;
 
-  auto set_messages(const std::vector<TextMessage> &messages) -> int;
-  [[nodiscard]] auto get_messages() const -> std::vector<TextMessage>;
-
-  auto set_chat_messages(const std::vector<TextMessage> &messages) -> int;
+  [[nodiscard]] auto get_messages() const -> std::vector<std::shared_ptr<IMessage>>;
+  auto set_chat_messages(const std::vector<std::shared_ptr<IMessage>> &messages) -> int;
 
   [[nodiscard]] auto is_empty() const -> bool;
   [[nodiscard]] auto is_dialogue() const -> bool;
@@ -174,6 +173,6 @@ private:
   std::string chat_id_;
   std::string chat_name_;
   std::vector<std::string> participants_;
-  std::vector<TextMessage> messages_;
+  std::vector<std::shared_ptr<IMessage>> messages_;
   // time_t time_creation_;
 };

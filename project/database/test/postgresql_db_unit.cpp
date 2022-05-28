@@ -414,10 +414,10 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
       "Thanks! Let is discuss and integrate the project tonight?",
       "Sure, deal. See you"};
 
-  std::vector<TextMessage> messages_from_db =
+  std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, -1);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(), true_messages_text[i]);
   }
 }
 
@@ -460,10 +460,10 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
       "Thanks! Let is discuss and integrate the project tonight?",
       "Sure, deal. See you"};
 
-  std::vector<TextMessage> messages_from_db =
+  std::vector<std::shared_ptr<IMessage>> messages_from_db =
       test_db.get_last_N_messages_from_chat(chat_from_db, 3);
   for (size_t i = 0; i < messages_from_db.size(); ++i) {
-    EXPECT_EQ(messages_from_db[i].get_message_content(), true_messages_text[i]);
+    EXPECT_EQ(messages_from_db[i]->get_message_content(), true_messages_text[i]);
   }
 }
 

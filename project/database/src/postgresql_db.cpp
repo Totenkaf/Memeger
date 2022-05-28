@@ -481,7 +481,7 @@ auto Postgre_DB::delete_user(User &user) -> int {
 }
 
 // Удаление сообщения из БД
-auto Postgre_DB::delete_message(TextMessage &message) -> int {
+auto Postgre_DB::delete_message(IMessage &message) -> int {
   if (!message.get_message_id().empty()) {
     std::string where =
         "id = '" + remove_danger_characters(message.get_message_id()) + "'";
@@ -491,7 +491,7 @@ auto Postgre_DB::delete_message(TextMessage &message) -> int {
 }
 
 // Добавление сообщения в БД
-auto Postgre_DB::add_message(TextMessage &message) -> int {
+auto Postgre_DB::add_message(IMessage &message) -> int {
   std::vector<std::string> data = {message.get_sender_id(),
                                    message.get_parent_chat_id(),
                                    message.get_message_content()};
@@ -554,13 +554,14 @@ auto Postgre_DB::get_chat_by_chat_name(const std::string &chat_name) -> Chat {
   Chat chat;
   try {
     pqxx::result::const_iterator c = res.begin();
+
     chat.set_chat_id(c.at(0).as<std::string>());
     chat.set_chat_name(c.at(1).as<std::string>());
     std::vector<std::string> participants;
     participants = get_participants_from_chat(chat);
     chat.set_participants(participants);
 
-    std::vector<TextMessage> messages;
+    std::vector<std::shared_ptr<IMessage>> messages;
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
@@ -628,8 +629,9 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
   try {
     pqxx::result res = select("CHATS", where);
     std::vector<std::string> participants;
-    std::vector<TextMessage> messages;
+    std::vector<std::shared_ptr<IMessage>> messages;
     pqxx::result::const_iterator c = res.begin();
+  
     chat.set_chat_id(c.at(0).as<std::string>());
     chat.set_chat_name(c.at(1).as<std::string>());
     participants = get_participants_from_chat(chat);
@@ -637,6 +639,7 @@ auto Postgre_DB::get_chat_by_id(const std::string &chat_id) -> Chat {
     messages = get_last_N_messages_from_chat(chat, NUM_OF_LAST_MESSAGES);
     chat.set_chat_messages(messages);
     res.clear();
+  
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG CHAT" << std::endl;
@@ -668,8 +671,8 @@ auto Postgre_DB::get_all_chats_by_user_login(const std::string &login)
 // Получение последних N (если указано) сообщений
 auto Postgre_DB::get_last_N_messages_from_chat(const Chat &chat,
                                                int num_of_messages = -1)
-    -> std::vector<TextMessage> {
-  std::vector<TextMessage> messages;
+    -> std::vector<std::shared_ptr<IMessage>> {
+  std::vector<std::shared_ptr<IMessage>> messages;
   std::string where =
       "chat_id = '" + remove_danger_characters(chat.get_chat_id()) + "'";
   std::vector<std::string> what = {"id", "user_from", "chat_id", "content",
@@ -678,13 +681,13 @@ auto Postgre_DB::get_last_N_messages_from_chat(const Chat &chat,
 
   try {
     for (const auto &el : res) {
-      TextMessage message;
-      message.set_message_id(el.at(0).as<std::string>());
-      message.set_sender_id(el.at(1).as<std::string>());
-      message.set_parent_chat_id(el.at(2).as<std::string>());
-      message.set_message_content(el.at(3).as<std::string>());
-      message.set_read_status(false);
-      messages.push_back(message);
+      std::shared_ptr<IMessage> message = std::make_shared<TextMessage>();
+      message->set_message_id(el.at(0).as<std::string>());
+      message->set_sender_id(el.at(1).as<std::string>());
+      message->set_parent_chat_id(el.at(2).as<std::string>());
+      message->set_message_content(el.at(3).as<std::string>());
+      message->set_read_status(false);
+      messages.emplace_back(message);
     }
     if (num_of_messages > 0) {
       std::reverse(messages.begin(), messages.end());

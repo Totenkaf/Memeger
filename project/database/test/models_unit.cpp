@@ -1,6 +1,7 @@
 // Copyright 2022 by Artem Ustsov
 
 #include <gtest/gtest.h>
+#include <memory>
 
 #include "models.h"
 
@@ -8,7 +9,7 @@ class ModelsTest : public ::testing::Test {
 public:
   User user;
   Chat chat;
-  TextMessage message;
+  std::shared_ptr<IMessage> message = std::make_shared<TextMessage>();
   virtual ~ModelsTest() {}
 };
 
@@ -33,10 +34,10 @@ TEST_F(ModelsTest, test_chat) {
   chat.set_participants(participants);
   EXPECT_TRUE(participants.empty());
 
-  std::vector<TextMessage> messages;
-  message.set_message_id("lkaslma-65a16sd1f-a6ds1f6");
-  message.set_message_content("Hello");
-  messages.push_back(message);
+  std::vector<std::shared_ptr<IMessage>> messages;
+  message->set_message_id("lkaslma-65a16sd1f-a6ds1f6");
+  message->set_message_content("Hello");
+  messages.emplace_back(message);
 
   chat.set_chat_messages(messages);
 
@@ -49,8 +50,8 @@ TEST_F(ModelsTest, test_chat) {
   for (size_t i = 0; i < chat.get_participants().size(); ++i) {
     EXPECT_EQ(chat.get_participants()[i], participants_1[i]);
   }
-  EXPECT_EQ(chat.get_messages()[0].get_message_content(),
-            message.get_message_content());
+  EXPECT_EQ(chat.get_messages()[0]->get_message_content(),
+            message->get_message_content());
 
   chat.clear_chat();
   EXPECT_TRUE(chat.get_chat_id().empty());

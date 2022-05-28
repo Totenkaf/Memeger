@@ -82,7 +82,7 @@ auto TextMessage::set_read_status(bool is_read) -> int {
   return _EXIT_SUCCESS;
 }
 
-auto Chat::get_messages() const -> std::vector<TextMessage> {
+auto Chat::get_messages() const -> std::vector<std::shared_ptr<IMessage>> {
   return messages_;
 }
 
@@ -126,7 +126,7 @@ auto Chat::set_chat_name(const std::string &chat_name) -> int {
 //     return 0;
 // }
 
-auto Chat::set_chat_messages(const std::vector<TextMessage> &messages) -> int {
+auto Chat::set_chat_messages(const std::vector<std::shared_ptr<IMessage>> &messages) -> int {
   messages_ = messages;
   return _EXIT_SUCCESS;
 }
