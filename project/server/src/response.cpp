@@ -17,10 +17,10 @@ void Not_Found(Response &resp) {
   resp.res.set(http::field::content_type, "application/json");
   resp.res.set(http::field::connection, "Keep-Alive");
   resp.res.result(http::status::not_found);
-  resp.res.body() = "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+  resp.res.body() = R"({\"page\": \"Not found\", \"reason\" : \"wrong URI\" })";
 }
 
-void Send_Response(Response &resp, std::string url, std::string status) {
+void Send_Response(Response &resp, const std::string &url, std::string status) {
   resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
   resp.res.version(10);
   resp.res.set(http::field::location, url + status);
@@ -35,7 +35,7 @@ void Send_Response(Response &resp, std::string url, std::string status) {
 
 // USERS GET
 
-bool USER::check_login(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::check_login(Request &req, Response &resp, Postgre_DB &database)->bool {
 
   req.j_req = json::parse(req.request_.body());
   bool check = database.find_user_by_login(req.j_req["login"]);
@@ -49,20 +49,10 @@ bool USER::check_login(Request &req, Response &resp, Postgre_DB &database) {
 
   else {
     Send_Response(resp, "/user/", std::to_string(check));
-    // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    // resp.res.version(10);
-    // resp.res.set(http::field::location, "/user/" + std::to_string(check));
-    // resp.res.set(http::field::content_type, "application/json;
-    // charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-    // resp.res.result(http::status::ok);
-    // resp.response_body = resp.j_response.dump();
-    // resp.res.body() = resp.response_body;
-    // resp.res.set(http::field::content_length,
-    // std::to_string(resp.response_body.length()));
     return true;
   }
 }
-bool USER::get_user(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::get_user(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User usr = database.get_user_by_login(req.j_req["login"]);
 
@@ -78,24 +68,14 @@ bool USER::get_user(Request &req, Response &resp, Postgre_DB &database) {
 
   else {
     Send_Response(resp, "/user/", usr.get_active_status());
-    // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    // resp.res.version(10);
-    // resp.res.set(http::field::location, "/user/" + usr.get_active_status());
-    // resp.res.set(http::field::content_type, "application/json;
-    // charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-    // resp.res.result(http::status::ok);
-    // resp.response_body = resp.j_response.dump();
-    // resp.res.body() = resp.response_body;
-    // resp.res.set(http::field::content_length,
-    // std::to_string(resp.response_body.length()));
     return true;
   }
 }
 
 // CHATS GET
 
-bool CHAT::get_chat_by_name(Request &req, Response &resp,
-                            Postgre_DB &database) {
+auto CHAT::get_chat_by_name(Request &req, Response &resp,
+                            Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   Chat chat = database.get_chat_by_chat_name(req.j_req["chat_name"]);
@@ -112,22 +92,12 @@ bool CHAT::get_chat_by_name(Request &req, Response &resp,
 
   else {
     Send_Response(resp, "/chat/", std::to_string(check));
-    // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    // resp.res.version(10);
-    // resp.res.set(http::field::location, "/chat/" + std::to_string(check));
-    // resp.res.set(http::field::content_type, "application/json;
-    // charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-    // resp.res.result(http::status::ok);
-    // resp.response_body = resp.j_response.dump();
-    // resp.res.body() = resp.response_body;
-    // resp.res.set(http::field::content_length,
-    // std::to_string(resp.response_body.length()));
     return true;
   }
 }
 
-bool CHAT::get_participants_from_chat(Request &req, Response &resp,
-                                      Postgre_DB &database) {
+auto CHAT::get_participants_from_chat(Request &req, Response &resp,
+                                      Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   Chat chat = database.get_chat_by_chat_name(req.j_req["chat_name"]);
@@ -153,20 +123,11 @@ bool CHAT::get_participants_from_chat(Request &req, Response &resp,
 
   else {
     Send_Response(resp, "/participants/", std::to_string(check));
-    // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    // resp.res.version(10);
-    // resp.res.set(http::field::location, "/participants/" +
-    // std::to_string(check)); resp.res.set(http::field::content_type,
-    // "application/json; charset=UTF-8"); resp.res.set(http::field::connection,
-    // "Keep-Alive"); resp.res.result(http::status::ok); resp.response_body =
-    // resp.j_response.dump(); resp.res.body() = resp.response_body;
-    // resp.res.set(http::field::content_length,
-    // std::to_string(resp.response_body.length()));
     return true;
   }
 }
-bool CHAT::get_all_chats_by_login(Request &req, Response &resp,
-                                  Postgre_DB &database) {
+auto CHAT::get_all_chats_by_login(Request &req, Response &resp,
+                                  Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   chats = database.get_all_chats_by_user_login(req.j_req["login"]);
@@ -192,20 +153,9 @@ bool CHAT::get_all_chats_by_login(Request &req, Response &resp,
   }
 
   Send_Response(resp, "/participants/", std::to_string(0));
-  //  resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //  resp.res.version(10);
-  //  resp.res.set(http::field::location, "/participants/" + std::to_string(0));
-  //  resp.res.set(http::field::content_type, "application/json;
-  //  charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  //  resp.res.result(http::status::ok);
-  //  resp.response_body =  resp.j_response.dump();
-  //  resp.res.body() =  resp.response_body;
-  //  resp.res.set(http::field::content_length, std::to_string(
-  //  resp.response_body.length()));
   return true;
 }
-bool CHAT::find_chat(Request &req, Response &resp, Postgre_DB &database) {
+auto CHAT::find_chat(Request &req, Response &resp, Postgre_DB &database)->bool {
 
   req.j_req = json::parse(req.request_.body());
   bool check = database.find_chat_by_chat_name(req.j_req["chat_name"]);
@@ -219,22 +169,12 @@ bool CHAT::find_chat(Request &req, Response &resp, Postgre_DB &database) {
 
   else {
     Send_Response(resp, "/chat/", std::to_string(check));
-    // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-    // resp.res.version(10);
-    // resp.res.set(http::field::location, "/chat/" + std::to_string(check));
-    // resp.res.set(http::field::content_type, "application/json;
-    // charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-    // resp. res.result(http::status::ok);
-    // resp.response_body = resp.j_response.dump();
-    // resp.res.body() = resp.response_body;
-    // resp.res.set(http::field::content_length,
-    // std::to_string(resp.response_body.length()));
     return true;
   }
 }
 
-bool MESSAGE::get_last_messages(Request &req, Response &resp,
-                                Postgre_DB &database) {
+auto MESSAGE::get_last_messages(Request &req, Response &resp,
+                                Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   std::string str;
@@ -254,22 +194,12 @@ bool MESSAGE::get_last_messages(Request &req, Response &resp,
   }
 
   Send_Response(resp, "/messages/", std::to_string(0));
-  //  resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //  resp.res.version(10);
-  //  resp.res.set(http::field::location, "/messages/" + std::to_string(0));
-  //  resp.res.set(http::field::content_type, "application/json;
-  //  charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //  resp.res.result(http::status::ok);
-  //  resp.response_body =  resp.j_response.dump();
-  //  resp.res.body() =  resp.response_body;
-  //  resp.res.set(http::field::content_length, std::to_string(
-  //  resp.response_body.length()));
   return true;
 }
 
 // USER POST
 
-bool USER::registration(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::registration(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User user(req.j_req["login"], req.j_req["password"]);
 
@@ -283,20 +213,9 @@ bool USER::registration(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/registration_user/", std::to_string(result));
-
-  //     resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //     resp.res.version(10);
-  //     resp.res.set(http::field::content_type, "application/json;
-  //     charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //     resp.res.set(http::field::location, "/user/" + std::to_string(result));
-  //    resp.res.result(http::status::ok);
-  //     resp.response_body = resp.j_response.dump();
-  //     resp.res.body() = resp.response_body;
-  //     resp.res.set(http::field::content_length,
-  //     std::to_string(resp.response_body.length()));
   return true;
 }
-bool USER::change_login(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::change_login(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User user = database.get_user_by_login(req.j_req["login"]);
 
@@ -310,19 +229,9 @@ bool USER::change_login(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/change_login/", std::to_string(result));
-  //     resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //     resp.res.version(10);
-  //     resp.res.set(http::field::content_type, "application/json;
-  //     charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //     resp.res.set(http::field::location, "/user/" + std::to_string(result));
-  //    resp.res.result(http::status::ok);
-  //     resp.response_body = resp.j_response.dump();
-  //     resp.res.body() = resp.response_body;
-  //     resp.res.set(http::field::content_length,
-  //     std::to_string(resp.response_body.length()));
   return true;
 }
-bool USER::change_password(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::change_password(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User user = database.get_user_by_login(req.j_req["login"]);
 
@@ -336,20 +245,10 @@ bool USER::change_password(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/change_pass/", std::to_string(result));
-  //     resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //     resp.res.version(10);
-  //     resp.res.set(http::field::content_type, "application/json;
-  //     charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //     resp.res.set(http::field::location, "/user/" + std::to_string(result));
-  //    resp.res.result(http::status::ok);
-  //     resp.response_body = resp.j_response.dump();
-  //     resp.res.body() = resp.response_body;
-  //     resp.res.set(http::field::content_length,
-  //     std::to_string(resp.response_body.length()));
   return true;
 }
-bool USER::change_user_status(Request &req, Response &resp,
-                              Postgre_DB &database) {
+auto USER::change_user_status(Request &req, Response &resp,
+                              Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User user = database.get_user_by_login(req.j_req["login"]);
 
@@ -363,20 +262,9 @@ bool USER::change_user_status(Request &req, Response &resp,
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/change_status/", std::to_string(result));
-
-  //     resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //     resp.res.version(10);
-  //     resp.res.set(http::field::content_type, "application/json;
-  //     charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //     resp.res.set(http::field::location, "/user/" + std::to_string(result));
-  //    resp.res.result(http::status::ok);
-  //     resp.response_body = resp.j_response.dump();
-  //     resp.res.body() = resp.response_body;
-  //     resp.res.set(http::field::content_length,
-  //     std::to_string(resp.response_body.length()));
   return true;
 }
-bool USER::delete_user(Request &req, Response &resp, Postgre_DB &database) {
+auto USER::delete_user(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   User user = database.get_user_by_login(req.j_req["login"]);
 
@@ -390,22 +278,12 @@ bool USER::delete_user(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/delete_user/", std::to_string(result));
-  //     resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //     resp.res.version(10);
-  //     resp.res.set(http::field::content_type, "application/json;
-  //     charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  //     resp.res.set(http::field::location, "/user/" + std::to_string(result));
-  //    resp.res.result(http::status::ok);
-  //     resp.response_body = resp.j_response.dump();
-  //     resp.res.body() = resp.response_body;
-  //     resp.res.set(http::field::content_length,
-  //     std::to_string(resp.response_body.length()));
   return true;
 }
 
 // CHAT POST
 
-bool CHAT::add_chat(Request &req, Response &resp, Postgre_DB &database) {
+auto CHAT::add_chat(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
   std::string str;
   str = req.j_req["size"];
@@ -428,21 +306,11 @@ bool CHAT::add_chat(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/add_chat/", std::to_string(result));
-  // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  // resp.res.version(10);
-  // resp.res.set(http::field::content_type, "application/json; charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/chat/" + std::to_string(result));
-  // resp.res.result(http::status::ok);
-  // resp.response_body = resp.j_response.dump();
-  // resp.res.body() = resp.response_body;
-  //  resp.res.set(http::field::content_length,
-  //  std::to_string(resp.response_body.length()));
   return true;
 }
 
-bool CHAT::add_new_participant(Request &req, Response &resp,
-                               Postgre_DB &database) {
+auto CHAT::add_new_participant(Request &req, Response &resp,
+                               Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   Chat chat = database.get_chat_by_chat_name(req.j_req["chat_name"]);
@@ -457,21 +325,11 @@ bool CHAT::add_new_participant(Request &req, Response &resp,
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/chat_add_part", std::to_string(result));
-  //  resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  //  resp.res.version(10);
-  //  resp.res.set(http::field::content_type, "application/json;
-  //  charset=UTF-8"); resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/chat/" + std::to_string(result));
-  //  resp.res.result(http::status::ok);
-  //  resp.response_body =  resp.j_response.dump();
-  //  resp.res.body() =  resp.response_body;
-  //  resp.res.set(http::field::content_length, std::to_string(
-  //  resp.response_body.length()));
   return true;
 }
 
-bool CHAT::change_chat_name(Request &req, Response &resp,
-                            Postgre_DB &database) {
+auto CHAT::change_chat_name(Request &req, Response &resp,
+                            Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   Chat chat = database.get_chat_by_chat_name(req.j_req["chat_name"]);
@@ -486,20 +344,10 @@ bool CHAT::change_chat_name(Request &req, Response &resp,
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/change_chatname/", std::to_string(result));
-  // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  // resp.res.version(10);
-  // resp.res.set(http::field::content_type, "application/json; charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/chat/" + std::to_string(result));
-  // resp.res.result(http::status::ok);
-  // resp.response_body = resp.j_response.dump();
-  // resp.res.body() = resp.response_body;
-  // resp.res.set(http::field::content_length,
-  // std::to_string(resp.response_body.length()));
   return true;
 }
 
-bool CHAT::delete_chat(Request &req, Response &resp, Postgre_DB &database) {
+auto CHAT::delete_chat(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   Chat chat = database.get_chat_by_chat_name(req.j_req["chat_name"]);
@@ -513,22 +361,12 @@ bool CHAT::delete_chat(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/del_chat/", std::to_string(result));
-  // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  // resp.res.version(10);
-  // resp.res.set(http::field::content_type, "application/json; charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/chat/" + std::to_string(result));
-  // resp.res.result(http::status::ok);
-  // resp.response_body = resp.j_response.dump();
-  // resp.res.body() = resp.response_body;
-  // resp.res.set(http::field::content_length,
-  // std::to_string(resp.response_body.length()));
   return true;
 }
 
 // MESSAGE POST
 
-bool MESSAGE::add_message(Request &req, Response &resp, Postgre_DB &database) {
+auto MESSAGE::add_message(Request &req, Response &resp, Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   // std::string user_id=database.get_user_id(req.j_req["login"]);
@@ -547,20 +385,10 @@ bool MESSAGE::add_message(Request &req, Response &resp, Postgre_DB &database) {
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/add_msg/", std::to_string(result));
-  // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  // resp.res.version(10);
-  // resp.res.set(http::field::content_type, "application/json; charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/message/" + std::to_string(result));
-  // resp.res.result(http::status::ok);
-  // resp.response_body = resp.j_response.dump();
-  // resp.res.body() = resp.response_body;
-  // resp.res.set(http::field::content_length,
-  // std::to_string(resp.response_body.length()));
   return true;
 }
-bool MESSAGE::delete_message(Request &req, Response &resp,
-                             Postgre_DB &database) {
+auto MESSAGE::delete_message(Request &req, Response &resp,
+                             Postgre_DB &database)->bool {
   req.j_req = json::parse(req.request_.body());
 
   // std::string user_id=database.get_user_id(req.j_req["login"]);
@@ -579,16 +407,6 @@ bool MESSAGE::delete_message(Request &req, Response &resp,
   resp.j_response["status"] = result;
 
   Send_Response(resp, "/del_mess/", std::to_string(result));
-  // resp.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
-  // resp.res.version(10);
-  // resp.res.set(http::field::content_type, "application/json; charset=UTF-8");
-  // resp.res.set(http::field::connection, "Keep-Alive");
-  // resp.res.set(http::field::location, "/message/" + std::to_string(result));
-  // resp.res.result(http::status::ok);
-  // resp.response_body = resp.j_response.dump();
-  // resp.res.body() = resp.response_body;
-  // resp.res.set(http::field::content_length,
-  // std::to_string(resp.response_body.length()));
   return true;
 }
 

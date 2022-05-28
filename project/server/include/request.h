@@ -27,7 +27,7 @@ class Request {
 public:
   json j_req;
   std::string request_str;
-  bool req_method(const Request &req);
+  [[nodiscard]] auto req_method(const Request &req)->bool;
   http::request<http::string_body> request_;
 };
 } // namespace server3

@@ -39,6 +39,7 @@ private:
   /// Обработка завершения операции записи.
   void handle_write(bool close, beast::error_code e,
                     std::size_t bytes_transferred);
+    [[nodiscard]] auto answer_url(const Request &obj, Postgre_DB &database)->bool;
 
   void do_close();
 

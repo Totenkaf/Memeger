@@ -2,6 +2,7 @@
 #include "models.h"
 #include "postgresql_db.h"
 #include "request.h"
+#include"connection.h"
 #include "response.h"
 #include <boost/asio.hpp>
 #include <boost/bind/bind.hpp>
@@ -19,7 +20,7 @@ using json = nlohmann::json;
 
 // Postgre_DB database;
 // database.drop_tables();
-
+ 
 class DataBaseEnvironment : public ::testing::Test {
 public:
   // void TearDown() override { database.drop_tables(); }
@@ -149,7 +150,7 @@ TEST_F(DataBaseEnvironment, check_login) {
 
   EXPECT_EQ(check, true);
 }
-
+ 
 TEST_F(DataBaseEnvironment, change_login) {
   //   std::size_t num_threads = boost::lexical_cast<std::size_t>(4);
   //   auto s =

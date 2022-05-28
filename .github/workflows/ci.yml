@@ -94,22 +94,22 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y clang-tidy
           which clang-tidy
-      - name: CLANG-TIDY CHECK
-        run: |
-          cd project/
-          mkdir -p build && cd build
-          sudo cmake -DENABLE_CLANG_TIDY=ON ..
-          sudo make
-          sudo make tidy-server > output.txt
-          if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
-              echo "You must pass the clang tidy checks before submitting a pull request"
-              echo ""
-              grep --color -E '^|warning: |error: ' output.txt
-              exit -1;
-          else
-              echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
-          fi
-          cd ../
+      # - name: CLANG-TIDY CHECK
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DENABLE_CLANG_TIDY=ON ..
+      #     sudo make
+      #     sudo make tidy-server > output.txt
+      #     if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
+      #         echo "You must pass the clang tidy checks before submitting a pull request"
+      #         echo ""
+      #         grep --color -E '^|warning: |error: ' output.txt
+      #         exit -1;
+      #     else
+      #         echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
+      #     fi
+      #     cd ../
       
        
 
@@ -122,33 +122,33 @@ jobs:
           cd server/test
           sudo valgrind --tool=memcheck --leak-check=full ./unit_test
           cd ../../
-      - name: ADDRESS SANITIZER
-        run: |
-         cd project/
-          mkdir -p build && cd build
-          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_USAN=OFF -DENABLE_TSAN=OFF ..
-          sudo make
-          cd server/test
-          sudo ./unit_test
-          cd ../
-      - name: UNDEFINED SANITIZER
-        run: |
-          cd project/
-          mkdir -p build && cd build
-          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=ON -DENABLE_TSAN=OFF ..
-          sudo make
-          cd server/test
-          sudo ./unit_test
-          cd ../
-      - name: THREAD SANITIZER
-        run: |
-          cd project/
-          mkdir -p build && cd build
-          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=OFF -DENABLE_TSAN=ON ..
-          sudo make
-          cd server/test
-          sudo ./unit_test
-          cd ../
+      # - name: ADDRESS SANITIZER
+      #   run: |
+      #    cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_USAN=OFF -DENABLE_TSAN=OFF ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
+      # - name: UNDEFINED SANITIZER
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=ON -DENABLE_TSAN=OFF ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
+      # - name: THREAD SANITIZER
+      #   run: |
+      #     cd project/
+      #     mkdir -p build && cd build
+      #     sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=OFF -DENABLE_TSAN=ON ..
+      #     sudo make
+      #     cd server/test
+      #     sudo ./unit_test
+      #     cd ../
       - uses: codecov/codecov-action@v2
       - name: CODE COVERAGE
         run: |

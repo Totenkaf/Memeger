@@ -8,11 +8,11 @@
 #include <vector>
 
 namespace server3 {
-bool Request::req_method(const Request &req) {
+auto Request::req_method(const Request &req)->bool {
   if (req.request_.method() == http::verb::get) {
     return true;
-  } else {
-    return false;
   }
+    return false;
+   
 }
 } // namespace server3

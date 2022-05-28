@@ -33,7 +33,118 @@ void Connection::do_read() {
       stream_, buffer_, obj_request.request_,
       beast::bind_front_handler(&Connection::handle_read, shared_from_this()));
 }
-
+auto Connection::answer_url(const Request &obj, Postgre_DB &database)->bool
+{
+  bool check;
+  std::vector<std::string>urls_gets={"/check_login/","/get_user/","/get_chat_by_name/","/participants_from_chat/","/all_chats_by_login/","/find_chat/","/get_last_messages/"};
+  std::vector<std::string>urls_posts={"/registration/","/change_login/","/change_password/","/change_user_status/","/delete_user/","/add_chat/","/add_new_participant/","/change_chat_name/","/delete_chat/","/add_message/","/delete_message/"};
+  int val=-1;
+   
+  if (req_method(obj)) 
+  {
+    for(size_t i=0;i<urls_gets.size();++i)
+  {
+    if(obj.request_str==urls_gets[i])
+    {
+      val=i;
+      break;
+    }
+    }
+    switch (val)
+    {
+    case 0:
+    check =obj_response.usr.check_login(obj_request, obj_response, database);
+      break;
+    case 1:
+    check = obj_response.usr.get_user(obj_request, obj_response, database);
+      break;
+    case 2:
+    check = obj_response.cht.get_chat_by_name(obj_request, obj_response,
+                                                  database);
+      break;
+    case 3:
+     check = obj_response.cht.get_participants_from_chat(
+            obj_request, obj_response, database);                                      
+      break;
+    case 4:
+    check = obj_response.cht.get_all_chats_by_login(obj_request,
+                                                        obj_response, database);
+      break;
+    case 5:
+    check = obj_response.cht.find_chat(obj_request, obj_response, database);
+      break;
+    case 6:
+     check = obj_response.msg.get_last_messages(obj_request, obj_response,
+                                                   database);
+      break;            
+    
+    default: check=false;
+      break;
+    }
+  }
+  else if(!req_method(obj))
+  {
+ for(size_t i=0;i<urls_posts.size();++i)
+  {
+    if(obj.request_str==urls_posts[i])
+    {
+      val=i;
+      break;
+    }
+    }
+    switch (val)
+    {
+    case 0:
+    check =
+            obj_response.usr.registration(obj_request, obj_response, database);
+      break;
+    case 1:
+    check =
+            obj_response.usr.change_login(obj_request, obj_response, database);
+      break;
+    case 2:
+    check = obj_response.usr.change_password(obj_request, obj_response,
+                                                 database);
+      break;
+    case 3:
+    check = obj_response.usr.change_user_status(obj_request, obj_response,
+                                                    database);
+      break;
+    case 4:
+    check =
+            obj_response.usr.delete_user(obj_request, obj_response, database);
+      break;
+    case 5:
+    check = obj_response.cht.add_chat(obj_request, obj_response, database);
+      break;
+    case 6:
+     check = obj_response.cht.add_new_participant(obj_request, obj_response,
+                                                     database);
+      break;
+    case 7:
+    check = obj_response.cht.change_chat_name(obj_request, obj_response,
+                                                  database);
+    break; 
+    case 8:
+     check =
+            obj_response.cht.delete_chat(obj_request, obj_response, database);
+    break;
+    case 9:
+    check =
+            obj_response.msg.add_message(obj_request, obj_response, database);
+    break;
+    case 10:
+    check =
+            obj_response.msg.delete_message(obj_request, obj_response, database);
+    break;             
+    
+    default: check=false;
+      break;
+    }
+  }
+  return check;
+  
+}
 void Connection::handle_read(beast::error_code e,
                              std::size_t bytes_transferred) {
   if (e == http::error::end_of_stream) {
@@ -58,112 +169,16 @@ void Connection::handle_read(beast::error_code e,
                         "postgres");
     // database.drop_tables();
 
-    bool check;
+    bool check=answer_url(obj_request,database);
 
-    std::cout << "request:\n" << request_ << std::endl << std::endl;
-
-    if (req_method(obj_request)) {
-      if (request_str.find("/check_login/") != std::string::npos) {
-
-        check =
-            obj_response.usr.check_login(obj_request, obj_response, database);
-
-      } else if (request_str.find("/get_user/") != std::string::npos) {
-
-        check = obj_response.usr.get_user(obj_request, obj_response, database);
-
-      }
-
-      else if (request_str.find("/get_chat_by_name/") != std::string::npos) {
-
-        check = obj_response.cht.get_chat_by_name(obj_request, obj_response,
-                                                  database);
-
-      } else if (request_str.find("/participants_from_chat/") !=
-                 std::string::npos) {
-        check = obj_response.cht.get_participants_from_chat(
-            obj_request, obj_response, database);
-
-      }
-
-      else if (request_str.find("/all_chats_by_login/") != std::string::npos) {
-        check = obj_response.cht.get_all_chats_by_login(obj_request,
-                                                        obj_response, database);
-
-      }
-
-      else if (request_str.find("/find_chat/") != std::string::npos) {
-
-        check = obj_response.cht.find_chat(obj_request, obj_response, database);
-
-      } else if (request_str.find("/get_last_messages/") != std::string::npos) {
-
-        check = obj_response.msg.get_last_messages(obj_request, obj_response,
-                                                   database);
-      }
-    } else if (!req_method(obj_request)) {
-      if (request_.target().find("/registration/") != std::string::npos) {
-        check =
-            obj_response.usr.registration(obj_request, obj_response, database);
-      } else if (request_.target().find("/change_login/") !=
-                 std::string::npos) {
-        check =
-            obj_response.usr.change_login(obj_request, obj_response, database);
-      } else if (request_.target().find("/change_password/") !=
-                 std::string::npos) {
-        check = obj_response.usr.change_password(obj_request, obj_response,
-                                                 database);
-      } else if (request_.target().find("/change_user_status/") !=
-                 std::string::npos) {
-        check = obj_response.usr.change_user_status(obj_request, obj_response,
-                                                    database);
-      } else if (request_.target().find("/delete_user/") != std::string::npos) {
-        check =
-            obj_response.usr.delete_user(obj_request, obj_response, database);
-      } else if (request_.target().find("/add_chat/") != std::string::npos) {
-
-        check = obj_response.cht.add_chat(obj_request, obj_response, database);
-      }
-
-      else if (request_.target().find("/add_new_participant/") !=
-               std::string::npos) {
-
-        check = obj_response.cht.add_new_participant(obj_request, obj_response,
-                                                     database);
-      }
-
-      else if (request_.target().find("/change_chat_name/") !=
-               std::string::npos) {
-        check = obj_response.cht.change_chat_name(obj_request, obj_response,
-                                                  database);
-
-      }
-
-      else if (request_.target().find("/delete_chat/") != std::string::npos) {
-        check =
-            obj_response.cht.delete_chat(obj_request, obj_response, database);
-
-      } else if (request_.target().find("/add_message/") != std::string::npos) {
-        check =
-            obj_response.msg.add_message(obj_request, obj_response, database);
-
-      }
-
-      else if (request_.target().find("/delete_message/") !=
-               std::string::npos) {
-        check = obj_response.msg.delete_message(obj_request, obj_response,
-                                                database);
-      }
-    }
-
-    else {
-
+    
+     if(!check){
       obj_response.res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
       obj_response.res.set(http::field::content_type, "application/json");
       obj_response.res.set(http::field::connection, "Keep-Alive");
       obj_response.res.result(http::status::not_found);
       obj_response.res.body() =
-          "{\"page\": \"Not found\", \"reason\" : \"wrong URI\" }";
+          R"({\"page\": \"Not found\", \"reason\" : \"wrong URI\" }")";
     }
 
     // res.prepare_payload();

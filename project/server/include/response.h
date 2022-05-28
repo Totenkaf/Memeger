@@ -30,28 +30,28 @@ namespace server3 {
 class Response;
 struct USER {
 
-  void Send_ResponseUSER(Response &resp, std::string url, std::string status);
-  bool check_login(Request &req, Response &resp, Postgre_DB &database);
-  bool get_user(Request &req, Response &resp, Postgre_DB &database);
-  bool registration(Request &req, Response &resp, Postgre_DB &database);
-  bool change_login(Request &req, Response &resp, Postgre_DB &database);
-  bool change_password(Request &req, Response &resp, Postgre_DB &database);
-  bool change_user_status(Request &req, Response &resp, Postgre_DB &database);
-  bool delete_user(Request &req, Response &resp, Postgre_DB &database);
+  void Send_ResponseUSER(Response &resp, const std::string &url, std::string status);
+  [[nodiscard]] auto check_login(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto get_user(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto registration(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto change_login(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto change_password(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto change_user_status(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto delete_user(Request &req, Response &resp, Postgre_DB &database)->bool;
 };
 struct CHAT {
   // void Not_FoundCHAT(Response &resp);
   void Send_ResponseCHAT(Response &resp, std::string url, std::string status);
-  bool get_chat_by_name(Request &req, Response &resp, Postgre_DB &database);
-  bool get_participants_from_chat(Request &req, Response &resp,
-                                  Postgre_DB &database);
-  bool get_all_chats_by_login(Request &req, Response &resp,
-                              Postgre_DB &database);
-  bool find_chat(Request &req, Response &resp, Postgre_DB &database);
-  bool add_chat(Request &req, Response &resp, Postgre_DB &database);
-  bool add_new_participant(Request &req, Response &resp, Postgre_DB &database);
-  bool change_chat_name(Request &req, Response &resp, Postgre_DB &database);
-  bool delete_chat(Request &req, Response &resp, Postgre_DB &database);
+  [[nodiscard]] auto get_chat_by_name(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto get_participants_from_chat(Request &req, Response &resp,
+                                  Postgre_DB &database)->bool;
+  [[nodiscard]] auto get_all_chats_by_login(Request &req, Response &resp,
+                              Postgre_DB &database)->bool;
+  [[nodiscard]] auto find_chat(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto add_chat(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto add_new_participant(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto change_chat_name(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto delete_chat(Request &req, Response &resp, Postgre_DB &database)->bool;
 
 private:
   std::vector<std::string> participants;
@@ -62,9 +62,9 @@ struct MESSAGE {
   // void Not_FoundMESSAGE(Response &resp);
   void Send_ResponseMESSAGE(Response &resp, std::string url,
                             std::string status);
-  bool get_last_messages(Request &req, Response &resp, Postgre_DB &database);
-  bool add_message(Request &req, Response &resp, Postgre_DB &database);
-  bool delete_message(Request &req, Response &resp, Postgre_DB &database);
+  [[nodiscard]] auto get_last_messages(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto add_message(Request &req, Response &resp, Postgre_DB &database)->bool;
+  [[nodiscard]] auto delete_message(Request &req, Response &resp, Postgre_DB &database)->bool;
 
 private:
   std::vector<TextMessage> messages;
