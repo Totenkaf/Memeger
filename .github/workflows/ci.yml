@@ -1,0 +1,281 @@
+# Copyright 2022 by Artem Ustsov
+
+on: push
+jobs:
+  checking:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
+
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpqxx-dev
+          sudo apt-get install -y postgresql
+          sudo service postgresql start
+          sudo netstat -pant | grep postgres
+          sudo -u postgres psql postgres
+          sudo -u postgres psql postgres -c "\conninfo"
+          sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          sudo -u postgres psql postgres -c "\l"
+
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
+
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
+
+      - name: INSTALL CLANG-FORMAT
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-format
+          which clang
+
+      - name: CLANG-FORMATTING
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_FORMAT=ON ..
+          sudo make
+          sudo make clang-format
+          cd -
+
+      - name: INSTALL CLANG-TIDY
+        run: |
+          sudo apt-get update && sudo apt-get install -y clang-tidy
+          which clang-tidy
+
+      - name: CLANG-TIDY CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CLANG_TIDY=ON ..
+          sudo make
+          sudo make tidy > output.txt
+          if [[ -n $(grep "warning: " output.txt) ]] || [[ -n $(grep "error: " output.txt) ]]; then
+              echo "You must pass the clang tidy checks before submitting a pull request"
+              echo ""
+              grep --color -E '^|warning: |error: ' output.txt
+              exit -1;
+          else
+              echo -e "\033[1;32m\xE2\x9C\x93 passed:\033[0m $1";
+          fi
+          cd -
+
+      - name: INSTALL CPPLINT
+        run: |
+          sudo apt-get update && sudo pip install cpplint
+          which cpplint
+
+      - name: CPPLINT CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CPPLINT=ON ..
+          sudo make
+          sudo make cpplint
+          cd -
+
+      - name: CPP CHECK
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DENABLE_CPPCHECK=ON ..
+          sudo make
+          sudo make check
+          cd -
+
+      # - name: INSTALL FBINFER
+      #   run: |
+      #     VERSION=1.0.0; \
+      #       curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux64-v$VERSION.tar.xz" \
+      #       | sudo tar -C /opt -xJ && \
+      #       sudo ln -s "/opt/infer-linux64-v$VERSION/bin/infer" /usr/local/bin/infer
+
+      # - name: FBINFER CHECK
+      #   run: |
+      #     pwd
+      #     mkdir -p build && cd build
+      #     pwd
+      #     sudo apt install libncurses5 -y
+      #     sudo cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DENABLE_INFER=ON ..
+      #     pwd
+      #     sudo make infer
+      #     cd ../
+      #     pwd
+
+  building:
+    runs-on: ubuntu-latest
+    needs: [checking]
+    steps:
+
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
+
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
+
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
+
+      - name: INSTALL VALGRIND
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind
+          which valgrind
+
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpqxx-dev
+          sudo apt-get install -y postgresql
+          sudo service postgresql start
+          sudo netstat -pant | grep postgres
+          sudo -u postgres psql postgres
+          sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+
+      - name: RUN VALGRIND PROGRAMM
+        run: |
+          mkdir -p build && cd build
+          sudo cmake ..
+          sudo make
+          sudo valgrind --tool=memcheck --leak-check=full ./run_db init_only
+          sudo -u postgres psql postgres -c "\d"
+          sudo -u postgres psql postgres -c "SELECT * FROM USERS;"
+          sudo -u postgres psql postgres -c "SELECT * FROM CHATS;"
+          sudo -u postgres psql postgres -c "SELECT * FROM USERS_CHATS_LINK;"
+          sudo valgrind --tool=memcheck --leak-check=full ./run_db init_drop
+          sudo -u postgres psql postgres -c "\d"
+          cd -
+
+  testing:
+    runs-on: ubuntu-latest
+    needs: [building]
+    steps:
+
+      - uses: actions/checkout@v2
+      - name: WORKING DIRECTORY
+        run: pwd
+
+      - name: INSTALL GCC
+        run: |
+          sudo apt-get update && sudo apt-get install -y gcc g++
+          which gcc
+
+      - name: INSTALL CMAKE
+        run: |
+          sudo apt-get update && sudo apt-get install -y cmake
+          which cmake
+
+      - name: INSTALL LCOV
+        run: |
+          sudo apt-get update && sudo apt-get install -y lcov
+          which lcov
+
+      - name: INSTALL PIP
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          which python3
+          which pip
+
+      - name: INSTALL VALGRIND
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind
+          which valgrind
+
+      - name: INSTALL GTEST
+        run:  |
+          git clone https://github.com/google/googletest
+          pwd
+          cd ./googletest
+          pwd
+          mkdir -p build && cd build
+          sudo cmake ..
+          sudo make
+          sudo make install
+          cd -
+          pwd
+
+      - name: INSTALL POSTGRESQL
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libpqxx-dev
+          sudo apt-get install -y postgresql
+          sudo service postgresql start
+          sudo netstat -pant | grep postgres
+          sudo -u postgres psql postgres
+          sudo -u postgres psql postgres -c "ALTER USER postgres PASSWORD 'postgres';"
+          sudo -u postgres psql postgres -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+          sudo -u postgres psql postgres -c "\l"
+
+      - name: MODELS_TEST
+        run:  |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd project/database/test
+          sudo valgrind --tool=memcheck --leak-check=full ./models_test
+          cd -
+
+      - name: DATABASE_TEST
+        run:  |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON ..
+          sudo make
+          cd project/database/test
+          sudo valgrind --tool=memcheck --leak-check=full ./db_test
+          cd -
+
+      - name: ADDRESS SANITIZER
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=ON -DENABLE_USAN=OFF -DENABLE_TSAN=OFF ..
+          sudo make
+          cd project/database/test
+          sudo ./models_test
+          sudo ./db_test
+          cd -
+
+      - name: UNDEFINED SANITIZER
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=ON -DENABLE_TSAN=OFF ..
+          sudo make
+          cd project/database/test
+          sudo ./models_test
+          sudo ./db_test
+          cd -
+
+      - name: THREAD SANITIZER
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_ASAN=OFF -DENABLE_USAN=OFF -DENABLE_TSAN=ON ..
+          sudo make
+          cd project/database/test
+          sudo ./models_test
+          sudo ./db_test
+          cd -
+
+      - uses: codecov/codecov-action@v2
+      - name: CODE COVERAGE
+        run: |
+          mkdir -p build && cd build
+          sudo cmake -DBUILD_TESTS=ON -DENABLE_COVERAGE=ON ..
+          sudo make
+          cd project/database/test
+          sudo ./models_test
+          sudo ./db_test          
+          cd -
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' "${HOME}" '/.cache/*' --output-file coverage.info
+          lcov --list coverage.info
+          cd ..
+          bash <(curl -s https://codecov.io/bash) -f build/coverage.info || echo "CodeCov didn't collect coverage reports"
+          cat codecov.yml | curl --data-binary @- https://codecov.io/validate
