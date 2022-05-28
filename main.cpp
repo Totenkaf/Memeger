@@ -1,4 +1,5 @@
 #include "postgresql_db.h"
+#include <memory>
 
 auto main(int argc, char* argv[]) -> int {
     if(argc < 2) {
@@ -24,6 +25,17 @@ auto main(int argc, char* argv[]) -> int {
         std::vector<std::string> participants_1 = {user_1.get_login(), user_2.get_login(), user_3.get_login()};
         Chat chat_1("Memeger", participants_1);
         db.add_chat(chat_1);
+
+        Chat chat_from_db = db.get_chat_by_chat_name(chat_1.get_chat_name());
+        User user_from_db = db.get_user_by_login(user_1.get_login());
+
+        std::shared_ptr<IMessage> meme = std::make_shared<TextMessage>();
+        std::string path_to_meme = "resources/memes/coder.jpg";
+
+        meme->set_sender_id(user_from_db.get_id());
+        meme->set_message_content(path_to_meme);
+        meme->set_parent_chat_id(chat_from_db.get_chat_id());
+        db.add_message(meme);
 
         std::cout << "DB TABLES HAVE BEEN INITIALIZED" << std::endl;
     } 

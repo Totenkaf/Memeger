@@ -1,7 +1,7 @@
 // Copyright 2022 by Artem Ustsov
 
 #include <gtest/gtest.h>
-
+#include <memory>
 #include "models.h"
 #include "postgresql_db.h"
 
@@ -364,8 +364,9 @@ TEST_F(DataBaseEnvironment, add_message) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
-                      "Hello, Maxim");
+  std::shared_ptr<IMessage> message = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), 
+                                                                    user_from_db_1.get_id(),
+                                                                    "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message), _EXIT_SUCCESS);
 }
 
@@ -383,23 +384,23 @@ TEST_F(DataBaseEnvironment, get_messages_from_chat) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message_1(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_1 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message_1), _EXIT_SUCCESS);
-  TextMessage message_2(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_2 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Hi");
   EXPECT_EQ(test_db.add_message(message_2), _EXIT_SUCCESS);
-  TextMessage message_3(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_3 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "I have already done all my tests!");
   EXPECT_EQ(test_db.add_message(message_3), _EXIT_SUCCESS);
-  TextMessage message_4(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_4 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Great news. Proud of you");
   EXPECT_EQ(test_db.add_message(message_4), _EXIT_SUCCESS);
-  TextMessage message_5(
+  std::shared_ptr<IMessage> message_5 = std::make_shared<TextMessage>(
       chat_from_db.get_chat_id(), user_from_db_1.get_id(),
       "Thanks! Let is discuss and integrate the project tonight?");
   EXPECT_EQ(test_db.add_message(message_5), _EXIT_SUCCESS);
-  TextMessage message_6(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_6 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Sure, deal. See you");
   EXPECT_EQ(test_db.add_message(message_6), _EXIT_SUCCESS);
 
@@ -433,23 +434,23 @@ TEST_F(DataBaseEnvironment, get_last_3_messages_from_chat) {
 
   Chat chat_from_db = test_db.get_chat_by_chat_name("Memeger");
 
-  TextMessage message_1(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_1 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "Hello, Maxim");
   EXPECT_EQ(test_db.add_message(message_1), _EXIT_SUCCESS);
-  TextMessage message_2(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_2 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Hi");
   EXPECT_EQ(test_db.add_message(message_2), _EXIT_SUCCESS);
-  TextMessage message_3(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
+  std::shared_ptr<IMessage> message_3 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_1.get_id(),
                         "I have already done all my tests!");
   EXPECT_EQ(test_db.add_message(message_3), _EXIT_SUCCESS);
-  TextMessage message_4(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_4 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Great news. Proud of you");
   EXPECT_EQ(test_db.add_message(message_4), _EXIT_SUCCESS);
-  TextMessage message_5(
+  std::shared_ptr<IMessage> message_5 = std::make_shared<TextMessage>(
       chat_from_db.get_chat_id(), user_from_db_1.get_id(),
       "Thanks! Let is discuss and integrate the project tonight?");
   EXPECT_EQ(test_db.add_message(message_5), _EXIT_SUCCESS);
-  TextMessage message_6(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
+  std::shared_ptr<IMessage> message_6 = std::make_shared<TextMessage>(chat_from_db.get_chat_id(), user_from_db_2.get_id(),
                         "Sure, deal. See you");
   EXPECT_EQ(test_db.add_message(message_6), _EXIT_SUCCESS);
 

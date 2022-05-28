@@ -478,25 +478,25 @@ auto Postgre_DB::delete_user(User &user) -> int {
 }
 
 // Удаление сообщения из БД
-auto Postgre_DB::delete_message(IMessage &message) -> int {
-  if (!message.get_message_id().empty()) {
+auto Postgre_DB::delete_message(std::shared_ptr<IMessage> message) -> int {
+  if (!message->get_message_id().empty()) {
     std::string where =
-        "id = '" + remove_danger_characters(message.get_message_id()) + "'";
+        "id = '" + remove_danger_characters(message->get_message_id()) + "'";
     return delete_("MESSAGES", where);
   }
   return _DELETE_FAULT;
 }
 
 // Добавление сообщения в БД
-auto Postgre_DB::add_message(IMessage &message) -> int {
-  std::vector<std::string> data = {message.get_sender_id(),
-                                   message.get_parent_chat_id(),
-                                   message.get_message_content()};
+auto Postgre_DB::add_message(std::shared_ptr<IMessage> message) -> int {
+  std::vector<std::string> data = {message->get_sender_id(),
+                                   message->get_parent_chat_id(),
+                                   message->get_message_content()};
   std::vector<std::string> table_fields = {"user_from", "chat_id", "content"};
   try {
     std::vector<std::string> output_params = {"id"};
     save("MESSAGES", table_fields, data, output_params);
-    message.set_message_id(output_params[0]);
+    message->set_message_id(output_params[0]);
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG ADD USER" << std::endl;
