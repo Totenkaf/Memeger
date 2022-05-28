@@ -496,7 +496,7 @@ auto Postgre_DB::add_message(const std::shared_ptr<IMessage>& message) -> int {
   try {
     std::vector<std::string> output_params = {"id"};
     save("MESSAGES", table_fields, data, output_params);
-    message->set_message_id(output_params[0]);
+    message->set_message_id(output_params.at(0));
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     std::cerr << "WRONG ADD USER" << std::endl;
