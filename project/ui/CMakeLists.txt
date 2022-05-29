@@ -63,6 +63,8 @@ set(UI_LIB_FILES ${${PROJECT_NAME}_lib_sources}/chat.cpp
 include(ExternalProject)
 include_directories(vendor/)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/theme.css ${CMAKE_BINARY_DIR}/theme.css COPYONLY)
+
 add_library(ui_lib SHARED ${UI_LIB_FILES})
 target_include_directories(ui_lib PUBLIC ${GTK3_INCLUDE_DIRS} ${${PROJECT_NAME}_lib_includes})
 target_link_libraries(ui_lib PUBLIC client_lib ${GTK3_LIBRARIES})

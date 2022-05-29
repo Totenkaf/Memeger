@@ -12,6 +12,11 @@ void createLoginBox();
 std::string nickname;
 
 GtkWidget *login_signup_window;
+GtkWidget *login_signup_main_box;
+
+GtkWidget *app_logo_box;
+GtkWidget * form_block;
+
 GtkWidget* nick_name_box;
 GtkWidget* password_box;
 GtkWidget* submit_button;

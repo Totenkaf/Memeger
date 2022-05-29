@@ -16,6 +16,20 @@
 // Chat_rec chats_record[5] = {
 //     {1, "first chat"}, {2, "second chat"}, {3, "third chat"}, {4, "fourth chat"}, {5, "fiveth chat"}};
 
+void switch_boxes(GtkWidget *mainBox, GtkWidget *box_to_remove, GtkWidget *box_to_display)
+{
+  gtk_container_remove(GTK_CONTAINER(mainBox), box_to_remove);
+  gtk_container_add(GTK_CONTAINER(mainBox), box_to_display);
+  gtk_widget_show_all(mainBox);
+  return;
+}
+
+void add_widget_class(GtkWidget *widget, const gchar* class_name) {
+  GtkStyleContext *style_context;
+  style_context = gtk_widget_get_style_context(widget);
+  gtk_style_context_add_class(style_context, class_name);
+}
+
 void switch_boxes(GtkWidget *box_to_remove, GtkWidget *box_to_display)
 {
   gtk_container_remove(GTK_CONTAINER(login_signup_window), box_to_remove);
@@ -65,9 +79,12 @@ void create_chat_box()
   gtk_entry_set_placeholder_text(GTK_ENTRY(message_box), "Message");
   gtk_box_pack_end(GTK_BOX(chat_box), message_box, FALSE, TRUE, 0);
 
+  add_widget_class(message_box, "message_box");
+
   send_button = gtk_button_new_with_label("Send");
   gtk_box_pack_end(GTK_BOX(chat_box), send_button, FALSE, TRUE, 0);
   g_signal_connect(send_button, "clicked", G_CALLBACK(submit_chat), NULL);
+  add_widget_class(send_button, "send_button");
 
   sent_message_box = gtk_label_new("Messages:");
   gtk_box_pack_start(GTK_BOX(chat_box), sent_message_box, FALSE, TRUE, 0);
@@ -101,8 +118,20 @@ void create_chat_box()
 void submit_chat()
 {
   const char *message = gtk_entry_get_text(GTK_ENTRY(message_box));
-  sent_message_box = gtk_label_new(message);
-  gtk_box_pack_start(GTK_BOX(chat_box), sent_message_box, FALSE, TRUE, 0);
+  sent_message_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  GtkWidget *name_label = gtk_label_new("you:");
+  GtkWidget *message_label = gtk_label_new(message);
+  gtk_widget_set_halign(message_label, GTK_ALIGN_START);
+
+  add_widget_class(name_label, "fromyou");
+  add_widget_class(message_label, "message_text");
+  add_widget_class(sent_message_box, "message");
+
+  gtk_box_pack_end(GTK_BOX(sent_message_box), message_label, TRUE, TRUE, 0);
+  gtk_box_pack_end(GTK_BOX(sent_message_box), name_label, FALSE, TRUE, 0);
+
+  gtk_box_pack_start(GTK_BOX(chat_box), sent_message_box, FALSE, TRUE, 1);
+
   std::cout << "Message: " << message << std::endl;
   gtk_widget_show_all(login_signup_window);
   net::io_context io_context;
@@ -151,21 +180,24 @@ void create_signup_box()
   gtk_widget_set_size_request(signup_nickname_box, 200, -1);
   gtk_entry_set_placeholder_text(GTK_ENTRY(signup_nickname_box), "nickname");
   gtk_box_pack_start(GTK_BOX(signup_box), signup_nickname_box, FALSE, TRUE, 0);
+  add_widget_class(signup_nickname_box, "nickname");
 
   signup_password_box = gtk_entry_new();
   gtk_widget_set_size_request(signup_password_box, 200, -1);
   gtk_entry_set_placeholder_text(GTK_ENTRY(signup_password_box), "password");
   gtk_box_pack_start(GTK_BOX(signup_box), signup_password_box, FALSE, TRUE, 0);
+  add_widget_class(signup_password_box, "password");
 
   signup_submit_button = gtk_button_new_with_label("signup");
   gtk_box_pack_start(GTK_BOX(signup_box), signup_submit_button, FALSE, TRUE, 0);
   g_signal_connect(signup_submit_button, "clicked", G_CALLBACK(signup_submit), NULL);
+  add_widget_class(signup_submit_button, "button");
 }
 
 void on_create_account_button_click(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
   create_signup_box();
-  switch_boxes(login_box, signup_box);
+  switch_boxes(form_block, login_box, signup_box);
   return;
 }
 
@@ -179,19 +211,26 @@ void create_login_box()
   gtk_widget_set_size_request(nick_name_box, 200, -1);
   gtk_entry_set_placeholder_text(GTK_ENTRY(nick_name_box), "nickname");
   gtk_box_pack_start(GTK_BOX(login_box), nick_name_box, FALSE, TRUE, 0);
+  add_widget_class(nick_name_box, "nickname");
 
   password_box = gtk_entry_new();
   gtk_widget_set_size_request(password_box, 200, -1);
   gtk_entry_set_placeholder_text(GTK_ENTRY(password_box), "password");
   gtk_box_pack_start(GTK_BOX(login_box), password_box, FALSE, TRUE, 0);
+  add_widget_class(password_box, "password");
+  gtk_entry_set_visibility(GTK_ENTRY(password_box), FALSE);
 
   submit_button = gtk_button_new_with_label("login");
   gtk_box_pack_start(GTK_BOX(login_box), submit_button, FALSE, TRUE, 0);
   g_signal_connect(submit_button, "clicked", G_CALLBACK(submit), NULL);
+  add_widget_class(submit_button, "button");
+
+  gtk_widget_grab_focus(submit_button);
 
   create_account_button = gtk_button_new_with_label("create new account");
   gtk_box_pack_start(GTK_BOX(login_box), create_account_button, FALSE, TRUE, 0);
   g_signal_connect(create_account_button, "clicked", G_CALLBACK(on_create_account_button_click), NULL);
+  add_widget_class(create_account_button, "button");
 }
 
 void signup_submit(GtkWidget *widget, GdkEvent *event, gpointer data)
@@ -226,7 +265,7 @@ void signup_submit(GtkWidget *widget, GdkEvent *event, gpointer data)
   std::cout << response.body() << std::endl;
 
   create_login_box();
-  switch_boxes(signup_box, login_box);
+  switch_boxes(form_block, signup_box, login_box);
   return;
 }
 
@@ -264,18 +303,47 @@ void submit(GtkWidget *widget, GdkEvent *event, gpointer data)
   auto response = cli->handle_response();
   std::cout << response.body() << std::endl;
   create_chat_box();
-  switch_boxes(login_box, chat_box);
+  switch_boxes(login_signup_window, login_signup_main_box, chat_box);
   return;
+}
+
+void create_login_signup_main_box() {
+  login_signup_main_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+
+  app_logo_box = gtk_label_new("Memeger");
+  add_widget_class(app_logo_box, "logo");
+
+  gtk_box_pack_start(GTK_BOX(login_signup_main_box), app_logo_box, FALSE, TRUE, 50);
+
+  form_block = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  add_widget_class(app_logo_box, "form");
+  gtk_box_pack_start(GTK_BOX(login_signup_main_box), form_block, FALSE, TRUE, 0);
 }
 
 void activate_login_signup(GtkApplication *app, gpointer user_data)
 {
   login_signup_window = gtk_application_window_new(app);
+
+  add_widget_class(login_signup_window, "login_signup_window");
+
   gtk_window_set_title(GTK_WINDOW(login_signup_window), "Login or signup");
   gtk_window_set_default_size(GTK_WINDOW(login_signup_window), 600, 800);
 
+  // добавляет стили глобально
+  // если эта функция не является входной точкой, 
+  // то стили не будут применены
+
+  GtkCssProvider *cssProvider = gtk_css_provider_new();
+  gtk_css_provider_load_from_path(cssProvider, "theme.css", NULL);
+  gtk_style_context_add_provider_for_screen(gdk_screen_get_default(),
+                                    GTK_STYLE_PROVIDER(cssProvider),
+                                    GTK_STYLE_PROVIDER_PRIORITY_USER);
+
+  create_login_signup_main_box();
   create_login_box();
-  gtk_container_add(GTK_CONTAINER(login_signup_window), login_box);
+  // gtk_container_add(GTK_CONTAINER(login_signup_window), login_box);
+  gtk_box_pack_start(GTK_BOX(form_block), login_box, FALSE, TRUE, 0);
+  gtk_container_add(GTK_CONTAINER(login_signup_window), login_signup_main_box);
   gtk_widget_grab_focus(login_signup_window);
   gtk_widget_show_all(login_signup_window);
   return;
